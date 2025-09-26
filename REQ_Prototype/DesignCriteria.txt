@@ -1,0 +1,13 @@
+(These sources may be used in order to effectively collect and write requirements.)
+
+	-Current JSBSim Commander Program (Download available as zip file in the Prototyping 
+assignment on canvas (in case my link does not work) https://uta.instructure.com/courses/252641/assignments/2130945)
+
+	-Current xml schema (An aircraft template xml file can be found at the current JSBSim 
+GitHub repo (https://github.com/JSBSim-Team/jsbsim/blob/master/aircraft/aircraft_template.xml))
+
+	-Our UI Requirements Format (the format should be located in the same directory as this 
+Design Criteria file)
+
+	-Our Requirements Excel Format (the format should be located in the same directory as 
+this Design Criteria file)
