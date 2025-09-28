@@ -10,13 +10,13 @@ All UI elements will be listed in a table, where each column represents a specif
 	- Each UI element will be assigned a unique ID (e.g., UI-01, UI-02).
 
 2. Element Name:
-	- Ashort, descriptive name (e.g., "Login Button", "Search Field").
+	- A short, descriptive name (e.g., "Login Button", "Search Field").
  
 3. Type of Element:
 	- The control type (e.g., Button, Text Box, Dropdown, Menu).
 
 4. Description / Function:
-	- what the elemnt does or what task it supports.
+	- what the element does or what task it supports.
 
 5. Inputs / Outputs:
 	- Inputs: what the user provides (click, text, selection).
