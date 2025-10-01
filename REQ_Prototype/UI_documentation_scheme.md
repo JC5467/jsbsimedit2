@@ -24,14 +24,25 @@ All UI elements will be listed in a table, where each column represents a specif
 
 6. Constraints / Behavior:
 	- Any rules or conditions (e.g., "field must accept only valid email format").
+
+7. Verification
+	- How this element’s requirement will be verified.
+	- Include at least one simple test step.
+
+8. Priority
+	- Requirement importance: Must, Should, or Nice-to-have.
+
+9. XML Mapping
+	- Corresponding element or attribute name in XML documents.
+
 	
-7. References:
-	- Links to related requirements (e.g., FR-01) or mockups/wireframes. 
+10. References:
+	- Links to related requirements. 
 
 
 
 
 
-| Element ID | Element Name | Type | Description / Function | Inputs | Outputs | Constraints / Behavior | References |
-| ---------- | ------------ | ---- | ---------------------- | ------ | ------- | ---------------------- | ---------- | 
+| Element ID | Element Name | Type | Description / Function | Inputs | Outputs | Constraints / Behavior | Verification | Priority | XML Mapping | References |
+| ---------- | ------------ | ---- | ---------------------- | ------ | ------- | ---------------------- | ------------ | -------- | ----------- | ---------- | 
 
