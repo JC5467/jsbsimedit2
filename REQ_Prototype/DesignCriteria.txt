@@ -9,8 +9,8 @@ assignment on canvas https://uta.instructure.com/courses/252641/assignments/2130
 
 _XML_Files_____________________________________________________________
 
-	-Current xml schema (aircraft template xml file 
-https://github.com/JSBSim-Team/jsbsim/blob/master/aircraft/aircraft_template.xml)
+	-Current xml schema 
+(https://github.com/JSBSim-Team/jsbsim/blob/master/JSBSim.xsd)
 
 	-Current F16 xml to compare the new xml format to the old 
 (https://github.com/JSBSim-Team/jsbsim/blob/master/aircraft/f16/f16.xml)
