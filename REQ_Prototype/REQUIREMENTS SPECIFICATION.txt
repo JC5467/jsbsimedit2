@@ -20,8 +20,8 @@ Submenus should proceed a Ô/Õ
 2.2.2. NUMBER
 Sequential FOUR digit number starting from [0000]
 2.3. EXAMPLE REQUIREMENT IDs
-* UI Ð AC/GI Ð 0023
-* SYS Ð 0021
+* UID AC/GI 0021
+* SYS 0021
 3. URGENCY SPECIFACATION
 3.1. Requirements will be given a priority rating.
 3.1.1. There are three levels of urgency: High Ð Mid Ð Low
