@@ -23,13 +23,13 @@
 3. URGENCY SPECIFACATION
    3.1. Requirements will be given a priority rating.
         3.1.1. There are three levels of urgency: High Ð Mid Ð Low
-   3.2. HIGH Urgency Ð ÒMUST HAVEÓ
+   3.2. HIGH Urgency : MUST HAVE
         3.2.1. The requirement is essential to the core of the program.
         3.2.2. If the requirement isnÕt fulfilled, the application will not function.
-   3.3. Mid Urgency Ð ÒSHOULD HAVEÓ
+   3.3. Mid Urgency : SHOULD HAVE
         3.3.1. Features that users expect to have.
         3.3.2. Major functionalities that should be added once the application is functional.
-   3.4. Low Urgency Ð ÒWANT TO HAVEÓ
+   3.4. Low Urgency : WANT TO HAVE
         3.4.1. Features that the users want to improve upon.
         3.4.2. Quality of Life changes that will be added once the application  is near completion.
         3.4.3. Not core to user experience or functionality.
