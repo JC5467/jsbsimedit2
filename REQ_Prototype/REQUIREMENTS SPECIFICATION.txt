@@ -15,7 +15,10 @@
         2.2.2. SUBTYPE
                *Subtypes should be a 3 letter abbreviation of the section of requirements within the XML file.
         2.2.3. NUMBER
-               * Sequential THREE digit number starting from [0000]
+               * Sequential THREE digit number starting from [000]
+                 IF there is a sub-requirement of an existing requirement:
+                 *001-01
+                 *003-02
    2.3. EXAMPLE REQUIREMENT IDs
          * SYS-YAW-0012
          * SYS-MEN-021
