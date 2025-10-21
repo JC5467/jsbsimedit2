@@ -1,7 +1,7 @@
 # jsbsimedit2
 Project for CSE3310 Fall 2025
 
-##build instructions
+## build instructions
 
 ```
 % cd jsbsimedit
@@ -14,10 +14,15 @@ Project for CSE3310 Fall 2025
 
 
 
-##git instructions
+## git instructions
+
 if you have a github token, put it into an environment variable GITHUB_TOKEN . To set this for every shell, include in ~/.bashrc .
 
 Then, you can use it in a single command line to do git commands without having to enter your github password.
 
+```
 git push https://BudDavis:${GITHUB_TOKEN}@github.com/utastudents/jsbsimedit2
+```
+
+
 
