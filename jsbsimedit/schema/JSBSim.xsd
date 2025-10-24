@@ -950,7 +950,7 @@
         <xs:element name="standpipe" minOccurs="0" type="mass"/>
         <xs:element minOccurs="0" name="priority" type="xs:double"/>
         <xs:element name="density" minOccurs="0" type="density"/>
-        <xs:element name="type" minOccurs="0">
+        <xs:element name="typeX" minOccurs="0">
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:enumeration value="AVGAS"/>
