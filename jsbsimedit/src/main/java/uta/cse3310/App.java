@@ -5,7 +5,6 @@ package uta.cse3310;
  *
  */
 
-
 import java.io.File;
 import java.util.List;
 
@@ -23,42 +22,41 @@ public class App {
 
     public static void main(String[] args) {
 
-	    // start jaxb / xml example code
-   try {
+        // start jaxb / xml example code
+        try {
 
-      File file = new File("f16.xml");
-      // JAXBContext jaxbContext = JAXBContext.newInstance(FdmConfig.class);
+            File file = new File("f16.xml");
+            // JAXBContext jaxbContext = JAXBContext.newInstance(FdmConfig.class);
 
-      // Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-      // FdmConfig cfg = (FdmConfig) jaxbUnmarshaller.unmarshal(file);
+            // Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            // FdmConfig cfg = (FdmConfig) jaxbUnmarshaller.unmarshal(file);
 
-      // System.out.println(cfg.getName());
+            // System.out.println(cfg.getName());
 
-      JAXBContext jc = JAXBContext.newInstance("generated");
+            JAXBContext jc = JAXBContext.newInstance("generated");
 
-      Unmarshaller um = jc.createUnmarshaller();
-      FdmConfig cfg = (FdmConfig) um.unmarshal(file);
+            Unmarshaller um = jc.createUnmarshaller();
+            FdmConfig cfg = (FdmConfig) um.unmarshal(file);
 
-      System.out.println(cfg);
-      System.out.println(cfg.getFileheader().getCopyright());
-      System.out.println(cfg.getFileheader().getVersion() );
-      System.out.println(cfg.getAerodynamics().getAxis().get(0).getName());
-      System.out.println(cfg.getAerodynamics().getAxis().get(0).getDocumentationOrFunction());
-      System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
+            System.out.println(cfg);
+            System.out.println(cfg.getFileheader().getCopyright());
+            System.out.println(cfg.getFileheader().getVersion());
+            System.out.println(cfg.getAerodynamics().getAxis().get(0).getName());
+            System.out.println(cfg.getAerodynamics().getAxis().get(0).getDocumentationOrFunction());
+            System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
 
+            // Marshaller m = jc.createMarshaller();
+            // m.setProperty("jaxb.formatted.output", true);
+            // m.marshal(cfg, System.out);
 
-      //Marshaller m = jc.createMarshaller();
-      //m.setProperty("jaxb.formatted.output", true);
-      //m.marshal(cfg, System.out);
-
-    } catch (JAXBException e) {
-      e.printStackTrace();
-    }
-//
-//
-//
-//  end xml / jaxb example code
-//
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        //
+        //
+        //
+        // end xml / jaxb example code
+        //
         // Create the main frame
         JFrame frame = new JFrame("JTabbedPane Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
