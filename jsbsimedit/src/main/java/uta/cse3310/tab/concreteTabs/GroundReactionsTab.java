@@ -2,18 +2,16 @@ package uta.cse3310.tab.concreteTabs;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 import uta.cse3310.tab.simpleTab;
 
-public class twoTab extends simpleTab{
+public class GroundReactionsTab extends simpleTab{
     // attributes that only pertain to the 'concrete' tab called oneTab
 
-    public twoTab(String label){
+    public GroundReactionsTab(String label){
         super(label);
-        System.out.println("in twoTab constructor");
+        System.out.println("in GroundReactions constructor");
          
         // what is unique about this tab
         panel.setLayout(new FlowLayout()); // Use FlowLayout for panel2
