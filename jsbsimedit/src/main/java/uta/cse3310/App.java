@@ -1,18 +1,20 @@
 package uta.cse3310;
 
 import java.io.File;
-import java.util.List;
 
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
-import uta.cse3310.tab.concreteTabs.oneTab;
-import uta.cse3310.tab.concreteTabs.twoTab;
-import uta.cse3310.tab.concreteTabs.threeTab;
+import uta.cse3310.tab.concreteTabs.MetricsTab;
+import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
+import uta.cse3310.tab.concreteTabs.MassBalanceTab;
+import uta.cse3310.tab.concreteTabs.CanopySystemTab;
+import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
+import uta.cse3310.tab.concreteTabs.HookSystemTab;
+import uta.cse3310.tab.concreteTabs.PropulsionTab;
 
 
-import jakarta.xml.bind.Marshaller;
-import generated.FdmConfig;
+import generated.FdmConfig; //-> seems like this would be where our packages for the XML JAXB would go.
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,19 +74,37 @@ public class App {
         // the array is probably not the ideal data structure for this list, but it is
         // simple.
 
-        uta.cse3310.tab.baseTab frameTabs[] = new uta.cse3310.tab.baseTab[3];
+        uta.cse3310.tab.baseTab frameTabs[] = new uta.cse3310.tab.baseTab[7];
 
-        frameTabs[0] = new oneTab("Tab 1");
-        tabbedPane.addTab("Tab 1", null, frameTabs[0].panel, "This is the first tab.");
+        frameTabs[0] = new CanopySystemTab("Canopy System Tab");
+        tabbedPane.addTab("Tab 1", null, frameTabs[0].panel, "This is the Canopy System tab.");
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1); // Set mnemonic for Tab 1
 
-        frameTabs[1] = new twoTab("Tab 2");
-        tabbedPane.addTab("Tab 2", null, frameTabs[1].panel, "This is the second tab.");
+        frameTabs[1] = new ExternalReactionsTab("External Reactions Tab");
+        tabbedPane.addTab("Tab 2", null, frameTabs[1].panel, "This is the External Reactions tab.");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2); // Set mnemonic for Tab 2
 
-        frameTabs[2] = new threeTab("Tab 3");
-        tabbedPane.addTab("Tab 3", null, frameTabs[2].panel, "This is the third tab.");
+        frameTabs[2] = new GroundReactionsTab("Ground Reactions Tab");
+        tabbedPane.addTab("Tab 3", null, frameTabs[2].panel, "This is the Ground Reactions tab.");
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3); // Set mnemonic for Tab 3
+
+        frameTabs[3] = new HookSystemTab("Hook System Tab");
+        tabbedPane.addTab("Tab 4", null, frameTabs[3].panel, "This is the Hook System tab.");
+        tabbedPane.setMnemonicAt(3, KeyEvent.VK_4); // Set mnemonic for Tab 4
+
+        frameTabs[4] = new MassBalanceTab("Mass Balance Tab");
+        tabbedPane.addTab("Tab 5", null, frameTabs[4].panel, "This is the Mass Balance tab.");
+        tabbedPane.setMnemonicAt(4, KeyEvent.VK_5); // Set mnemonic for Tab 5
+
+        frameTabs[5] = new MetricsTab("Metrics Tab");
+        tabbedPane.addTab("Tab 6", null, frameTabs[5].panel, "This is the Metrics tab.");
+        tabbedPane.setMnemonicAt(5, KeyEvent.VK_6); // Set mnemonic for Tab 6
+
+        frameTabs[6] = new PropulsionTab("Propulsion Tab");
+        tabbedPane.addTab("Tab 7", null, frameTabs[6].panel, "This is the Propulsion tab.");
+        tabbedPane.setMnemonicAt(6, KeyEvent.VK_7); // Set mnemonic for Tab 7
+
+        //For the panels below dont forget to implement all 7 panels above.
 
         // Create Panel 1 and add components
         // JPanel panel1 = new JPanel();
