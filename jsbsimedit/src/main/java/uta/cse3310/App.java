@@ -14,7 +14,7 @@ import uta.cse3310.tab.concreteTabs.HookSystemTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab;
 
 
-import generated.FdmConfig; //-> seems like this would be where our packages for the XML JAXB would go.
+import generated.FdmConfig; 
 
 import javax.swing.*;
 import java.awt.*;
