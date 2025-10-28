@@ -1,4 +1,4 @@
-package uta.cse3310DesignClass;
+package uta.cse3310.core;
 //DESIGN TESTING ONLY DO NOT JUDGE PLEASE P-P
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;

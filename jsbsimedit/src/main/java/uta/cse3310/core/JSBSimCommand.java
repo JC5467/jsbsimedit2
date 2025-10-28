@@ -1,4 +1,4 @@
-package uta.cse3310DesignClass;
+package uta.cse3310.core;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;

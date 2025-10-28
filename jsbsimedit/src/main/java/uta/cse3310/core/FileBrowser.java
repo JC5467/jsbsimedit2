@@ -1,4 +1,4 @@
-package uta.cse3310DesignClass;
+package uta.cse3310.core;
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.io.*;
