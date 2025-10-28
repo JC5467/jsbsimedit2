@@ -43,7 +43,7 @@ public class JSBSimCommand implements ActionListener{
 		if(e.getSource() == Open_XML) {
 			FileBrowser fb = new FileBrowser();
 			if(fb.File_Found == true) { 
-				//new AirCraftCommand(fb.Chosen_file); //Close JSBSimcommand if file found and open AirCraft Command
+				new AirCraftCommand(fb.Chosen_file); //Close JSBSimcommand if file found and open AirCraft Command
 				frame.dispose(); 
 			}
 		}
