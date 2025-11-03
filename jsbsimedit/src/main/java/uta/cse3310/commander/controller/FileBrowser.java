@@ -1,14 +1,14 @@
-/*package uta.cse3310.core;
+package uta.cse3310.commander.controller;
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.io.*;
 public class FileBrowser {
 
 	JFileChooser fc;
-	File Chosen_file;
-	boolean File_Found;
+	public File Chosen_file;
+	public boolean File_Found;
 	
-	FileBrowser(){
+	public FileBrowser(){
 		
 		try {
             // Set the look and feel to the system's default
@@ -34,4 +34,4 @@ public class FileBrowser {
 		}
 		
 	}
-}*/
+}

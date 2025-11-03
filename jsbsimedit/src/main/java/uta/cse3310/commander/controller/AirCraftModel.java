@@ -1,12 +1,13 @@
-/*package uta.cse3310.core;
+package uta.cse3310.commander.controller;
 
 import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 
-public class AirCraftCommand implements ActionListener{ 
+public class AirCraftModel implements ActionListener{ 
 
 	JFrame frame;
 	JButton Save_XML;
@@ -15,7 +16,7 @@ public class AirCraftCommand implements ActionListener{
 	JButton New_XML;
 	
 	
-	AirCraftCommand(File XML_File) {
+	public AirCraftModel(File XML_File) {
 	//Frame name and look and feel
 		frame = new JFrame("Aircraft Command");
 		try {
@@ -40,8 +41,8 @@ public class AirCraftCommand implements ActionListener{
 		frame.setLayout(new BorderLayout());
 		frame.add(toolbar, BorderLayout.NORTH);
 	//TabSubSystem TESTING ONLY NOT FINAL MAKE SURE YOU UPDATE THIS WHEN THE TABSUBSYSTEM IS FINISHED IM TALKING TO YO, YEAH YOU DAVID, YOU LAZY PUNK YOU ARE GONNA FORGET TO CHANGE THIS AND THEN GET CONFUSED WHY NOTHING WORKS I SWEAR
-		TabSubSystem_DesignTest Test = new TabSubSystem_DesignTest(XML_File);
-		frame.add(Test, BorderLayout.CENTER);
+		//TabController Test = new TabControler(XML_File);
+		//frame.add(Test, BorderLayout.CENTER);
 		
 	//Action listeners 
 		Open_XML.addActionListener(this);
@@ -59,7 +60,7 @@ public class AirCraftCommand implements ActionListener{
 		if(e.getSource() == Open_XML) {
 			FileBrowser fb = new FileBrowser();
 			if(fb.File_Found == true) { 
-				new AirCraftCommand(fb.Chosen_file);
+				new AirCraftModel(fb.Chosen_file);
 				frame.dispose(); //Close JSBSimcommand if file found
 			}
 		}
@@ -69,4 +70,4 @@ public class AirCraftCommand implements ActionListener{
 	}
 	
 	
-}*/
+}

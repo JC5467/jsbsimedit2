@@ -8,6 +8,7 @@ import jakarta.xml.bind.Unmarshaller;
 import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
+import uta.cse3310.commander.main.JSBSimCommanderApp;
 import uta.cse3310.tab.concreteTabs.CanopySystemTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
 import uta.cse3310.tab.concreteTabs.HookSystemTab;
@@ -24,6 +25,7 @@ public class App {
 
     public static void main(String[] args) {
 
+        new JSBSimCommanderApp();
         // start jaxb / xml example code
         try {
 

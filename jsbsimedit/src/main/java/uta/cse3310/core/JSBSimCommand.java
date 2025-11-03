@@ -1,4 +1,4 @@
-package uta.cse3310.core;
+/*package uta.cse3310.core;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
@@ -53,4 +53,4 @@ public class JSBSimCommand implements ActionListener{
 		
 	}
 
-}
+}*/
