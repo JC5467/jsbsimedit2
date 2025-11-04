@@ -79,31 +79,31 @@ public class App {
         uta.cse3310.tab.baseTab frameTabs[] = new uta.cse3310.tab.baseTab[7];
 
         frameTabs[0] = new CanopySystemTab("Canopy System Tab");
-        tabbedPane.addTab("Tab 1", null, frameTabs[0].panel, "This is the Canopy System tab.");
+        tabbedPane.addTab("Canopy", null, frameTabs[0].panel, "This is the Canopy System tab.");
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1); // Set mnemonic for Tab 1
 
         frameTabs[1] = new ExternalReactionsTab("External Reactions Tab");
-        tabbedPane.addTab("Tab 2", null, frameTabs[1].panel, "This is the External Reactions tab.");
+        tabbedPane.addTab("External Reactions", null, frameTabs[1].panel, "This is the External Reactions tab.");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2); // Set mnemonic for Tab 2
 
         frameTabs[2] = new GroundReactionsTab("Ground Reactions Tab");
-        tabbedPane.addTab("Tab 3", null, frameTabs[2].panel, "This is the Ground Reactions tab.");
+        tabbedPane.addTab("Ground Reactions", null, frameTabs[2].panel, "This is the Ground Reactions tab.");
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3); // Set mnemonic for Tab 3
 
         frameTabs[3] = new HookSystemTab("Hook System Tab");
-        tabbedPane.addTab("Tab 4", null, frameTabs[3].panel, "This is the Hook System tab.");
+        tabbedPane.addTab("Hook", null, frameTabs[3].panel, "This is the Hook System tab.");
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4); // Set mnemonic for Tab 4
 
         frameTabs[4] = new MassBalanceTab("Mass Balance Tab");
-        tabbedPane.addTab("Tab 5", null, frameTabs[4].panel, "This is the Mass Balance tab.");
+        tabbedPane.addTab("Mass Balance", null, frameTabs[4].panel, "This is the Mass Balance tab.");
         tabbedPane.setMnemonicAt(4, KeyEvent.VK_5); // Set mnemonic for Tab 5
 
         frameTabs[5] = new MetricsTab("Metrics Tab");
-        tabbedPane.addTab("Tab 6", null, frameTabs[5].panel, "This is the Metrics tab.");
+        tabbedPane.addTab("Metrics", null, frameTabs[5].panel, "This is the Metrics tab.");
         tabbedPane.setMnemonicAt(5, KeyEvent.VK_6); // Set mnemonic for Tab 6
 
         frameTabs[6] = new PropulsionTab("Propulsion Tab");
-        tabbedPane.addTab("Tab 7", null, frameTabs[6].panel, "This is the Propulsion tab.");
+        tabbedPane.addTab("Propulsion", null, frameTabs[6].panel, "This is the Propulsion tab.");
         tabbedPane.setMnemonicAt(6, KeyEvent.VK_7); // Set mnemonic for Tab 7
 
         //For the panels below dont forget to implement all 7 panels above.
