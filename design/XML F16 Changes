@@ -59,3 +59,87 @@ Canopy - kinematics with timings and triggers
 Aerodynamics 
 New file starts filling aero functions
 Old snippet ends mid-Roll channel; no aero shown there, so we can’t line-by-line compare further here.
+
+Aileron 
+New xml "Multiple <aerosurface_scale>, <switch>, <kinematic>, <scheduled_gain>, <summer>
+Old XML <aerosurface_scale>, left/right only
+Note: Expanded logic: feedback, speed compensation, flaperon mixing; renamed tags with fcs/ prefix
+
+Pitch 
+New xml <fcs/n-pilot-z- correction>, <summer>, <scheduled_gain>, <pid>
+Old xml Not present
+Note: Entirely new channel; adds PID control, g-load correction, alpha limiter, elevator scheduling
+
+Yaw 
+New xml <scheduled_gain>, <pure_gain>, <summer>, <pid>
+Old xml <pure_gain>, <summer>, <integrator>, <lead_lag_filter>
+Note: PID simplified and modularized; added airspeed- based triggers, yaw load normalization, switch logic
+
+Landing Gear
+New xml <switch> (WOW), <kinematic>, <scheduled_gain>
+Old xml <kinematic> and <scheduled_gain>
+Note: Added weight-on-wheels detection; standardized ranges; minor reformatting
+
+Removed/Replaced
+New xml Not present
+Old xml Leading Edge Flap, Throttle, Flaps, Speedbrake
+Note: Removed in new XML, possibly handled elsewhere
+
+Naming/Formatting
+New xml Standardized fcs/prefix; consistent indentation
+Old xml Mixed names, some descriptive (e.g., “Left Aileron Control”)
+Note: Easier to read and maintain
+
+Functional Enhancements
+New xml Added FBW override switches, speed compensation, flaperon mix, g-load & alpha correction
+Old xml Basic control scaling
+Note: More realistic flight control simulation
+
+Drag
+New xml <CDDlef> (table), <CDDflaps> (scalar), <CDgear> (scalar), <CDDsb> (table), <CDq> (table), <CDq_Dlef> (table)
+Old xml Not Present
+Note: Entirely new drag functions added; includes LE flap, trailing flaps, gear, speedbrake, 
+pitch-rate effects; adds alpha, flap, gear, speedbrake, and pitch-rate dependencies. 
+Enables GUI to show drag contributions dynamically.
+
+Pitch
+New xml Same as old
+Old xml <CmDh> (alpha × elevator table), <Cma_M> (mach table), <Cmq> (alpha × pitch-rate table)
+Note: Minor formatting adjustments; no new functions. GUI can use existing tables for elevator, alpha, and pitch-rate inputs
+
+Side Force
+New xml <CYb> (scalar), <CYb_M> (mach table), <CYDa> (scalar), <CYdr> (scalar), <CYp> (alpha × roll-rate table), 
+<CYr> (alpha × yaw-rate table)
+Old xml Not present
+Note: New side-force functions added; includes beta, aileron, rudder, roll rate, yaw rate effects, and Mach dependencies. 
+Simplifies GUI implementation for side forces.
+
+Roll Moment
+New xml Same as old
+Old xml Clp> (alpha × roll-rate table), <Clr> (alpha × yaw-rate table), <Clda> (alpha × beta × aileron table), 
+<Clda_M> (mach table), <Cldr> (alpha × beta × rudder table), <Cldr_M> (mach table)
+Note: No changes; multi- column alpha × beta tables retained. GUI can keep old roll/yaw moment visualization
+
+Naming/Formatting 
+New xml Standardized tags with fcs/ prefix; consistent indentation; mostly 1D tables or scalars
+Old xml Mixed descriptive names, some multi-column tables
+Note: Easier to read, maintain, and parse; fcs/ prefix clarifies control surface inputs (LEF, flaps, aileron, rudder).
+
+Function Enhancements
+New xml Adds drag forces, side forces, Mach effects, combined effects (CDq_Dlef); scalars for simple forces
+Old xml Only moments, limited surfaces, older scaling
+Note: More realistic aerodynamic modeling; GUI can implement sliders for alpha, Mach, control surfaces, 
+speedbrake, gear, pitch/roll rates, etc.
+
+Pitch
+New xml <function name=“"aero/coefficient/CmDsb">
+Old xml Not Present 
+Note: New function added(Line:1662). named “Change_in_Pitch_moment_due_to_speedbrake”
+
+Output
+New xml Not present
+Old xml <output>
+Note: Removed in new XML(Line:1917). present but commented out
+
+
+
