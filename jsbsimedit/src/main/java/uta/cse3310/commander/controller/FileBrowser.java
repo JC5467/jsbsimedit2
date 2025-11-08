@@ -2,12 +2,18 @@ package uta.cse3310.commander.controller;
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.io.*;
+
 public class FileBrowser {
 
 	JFileChooser fc;
 	public File Chosen_file;
 	public boolean File_Found;
-	
+
+    public File getFileFound()
+    {
+        return Chosen_file;
+    }
+
 	public FileBrowser(){
 		
 		try {
@@ -32,6 +38,5 @@ public class FileBrowser {
 			System.out.println("Chosen file: " + Chosen_file.getName());
 			File_Found = true;
 		}
-		
 	}
 }

@@ -6,39 +6,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import uta.cse3310.tab.simpleTab;
+import uta.cse3310.dataStore;
 
-/*
-class Main {
-    Jframe jf;
-    JScrollPane js;
-    Jtable jt;
-    String[] col;
-    Object[][] data;
-
-    Main() {
-        jf = new Jframe("Jtable demo");
-        col = new String[]{"Contact Name", "Contact Type", "Brake Group"};
-        data = getData;
-    }
-}
-
-Object[][] getData() {
-    try {
-        String file = new File("f16.xml");
-        BufferedReader br = new BufferedReader(new FileReader(file));
-
-    } catch(Exception x) {
-        x.printStackTrace();
-        return null;
-    }
-}
-*/
 public class GroundReactionsTab extends simpleTab{
     // attributes that only pertain to the 'concrete' tab called oneTab
     //Following UIID094 - UIID098
 
-    public GroundReactionsTab(String label){
-        super(label);
+    public GroundReactionsTab(dataStore ds, String label){
+        super(ds,label);
         System.out.println("in GroundReactions constructor");
         
         //Plan: Implement an editable table tab using JTable

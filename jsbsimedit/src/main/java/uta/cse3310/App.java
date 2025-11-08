@@ -1,10 +1,11 @@
 package uta.cse3310;
 
-import java.io.File;
+//import java.io.File;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Unmarshaller;
+//import jakarta.xml.bind.JAXBContext;
+//import jakarta.xml.bind.JAXBException;
+//import jakarta.xml.bind.Unmarshaller;
+
 import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
@@ -13,9 +14,9 @@ import uta.cse3310.tab.concreteTabs.CanopySystemTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
 import uta.cse3310.tab.concreteTabs.HookSystemTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab;
+import uta.cse3310.dataStore;
 
-
-import generated.FdmConfig; 
+//import generated.FdmConfig; 
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,42 +26,12 @@ public class App {
 
     public static void main(String[] args) {
 
-        new JSBSimCommanderApp();
-        // start jaxb / xml example code
-        try {
+        // start out with no xml file
+        dataStore DS = new dataStore();
 
-            File file = new File("f16.xml");
-            // JAXBContext jaxbContext = JAXBContext.newInstance(FdmConfig.class);
+        // make the 'main' panel
+        new JSBSimCommanderApp(DS);
 
-            // Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            // FdmConfig cfg = (FdmConfig) jaxbUnmarshaller.unmarshal(file);
-
-            // System.out.println(cfg.getName());
-
-            JAXBContext jc = JAXBContext.newInstance("generated");
-
-            Unmarshaller um = jc.createUnmarshaller();
-            FdmConfig cfg = (FdmConfig) um.unmarshal(file);
-
-            System.out.println(cfg);
-            System.out.println(cfg.getFileheader().getCopyright());
-            System.out.println(cfg.getFileheader().getVersion());
-            System.out.println(cfg.getAerodynamics().getAxis().get(0).getName());
-            System.out.println(cfg.getAerodynamics().getAxis().get(0).getDocumentationOrFunction());
-            System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
-
-            // Marshaller m = jc.createMarshaller();
-            // m.setProperty("jaxb.formatted.output", true);
-            // m.marshal(cfg, System.out);
-
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        //
-        //
-        //
-        // end xml / jaxb example code
-        //
         // Create the main frame
         JFrame frame = new JFrame("JTabbedPane Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,33 +47,34 @@ public class App {
         // the array is probably not the ideal data structure for this list, but it is
         // simple.
 
+        // create the array
         uta.cse3310.tab.baseTab frameTabs[] = new uta.cse3310.tab.baseTab[7];
 
-        frameTabs[0] = new CanopySystemTab("Canopy System Tab");
+        frameTabs[0] = new CanopySystemTab(DS,"Canopy System Tab");
         tabbedPane.addTab("Canopy", null, frameTabs[0].panel, "This is the Canopy System tab.");
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1); // Set mnemonic for Tab 1
 
-        frameTabs[1] = new ExternalReactionsTab("External Reactions Tab");
+        frameTabs[1] = new ExternalReactionsTab(DS,"External Reactions Tab");
         tabbedPane.addTab("External Reactions", null, frameTabs[1].panel, "This is the External Reactions tab.");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2); // Set mnemonic for Tab 2
 
-        frameTabs[2] = new GroundReactionsTab("Ground Reactions Tab");
+        frameTabs[2] = new GroundReactionsTab(DS,"Ground Reactions Tab");
         tabbedPane.addTab("Ground Reactions", null, frameTabs[2].panel, "This is the Ground Reactions tab.");
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3); // Set mnemonic for Tab 3
 
-        frameTabs[3] = new HookSystemTab("Hook System Tab");
+        frameTabs[3] = new HookSystemTab(DS,"Hook System Tab");
         tabbedPane.addTab("Hook", null, frameTabs[3].panel, "This is the Hook System tab.");
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4); // Set mnemonic for Tab 4
 
-        frameTabs[4] = new MassBalanceTab("Mass Balance Tab");
+        frameTabs[4] = new MassBalanceTab(DS,"Mass Balance Tab");
         tabbedPane.addTab("Mass Balance", null, frameTabs[4].panel, "This is the Mass Balance tab.");
         tabbedPane.setMnemonicAt(4, KeyEvent.VK_5); // Set mnemonic for Tab 5
 
-        frameTabs[5] = new MetricsTab("Metrics Tab");
-        tabbedPane.addTab("Metrics", null, frameTabs[5].panel, "This is the Metrics tab.");
+        frameTabs[5] = new MetricsTab(DS,"General Information");
+        tabbedPane.addTab("General Information", null, frameTabs[5].panel, "This is the Metrics tab.");
         tabbedPane.setMnemonicAt(5, KeyEvent.VK_6); // Set mnemonic for Tab 6
 
-        frameTabs[6] = new PropulsionTab("Propulsion Tab");
+        frameTabs[6] = new PropulsionTab(DS,"Propulsion Tab");
         tabbedPane.addTab("Propulsion", null, frameTabs[6].panel, "This is the Propulsion tab.");
         tabbedPane.setMnemonicAt(6, KeyEvent.VK_7); // Set mnemonic for Tab 7
 

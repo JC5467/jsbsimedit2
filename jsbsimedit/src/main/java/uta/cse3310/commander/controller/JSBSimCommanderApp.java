@@ -3,13 +3,15 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import uta.cse3310.commander.controller.*;
+import uta.cse3310.dataStore;
 
 public class JSBSimCommanderApp implements ActionListener{
 	JButton Open_XML;
 	JButton Exit;
 	JFrame frame;
-	
-	public JSBSimCommanderApp(){
+    dataStore DS;	
+	public JSBSimCommanderApp(dataStore ds){
+        DS = ds;
 	//Frame
 		frame = new JFrame("JSBsim Command");
 		try {
@@ -44,6 +46,10 @@ public class JSBSimCommanderApp implements ActionListener{
 		if(e.getSource() == Open_XML) {
 			FileBrowser fb = new FileBrowser();
 			if(fb.File_Found == true) { 
+                System.out.println("opening xml file");
+                // build up the data store
+                DS.openFile(fb.Chosen_file);
+                // not sure what Aircraft model does.. so i am leaving it alone
 				new AirCraftModel(fb.Chosen_file); //Close JSBSimcommand if file found and open AirCraft Command
 				frame.dispose(); 
 			}
@@ -51,7 +57,7 @@ public class JSBSimCommanderApp implements ActionListener{
 		if(e.getSource() == Exit) {
 			System.exit(0); //Sometimes you just gotta give up
 		}
-		
+
 	}
 
 }

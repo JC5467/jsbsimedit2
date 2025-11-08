@@ -1,5 +1,7 @@
 package uta.cse3310.tab;
 
+import uta.cse3310.dataStore;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -9,10 +11,15 @@ public class baseTab {
     public JPanel panel;
     public String label;
 
-    public baseTab(String label) {
+    public dataStore DS;        // the data store that contains the information from the xml file
+    public Integer version;
+    public baseTab(dataStore ds,String label) {
 
         System.out.println("in base Tab constructor");
         // this is common to all tabs
+        DS = ds;   // save off a pointer to the data store
+        version = DS.version;
+
         panel = new JPanel();
         panel.setLayout(new BorderLayout()); // Use BorderLayout for panel1
 
