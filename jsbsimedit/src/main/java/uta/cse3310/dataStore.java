@@ -8,31 +8,32 @@ import generated.FdmConfig;
 
 import java.io.File;
 
-    public class dataStore
-    {
-        public Boolean valid;    // true if the file is usable
-        public String fileName;  // the name of the file in memory
-        public Integer version;  // incremented each time a file is read.  users should
-                          // check the version and decide if they need to refresh
-                          // the data they have displayed to the user
-        public FdmConfig cfg;
+public class dataStore {
+    public Boolean valid; // true if the file is usable
 
-     public dataStore()
-     {
-         System.out.println("in the constructor for dataStore");
-         valid=false;
-         fileName="";
-         version = 0;
-     }
+    public String fileName; // the name of the file in memory
 
-     public void openFile(File f)
-     {
-         // right now, there is a defect in that the fileBrowser only
-         // processes one event.  so you can only open one file, you cannot open another
-         // one.  i am leaving that defect to someone else.
-         System.out.println("in openFile");
-         System.out.println("the file name is " + f);
-         fileName = f.getPath();
+    public Integer version;
+    // incremented each time a file is read. users should
+    // check the version and decide if they need to refresh
+    // the data they have displayed to the user
+
+    public FdmConfig cfg;
+
+    public dataStore() {
+        System.out.println("in the constructor for dataStore");
+        valid = false;
+        fileName = "";
+        version = 0;
+    }
+
+    public void openFile(File f) {
+        // right now, there is a defect in that the fileBrowser only
+        // processes one event. so you can only open one file, you cannot open another
+        // one. i am leaving that defect to someone else.
+        System.out.println("in openFile");
+        System.out.println("the file name is " + f);
+        fileName = f.getPath();
 
         // read it in, convert to java
         try {
@@ -65,9 +66,9 @@ import java.io.File;
             e.printStackTrace();
         }
 
-         // set flags so the using tabs can know if the data has changed
-         version = version + 1;
-         valid=true;
-     }
+        // set flags so the using tabs can know if the data has changed
+        version = version + 1;
+        valid = true;
+    }
 
 }

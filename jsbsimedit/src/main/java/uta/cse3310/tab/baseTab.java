@@ -4,20 +4,20 @@ import uta.cse3310.dataStore;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 
 public class baseTab {
     // attributes common to all tabs
     public JPanel panel;
     public String label;
 
-    public dataStore DS;        // the data store that contains the information from the xml file
+    public dataStore DS; // the data store that contains the information from the xml file
     public Integer version;
-    public baseTab(dataStore ds,String label) {
+
+    public baseTab(dataStore ds, String label) {
 
         System.out.println("in base Tab constructor");
         // this is common to all tabs
-        DS = ds;   // save off a pointer to the data store
+        DS = ds; // save off a pointer to the data store
         version = DS.version;
 
         panel = new JPanel();

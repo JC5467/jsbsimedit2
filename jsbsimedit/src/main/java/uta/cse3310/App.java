@@ -1,22 +1,13 @@
 package uta.cse3310;
 
-//import java.io.File;
-
-//import jakarta.xml.bind.JAXBContext;
-//import jakarta.xml.bind.JAXBException;
-//import jakarta.xml.bind.Unmarshaller;
-
 import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
-import uta.cse3310.commander.main.JSBSimCommanderApp;
 import uta.cse3310.tab.concreteTabs.CanopySystemTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
 import uta.cse3310.tab.concreteTabs.HookSystemTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab;
-import uta.cse3310.dataStore;
-
-//import generated.FdmConfig; 
+import uta.cse3310.commander.controller.JSBSimCommanderApp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,66 +41,33 @@ public class App {
         // create the array
         uta.cse3310.tab.baseTab frameTabs[] = new uta.cse3310.tab.baseTab[7];
 
-        frameTabs[0] = new CanopySystemTab(DS,"Canopy System Tab");
+        frameTabs[0] = new CanopySystemTab(DS, "Canopy System Tab");
         tabbedPane.addTab("Canopy", null, frameTabs[0].panel, "This is the Canopy System tab.");
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1); // Set mnemonic for Tab 1
 
-        frameTabs[1] = new ExternalReactionsTab(DS,"External Reactions Tab");
+        frameTabs[1] = new ExternalReactionsTab(DS, "External Reactions Tab");
         tabbedPane.addTab("External Reactions", null, frameTabs[1].panel, "This is the External Reactions tab.");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_2); // Set mnemonic for Tab 2
 
-        frameTabs[2] = new GroundReactionsTab(DS,"Ground Reactions Tab");
+        frameTabs[2] = new GroundReactionsTab(DS, "Ground Reactions Tab");
         tabbedPane.addTab("Ground Reactions", null, frameTabs[2].panel, "This is the Ground Reactions tab.");
         tabbedPane.setMnemonicAt(2, KeyEvent.VK_3); // Set mnemonic for Tab 3
 
-        frameTabs[3] = new HookSystemTab(DS,"Hook System Tab");
+        frameTabs[3] = new HookSystemTab(DS, "Hook System Tab");
         tabbedPane.addTab("Hook", null, frameTabs[3].panel, "This is the Hook System tab.");
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4); // Set mnemonic for Tab 4
 
-        frameTabs[4] = new MassBalanceTab(DS,"Mass Balance Tab");
+        frameTabs[4] = new MassBalanceTab(DS, "Mass Balance Tab");
         tabbedPane.addTab("Mass Balance", null, frameTabs[4].panel, "This is the Mass Balance tab.");
         tabbedPane.setMnemonicAt(4, KeyEvent.VK_5); // Set mnemonic for Tab 5
 
-        frameTabs[5] = new MetricsTab(DS,"General Information");
+        frameTabs[5] = new MetricsTab(DS, "General Information");
         tabbedPane.addTab("General Information", null, frameTabs[5].panel, "This is the Metrics tab.");
         tabbedPane.setMnemonicAt(5, KeyEvent.VK_6); // Set mnemonic for Tab 6
 
-        frameTabs[6] = new PropulsionTab(DS,"Propulsion Tab");
+        frameTabs[6] = new PropulsionTab(DS, "Propulsion Tab");
         tabbedPane.addTab("Propulsion", null, frameTabs[6].panel, "This is the Propulsion tab.");
         tabbedPane.setMnemonicAt(6, KeyEvent.VK_7); // Set mnemonic for Tab 7
-
-        //For the panels below dont forget to implement all 7 panels above.
-
-        // Create Panel 1 and add components
-        // JPanel panel1 = new JPanel();
-        // panel1.setLayout(new BorderLayout()); // Use BorderLayout for panel1
-        // panel1.add(new JLabel("Content of Tab 1", SwingConstants.CENTER),
-        // BorderLayout.CENTER);
-        // panel1.setBackground(new Color(200, 220, 255)); // Light blue background
-
-        // Create Panel 2 and add components
-        // JPanel panel2 = new JPanel();
-        // panel2.setLayout(new FlowLayout()); // Use FlowLayout for panel2
-        // panel2.add(new JLabel("Enter your name:"));
-        // panel2.add(new JTextField(15));
-        // panel2.setBackground(new Color(255, 220, 200)); // Light orange background
-
-        // Create Panel 3 and add components
-        // JPanel panel3 = new JPanel();
-        // panel3.setLayout(new GridLayout(2, 1)); // Use GridLayout for panel3
-        // panel3.add(new JButton("Click Me!"));
-        // panel3.add(new JCheckBox("Enable Feature"));
-        // panel3.setBackground(new Color(220, 255, 200)); // Light green background
-
-        // Add panels to the JTabbedPane
-        // tabbedPane.addTab("Tab 1", null, panel1, "This is the first tab.");
-        // tabbedPane.setMnemonicAt(0, KeyEvent.VK_1); // Set mnemonic for Tab 1
-
-        // tabbedPane.addTab("Tab 2", null, panel2, "This is the second tab.");
-        // tabbedPane.setMnemonicAt(1, KeyEvent.VK_2); // Set mnemonic for Tab 2
-
-        // tabbedPane.addTab("Tab 3", null, panel3, "This is the third tab.");
-        // tabbedPane.setMnemonicAt(2, KeyEvent.VK_3); // Set mnemonic for Tab 3
 
         // Add the JTabbedPane to the frame
         frame.add(tabbedPane, BorderLayout.CENTER);
