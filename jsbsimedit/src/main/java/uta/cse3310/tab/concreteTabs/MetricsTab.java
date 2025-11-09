@@ -21,10 +21,12 @@ public class MetricsTab extends simpleTab {
         //needs drop down values for units on each field still will add later.
 
         //text and fields for wingarea
+	/*
         JLabel wingarea = new JLabel("wingarea(*) = ");
         wingarea.setBounds(10,40,200,20);
         panel.add(wingarea);
-        
+        */
+
         JTextField wArea = new JTextField();
         wArea.setBounds(100,40,150,20);
         panel.add(wArea);
@@ -179,4 +181,31 @@ public class MetricsTab extends simpleTab {
 
     }
 
+      public void loadData() {
+        System.out.println("this is in loadData() for Metrics");
+        System.out.println("data structure is " + DS.valid + " and the version is " + DS.version);
+	// TODO:
+	//    Need to delete all the widgets on the page at this point.
+        panel.removeAll();
+
+        // Next, extract the info for each data item from the datastore, and build 
+	// the widgets at this time
+	// (below print statements just for debugging and demonstration purposes)
+        System.out.println(DS.cfg.getMetrics().getWingarea().getValue());
+        System.out.println(DS.cfg.getMetrics().getWingarea().getUnit());
+
+	 //text and fields for wingarea
+	 //(each of these needs to be put into a class with a listenet).  maybe the label and the data can be in the same class?)
+	 //in the event the data is changed by the user, it has to be written back to the DS (there are set() methods) and the
+	 //DS.dirty flag has to be set.
+        JLabel wingarea = new JLabel("wingarea(*) = ");
+        wingarea.setBounds(10,40,200,20);
+        panel.add(wingarea);
+
+        JTextField wArea = new JTextField();
+        wArea.setBounds(100,40,150,20);
+	wArea.setText(String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()));
+        panel.add(wArea);
+
+    }
 }
