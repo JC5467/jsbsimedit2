@@ -13,13 +13,18 @@ public class baseTab {
     public dataStore DS; // the data store that contains the information from the xml file
     public Integer version;
 
-    public baseTab(dataStore ds, String label) {
+    public void loadData() {
+        System.out.println("i am in basetab loadData");
+    }
+
+    public baseTab(dataStore ds, String LABEL) {
 
         System.out.println("in base Tab constructor");
         // this is common to all tabs
         DS = ds; // save off a pointer to the data store
         version = DS.version;
 
+        label = LABEL;
         panel = new JPanel();
         panel.setLayout(new BorderLayout()); // Use BorderLayout for panel1
 

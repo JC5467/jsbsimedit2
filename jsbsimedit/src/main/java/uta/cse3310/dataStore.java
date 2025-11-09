@@ -1,5 +1,7 @@
 package uta.cse3310;
 
+import uta.cse3310.tabFrame;
+
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
@@ -19,12 +21,19 @@ public class dataStore {
     // the data they have displayed to the user
 
     public FdmConfig cfg;
+    public tabFrame tf;
 
-    public dataStore() {
+    // the datastore is dirty when it has been changed by a tab, and
+    // possibly should be written to the disk
+    public boolean dirty;
+
+    public dataStore(tabFrame TF) {
         System.out.println("in the constructor for dataStore");
         valid = false;
         fileName = "";
         version = 0;
+        tf = TF;
+        dirty = false;
     }
 
     public void openFile(File f) {
@@ -51,12 +60,16 @@ public class dataStore {
             Unmarshaller um = jc.createUnmarshaller();
             cfg = (FdmConfig) um.unmarshal(file);
 
-            System.out.println(cfg);
-            System.out.println(cfg.getFileheader().getCopyright());
-            System.out.println(cfg.getFileheader().getVersion());
-            System.out.println(cfg.getAerodynamics().getAxis().get(0).getName());
-            System.out.println(cfg.getAerodynamics().getAxis().get(0).getDocumentationOrFunction());
-            System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
+            /*
+             * eventually, delete this stuff. just not now
+             * System.out.println(cfg);
+             * System.out.println(cfg.getFileheader().getCopyright());
+             * System.out.println(cfg.getFileheader().getVersion());
+             * System.out.println(cfg.getAerodynamics().getAxis().get(0).getName());
+             * System.out.println(cfg.getAerodynamics().getAxis().get(0).
+             * getDocumentationOrFunction());
+             * System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
+             */
 
             // Marshaller m = jc.createMarshaller();
             // m.setProperty("jaxb.formatted.output", true);
@@ -69,6 +82,8 @@ public class dataStore {
         // set flags so the using tabs can know if the data has changed
         version = version + 1;
         valid = true;
+        dirty = false;
+        tf.dataLoaded();
     }
 
 }
