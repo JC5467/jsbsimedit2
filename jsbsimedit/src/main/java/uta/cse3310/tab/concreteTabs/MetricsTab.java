@@ -8,6 +8,7 @@ import javax.swing.event.DocumentListener;
 import uta.cse3310.tab.simpleTab;
 import uta.cse3310.dataStore;
 import uta.cse3310.tabFrame;
+import uta.cse3310.tab.widgets.textFieldWLabel;
 
 public class MetricsTab extends simpleTab {
         // attributes that only pertain to the 'concrete' tab called oneTab
@@ -226,6 +227,9 @@ public class MetricsTab extends simpleTab {
                         }
                 });
                 // End of Wingarea
+
+		// other way to do it.....
+		textFieldWLabel L1 = new textFieldWLabel(DS,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
 
         }
 }
