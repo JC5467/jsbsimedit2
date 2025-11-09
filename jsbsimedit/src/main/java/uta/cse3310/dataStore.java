@@ -27,6 +27,15 @@ public class dataStore {
     // possibly should be written to the disk
     public boolean dirty;
 
+    public void setDirty() {
+	    dirty = true;
+    }
+
+    public void clearDirty() {
+	    dirty = false;
+    }
+
+
     public dataStore(tabFrame TF) {
         System.out.println("in the constructor for dataStore");
         valid = false;
