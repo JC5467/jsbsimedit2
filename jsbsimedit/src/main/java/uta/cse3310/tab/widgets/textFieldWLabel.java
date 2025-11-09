@@ -15,8 +15,8 @@ public class textFieldWLabel {
         private JTextField tf;
 
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
-                        Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textH,
-                        Integer textW) {
+                        Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
+                        Integer textH) {
                 System.out.println("in textFieldWLabel widget constructor");
 
                 label = new JLabel(labelText);

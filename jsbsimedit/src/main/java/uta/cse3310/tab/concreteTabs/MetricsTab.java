@@ -138,209 +138,61 @@ public class MetricsTab extends simpleTab {
                 // DS.dirty flag has to be set.
                 //
                 // Wingarea
-                //JLabel wingarea = new JLabel("wingarea(*) = ");
-                //wingarea.setBounds(10, 40, 200, 20);
-                //panel.add(wingarea);
-
-                JTextField wArea = new JTextField();
-                wArea.setBounds(100, 40, 100, 20);
-                wArea.setText(String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()));
-                panel.add(wArea);
+		
+                textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,100,20);
 
                 //unit
                 JLabel wAreaUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getWingarea().getUnit()));
                 wAreaUnit.setBounds(220,40,80,20);
                 panel.add(wAreaUnit);
-
-                // set up listener
-                wArea.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
                 // End of Wingarea
-                // text and fields for wingspan
-                JLabel wingspan = new JLabel("wingspan(*) = ");
-                wingspan.setBounds(10, 80, 200, 20);
-                panel.add(wingspan);
 
-                JTextField wSpan = new JTextField();
-                wSpan.setBounds(100, 80, 100, 20);
-                wSpan.setText(String.valueOf(DS.cfg.getMetrics().getWingspan().getValue()));
-                panel.add(wSpan);
+                // text and fields for wingspan
+
+                textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),DS::setDirty,panel,"wingspan(*) = ",10,80,200,20,String.valueOf(DS.cfg.getMetrics().getWingspan().getValue()),100,80,100,20);
 
                 //unit
                 JLabel wSpanUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getWingspan().getUnit()));
                 wSpanUnit.setBounds(220,80,80,20);
                 panel.add(wSpanUnit);
 
-                // set up listener
-                wSpan.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
                 // text and fields for chord
-                JLabel chordLbl = new JLabel("chord(*) = ");
-                chordLbl.setBounds(10, 120, 200, 20);
-                panel.add(chordLbl);
 
-                JTextField chord = new JTextField();
-                chord.setBounds(100, 120, 100, 20);
-                chord.setText(String.valueOf(DS.cfg.getMetrics().getChord().getValue()));
-                panel.add(chord);
+                textFieldWLabel L3 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getChord().setValue(Double),DS::setDirty,panel,"chord(*) = ",10,120,200,20,String.valueOf(DS.cfg.getMetrics().getChord().getValue()),100,120,100,20);
 
                 //unit
                 JLabel chordUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getChord().getUnit()));
                 chordUnit.setBounds(220,120,80,20);
                 panel.add(chordUnit);
 
-                // set up listener
-                chord.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
-
                 // text and fields for htailarea
-                JLabel htailArea = new JLabel("htailarea = ");
-                htailArea.setBounds(340, 40, 200, 20);
-                panel.add(htailArea);
 
-                JTextField htailA = new JTextField();
-                htailA.setBounds(430, 40, 100, 20);
-                htailA.setText(String.valueOf(DS.cfg.getMetrics().getHtailarea().getValue()));
-                panel.add(htailA);
+                textFieldWLabel L4 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarea().setValue(Double),DS::setDirty,panel,"htailarea = ",340,40,200,20,String.valueOf(DS.cfg.getMetrics().getHtailarea().getValue()),430,40,100,20);
 
-                // text and fields for htailarm
                 JLabel htailAUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getHtailarea().getUnit()));
                 htailAUnit.setBounds(550,40,80,20);
                 panel.add(htailAUnit);
 
-                // set up listener
-                htailA.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
-                JLabel htailArmLbl = new JLabel("htailarm = ");
-                htailArmLbl.setBounds(340, 80, 200, 20);
-                panel.add(htailArmLbl);
-
-                JTextField htailArm = new JTextField();
-                htailArm.setBounds(430, 80, 100, 20);
-                htailArm.setText(String.valueOf(DS.cfg.getMetrics().getHtailarm().getValue()));
-                panel.add(htailArm);
-
+                //tail arm text and field
+                textFieldWLabel L5 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarm().setValue(Double),DS::setDirty,panel,"htailarm = ",340,80,200,20,String.valueOf(DS.cfg.getMetrics().getHtailarm().getValue()),430,80,100,20);
+                
                 JLabel htailArmUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getHtailarm().getUnit()));
                 htailArmUnit.setBounds(550,80,80,20);
                 panel.add(htailArmUnit);
 
-                //listener
-                htailArm.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
-
                 // text and fields for vtailarea
-                JLabel vtailArea = new JLabel("vtailarea = ");
-                vtailArea.setBounds(340, 120, 200, 20);
-                panel.add(vtailArea);
-
-                JTextField vtailA = new JTextField();
-                vtailA.setBounds(430, 120, 100, 20);
-                vtailA.setText(String.valueOf(DS.cfg.getMetrics().getVtailarea().getValue()));
-                panel.add(vtailA);
-
+                textFieldWLabel L6 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarea().setValue(Double),DS::setDirty,panel,"vtailarea = ",340,120,200,20,String.valueOf(DS.cfg.getMetrics().getVtailarea().getValue()),430,120,100,20);
+                //unit for vtailarea
                 JLabel vtailAUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getVtailarea().getUnit()));
                 vtailAUnit.setBounds(550,120,80,20);
                 panel.add(vtailAUnit);
 
-
-                // set up listener
-                vtailA.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
-
                 // text and fields for vtailarm
-                JLabel vtailArmLbl = new JLabel("vtailarm = ");
-                vtailArmLbl.setBounds(340, 160, 200, 20);
-                panel.add(vtailArmLbl);
-
-                JTextField vtailArm = new JTextField();
-                vtailArm.setBounds(430, 160, 100, 20);
-                vtailArm.setText(String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()));
-                panel.add(vtailArm);
-
+                textFieldWLabel L7 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"vtailarm = ",340,160,200,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),430,160,100,20);
+                //vtailarm unit
                 JLabel vtailArmUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getVtailarm().getUnit()));
                 vtailArmUnit.setBounds(550,160,80,20);
                 panel.add(vtailArmUnit);
-
-                // set up listener
-                vtailArm.getDocument().addDocumentListener(new DocumentListener() {
-                        public void changedUpdate(DocumentEvent e) {
-                                System.out.println("change");
-                        }
-
-                        public void removeUpdate(DocumentEvent e) {
-                                System.out.println("remove");
-                        }
-
-                        public void insertUpdate(DocumentEvent e) {
-                                System.out.println("insert");
-                        }
-                });
 
                 
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
@@ -348,7 +200,7 @@ public class MetricsTab extends simpleTab {
                 // other way to do it.....
 		//  the first argument is a lambda used for dealing with an edit.  the second will set the dirty flag for the data store.
 		//  the rest are 'obvious'....
-		textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
+		//textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
                 //will implement this way as current version takes to many lines.
         }
 }
