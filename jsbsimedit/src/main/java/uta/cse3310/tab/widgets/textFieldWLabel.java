@@ -1,6 +1,7 @@
 package uta.cse3310.tab.widgets;
 
 import uta.cse3310.tab.widgets.dirtyFunction;
+import uta.cse3310.tab.widgets.setValFunction;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,7 +14,7 @@ public class textFieldWLabel {
         private JLabel label;
         private JTextField tf;
 
-        public textFieldWLabel(dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
+        public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
                         Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textH,
                         Integer textW) {
                 System.out.println("in textFieldWLabel widget constructor");
@@ -32,6 +33,7 @@ public class textFieldWLabel {
                         public void changedUpdate(DocumentEvent e) {
                                 DF.set();
                                 System.out.println("inside the lambda " + tf.getText());
+				SF.setVal(Double.parseDouble(tf.getText()));
                                 System.out.println("change");
                         }
 

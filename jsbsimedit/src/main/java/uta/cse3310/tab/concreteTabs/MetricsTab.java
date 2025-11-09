@@ -346,7 +346,9 @@ public class MetricsTab extends simpleTab {
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
 
                 // other way to do it.....
-		textFieldWLabel L1 = new textFieldWLabel(DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
+		//  the first argument is a lambda used for dealing with an edit.  the second will set the dirty flag for the data store.
+		//  the rest are 'obvious'....
+		textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
                 //will implement this way as current version takes to many lines.
         }
 }
