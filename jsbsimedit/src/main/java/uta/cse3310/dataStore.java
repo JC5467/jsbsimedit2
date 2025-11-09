@@ -28,10 +28,12 @@ public class dataStore {
     public boolean dirty;
 
     public void setDirty() {
+            System.out.println("setDirty");
 	    dirty = true;
     }
 
     public void clearDirty() {
+            System.out.println("setUndirty");
 	    dirty = false;
     }
 
