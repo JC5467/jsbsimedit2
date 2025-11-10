@@ -78,28 +78,28 @@ public class MetricsTab extends simpleTab {
                 L = "vtailarm = ";
                 textFieldWLabel L7 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,L,340,160,200,20,V,430,160,100,20,U,550,160,80,20);
                 
-
                 // aerodynamic reference point & x,y,z values w units
                 JLabel aeroRefPntLbl = new JLabel("AeroDynamic Reference Point(*)");
                 aeroRefPntLbl.setBounds(10, 200, 300, 20);
                 panel.add(aeroRefPntLbl);
 
-                //temp: currently not getting correct values
                 // x y and z values for aero ref point
-                U = "unit here";//temp
-                textFieldWLabel areoX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,240,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),80,240,100,20,U,590, 240, 100, 20);
-                textFieldWLabel areoY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,240,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),260,240,100,20);
-                textFieldWLabel areoZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,240,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),440,240,100,20);
+                Metrics.Location lc = DS.cfg.getMetrics().getLocation().get(0);//plan to simplify this to account for out bounds cases and reduce line count
+                U = String.valueOf(lc.getUnit());
+                textFieldWLabel areoX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,240,120,20,String.valueOf(lc.getX()),80,240,100,20,U,590, 240, 100, 20);
+                textFieldWLabel areoY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,240,120,20,String.valueOf(lc.getY()),260,240,100,20);
+                textFieldWLabel areoZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,240,120,20,String.valueOf(lc.getZ()),440,240,100,20);
 
                 // Eye Point
                 JLabel eyePoint = new JLabel("Eye Point");
                 eyePoint.setBounds(10, 280, 300, 20);
                 panel.add(eyePoint);
                 // x y and z values for eypoint
-                U = "unit here";
-                textFieldWLabel eyeX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,320,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),80,320,100,20,U,590, 320, 100, 20);
-                textFieldWLabel eyeY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,320,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),260,320,100,20);
-                textFieldWLabel eyeZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,320,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),440,320,100,20);
+                lc = DS.cfg.getMetrics().getLocation().get(1);
+                U = String.valueOf(lc.getUnit());
+                textFieldWLabel eyeX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,320,120,20,String.valueOf(lc.getX()),80,320,100,20,U,590, 320, 100, 20);
+                textFieldWLabel eyeY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,320,120,20,String.valueOf(lc.getY()),260,320,100,20);
+                textFieldWLabel eyeZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,320,120,20,String.valueOf(lc.getZ()),440,320,100,20);
 
                 // Visual Reference Point
                 JLabel visRefPointLbl = new JLabel("Visual Reference Point(*)");
@@ -107,16 +107,14 @@ public class MetricsTab extends simpleTab {
                 panel.add(visRefPointLbl);
 
                 // x y and z values for visual ref point
-                U = "unit here";
-                textFieldWLabel visX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,400,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),80,400,100,20,U,590, 400, 100, 20);
-                textFieldWLabel visY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,400,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),260,400,100,20);
-                textFieldWLabel visZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,400,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),440,400,100,20);
+                lc = DS.cfg.getMetrics().getLocation().get(2);
+                U = String.valueOf(lc.getUnit());
+                textFieldWLabel visX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,400,120,20,String.valueOf(lc.getX()),80,400,100,20,U,590, 400, 100, 20);
+                textFieldWLabel visY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,400,120,20,String.valueOf(lc.getY()),260,400,100,20);
+                textFieldWLabel visZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,400,120,20,String.valueOf(lc.getZ()),440,400,100,20);
 
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
-
-
-                panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
-
+                
 
 		System.out.println("Locations:");
 		for (Metrics.Location  l : DS.cfg.getMetrics().getLocation() ) {
