@@ -1,19 +1,22 @@
 package uta.cse3310;
 
+import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JFrame;
+import javax.swing.JTabbedPane;
+
+import uta.cse3310.commander.controller.JSBSimCommanderApp;
 import uta.cse3310.tab.baseTab;
-import uta.cse3310.tab.concreteTabs.MetricsTab;
-import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
-import uta.cse3310.tab.concreteTabs.MassBalanceTab;
 import uta.cse3310.tab.concreteTabs.CanopySystemTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
-import uta.cse3310.tab.concreteTabs.HookSystemTab;
-import uta.cse3310.tab.concreteTabs.PropulsionTab;
 import uta.cse3310.tab.concreteTabs.FileHeaderTab;
-import uta.cse3310.commander.controller.JSBSimCommanderApp;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.KeyEvent;
+import uta.cse3310.tab.concreteTabs.FlightControlTab;
+import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
+import uta.cse3310.tab.concreteTabs.HookSystemTab;
+import uta.cse3310.tab.concreteTabs.MassBalanceTab;
+import uta.cse3310.tab.concreteTabs.MetricsTab;
+import uta.cse3310.tab.concreteTabs.PropulsionTab;
 
 public class tabFrame {
     baseTab frameTabs[];
@@ -43,7 +46,7 @@ public class tabFrame {
         // Create the main frame
         JFrame frame = new JFrame("JTabbedPane Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
+        frame.setSize(1280,800);
         frame.setLocationRelativeTo(null); // Center the frame
 
         // Create a JTabbedPane
@@ -56,7 +59,7 @@ public class tabFrame {
         // simple.
 
         // create the array
-        frameTabs = new uta.cse3310.tab.baseTab[7];
+        frameTabs = new uta.cse3310.tab.baseTab[9];
 
         frameTabs[0] = new CanopySystemTab(this, DS, "Canopy System Tab");
         tabbedPane.addTab("Canopy", null, frameTabs[0].panel, "This is the Canopy System tab.");
@@ -86,9 +89,13 @@ public class tabFrame {
         tabbedPane.addTab("Propulsion", null, frameTabs[6].panel, "This is the Propulsion tab.");
         tabbedPane.setMnemonicAt(6, KeyEvent.VK_7); // Set mnemonic for Tab 7
                                                     //
-        frameTabs[6] = new FileHeaderTab(this, DS, "General Information Tab");
-        tabbedPane.addTab("General Information", null, frameTabs[6].panel, "This is the general information tab.");
-        tabbedPane.setMnemonicAt(7, KeyEvent.VK_8); // Set mnemonic for Tab 7
+        frameTabs[7] = new FileHeaderTab(this, DS, "General Information Tab");
+        tabbedPane.addTab("General Information", null, frameTabs[7].panel, "This is the general information tab.");
+        tabbedPane.setMnemonicAt(7, KeyEvent.VK_8); // Set mnemonic for Tab 8
+
+        frameTabs[8] = new FlightControlTab(this, DS, "Flight Control Tab");
+        tabbedPane.addTab("Flight Control", null, frameTabs[8].panel, "This is the Flight Control tab.");
+        tabbedPane.setMnemonicAt(8, KeyEvent.VK_9); // Set mnemonic for Tab 9
 
         // Add the JTabbedPane to the frame
         frame.add(tabbedPane, BorderLayout.CENTER);
