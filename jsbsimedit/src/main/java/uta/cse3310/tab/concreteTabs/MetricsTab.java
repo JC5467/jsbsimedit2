@@ -16,49 +16,33 @@ public class MetricsTab extends simpleTab {
         public MetricsTab(tabFrame tf, dataStore ds, String label) {
                 super(ds, label);
                 System.out.println("in Metrics constructor");
-
-                // rough outline just to test xml read and check if values appear
-                // currently needs the tab to be resized to see everything.
-                // needs drop down values for units on each field still will add later.
-
-
-                // this is what is unique about 1 tab
                 TF = tf;
-                panel.add(new JLabel("Content of Tab 1", SwingConstants.CENTER), BorderLayout.CENTER);
+                panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
 
         }
 
         public void loadData() {
                 System.out.println("this is in loadData() for Metrics");
                 System.out.println("data structure is " + DS.valid + " and the version is " + DS.version);
-                // TODO:
-                // Need to delete all the widgets on the page at this point.
+
+		// Need to delete all the widgets on the page at this point.
                 panel.removeAll();
 
                 // Next, extract the info for each data item from the datastore, and build
-                // the widgets at this time
-                // (below print statements just for debugging and demonstration purposes)
-                System.out.println(DS.cfg.getMetrics().getWingarea().getValue());
-                System.out.println(DS.cfg.getMetrics().getWingarea().getUnit());
+                // the widgets
 
-                // text and fields for wingarea
-                // in the event the data is changed by the user, it has to be written back to
-                // the DS (there are set() methods) and the
-                // DS.dirty flag has to be set.
-                //
+		String V,U,L;
                 // Wingarea
-		
-                textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,100,20);
+		V = String.valueOf(DS.cfg.getMetrics().getWingarea().getValue());
+                U = String.valueOf(DS.cfg.getMetrics().getWingarea().getUnit());
+                L = "wingarea(*) = ";		 // just to make the next line simpler
+                textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,L,10,40,200,20,V,100,40,100,20,U,220,40,80,20);
 
-                //unit
-                JLabel wAreaUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getWingarea().getUnit()));
-                wAreaUnit.setBounds(220,40,80,20);
-                panel.add(wAreaUnit);
-                // End of Wingarea
-
-                // text and fields for wingspan
-
-                textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),DS::setDirty,panel,"wingspan(*) = ",10,80,200,20,String.valueOf(DS.cfg.getMetrics().getWingspan().getValue()),100,80,100,20);
+                // wingspan
+                V = String.valueOf(DS.cfg.getMetrics().getWingspan().getValue());
+                U = String.valueOf(DS.cfg.getMetrics().getWingspan().getUnit());
+		L = "wingspan(*) = ";
+                textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),DS::setDirty,panel,L,10,80,200,20,V,100,80,100,20,U,220,80,80,20);
 
                 //unit
                 JLabel wSpanUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getWingspan().getUnit()));
@@ -156,9 +140,5 @@ public class MetricsTab extends simpleTab {
 
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
 
-                // other way to do it.....
-		//  the first argument is a lambda used for dealing with an edit.  the second will set the dirty flag for the data store.
-		//  the rest are 'obvious'....
-		//textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
         }
 }

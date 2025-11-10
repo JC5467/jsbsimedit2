@@ -13,10 +13,24 @@ import javax.swing.event.DocumentListener;
 public class textFieldWLabel {
         private JLabel label;
         private JTextField tf;
+        private JLabel jl;
 
+	// if you want a label, use this one...
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
                         Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
-                        Integer textH) {
+                        Integer textH , String unit, Integer unitX, Integer unitY, Integer unitW, Integer unitH) {
+
+                this(SF,DF,panel,labelText,labelX,labelY,labelW,labelH,text,textX,textY,textW,textH);
+                System.out.println("in textFieldWLabel widget (with units) constructor");
+                jl = new JLabel(unit);
+                jl.setBounds(unitX,unitY,unitW,unitH);
+                panel.add(jl);
+	}
+
+	// the original
+        public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
+                        Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
+                        Integer textH ) {
                 System.out.println("in textFieldWLabel widget constructor");
 
                 label = new JLabel(labelText);
