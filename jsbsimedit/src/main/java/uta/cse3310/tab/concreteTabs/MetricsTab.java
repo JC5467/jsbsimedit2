@@ -18,100 +18,9 @@ public class MetricsTab extends simpleTab {
                 System.out.println("in Metrics constructor");
 
                 // rough outline just to test xml read and check if values appear
-
-                // using setbounds for now will fix formting better as it
                 // currently needs the tab to be resized to see everything.
                 // needs drop down values for units on each field still will add later.
 
-                // // aerodynamic reference point & x,y,z values w units
-                // JLabel aeroRefPntLbl = new JLabel("AeroDynamic Reference Point(*)");
-                // aeroRefPntLbl.setBounds(10, 200, 300, 20);
-                // panel.add(aeroRefPntLbl);
-
-                // // x y and z fields
-                // JLabel aeroXlbl = new JLabel("X = ");
-                // aeroXlbl.setBounds(50, 240, 200, 20);
-                // panel.add(aeroXlbl);
-
-                // JTextField aeroX = new JTextField();
-                // aeroX.setBounds(100, 240, 150, 20);
-                // panel.add(aeroX);
-
-                // JLabel aeroYlbl = new JLabel("Y = ");
-                // aeroYlbl.setBounds(270, 240, 200, 20);
-                // panel.add(aeroYlbl);
-
-                // JTextField aeroY = new JTextField();
-                // aeroY.setBounds(320, 240, 150, 20);
-                // panel.add(aeroY);
-
-                // JLabel aeroZlbl = new JLabel("Z = ");
-                // aeroZlbl.setBounds(490, 240, 200, 20);
-                // panel.add(aeroZlbl);
-
-                // JTextField aeroZ = new JTextField();
-                // aeroZ.setBounds(560, 240, 150, 20);
-                // panel.add(aeroZ);
-
-                // // Eye Point
-                // JLabel eyePoint = new JLabel("Eye Point");
-                // eyePoint.setBounds(10, 280, 300, 20);
-                // panel.add(eyePoint);
-
-                // // x y and z values for eye pint
-                // JLabel eyeXlbl = new JLabel("X = ");
-                // eyeXlbl.setBounds(50, 320, 200, 20);
-                // panel.add(eyeXlbl);
-
-                // JTextField eyeX = new JTextField();
-                // eyeX.setBounds(100, 320, 150, 20);
-                // panel.add(eyeX);
-
-                // JLabel eyeYlbl = new JLabel("Y = ");
-                // eyeYlbl.setBounds(270, 320, 200, 20);
-                // panel.add(eyeYlbl);
-
-                // JTextField eyeY = new JTextField();
-                // eyeY.setBounds(320, 320, 150, 20);
-                // panel.add(eyeY);
-
-                // JLabel eyeZlbl = new JLabel("Z = ");
-                // eyeZlbl.setBounds(490, 320, 200, 20);
-                // panel.add(eyeZlbl);
-
-                // JTextField eyeZ = new JTextField();
-                // eyeZ.setBounds(560, 320, 150, 20);
-                // panel.add(eyeZ);
-
-                // // Visual Reference Point
-                // JLabel visRefPointLbl = new JLabel("Visual Reference Point(*)");
-                // visRefPointLbl.setBounds(10, 360, 300, 20);
-                // panel.add(visRefPointLbl);
-
-                // // x y and z values for visual ref point
-                // JLabel refXlbl = new JLabel("X = ");
-                // refXlbl.setBounds(50, 400, 200, 20);
-                // panel.add(refXlbl);
-
-                // JTextField refX = new JTextField();
-                // refX.setBounds(100, 400, 150, 20);
-                // panel.add(refX);
-
-                // JLabel refYlbl = new JLabel("Y = ");
-                // refYlbl.setBounds(270, 400, 200, 20);
-                // panel.add(refYlbl);
-
-                // JTextField refY = new JTextField();
-                // refY.setBounds(320, 400, 150, 20);
-                // panel.add(refY);
-
-                // JLabel refZlbl = new JLabel("Z = ");
-                // refZlbl.setBounds(490, 400, 200, 20);
-                // panel.add(refZlbl);
-
-                // JTextField refZ = new JTextField();
-                // refZ.setBounds(560, 400, 150, 20);
-                // panel.add(refZ);
 
                 // this is what is unique about 1 tab
                 TF = tf;
@@ -193,14 +102,63 @@ public class MetricsTab extends simpleTab {
                 JLabel vtailArmUnit = new JLabel(String.valueOf(DS.cfg.getMetrics().getVtailarm().getUnit()));
                 vtailArmUnit.setBounds(550,160,80,20);
                 panel.add(vtailArmUnit);
-
                 
+                // aerodynamic reference point & x,y,z values w units
+                JLabel aeroRefPntLbl = new JLabel("AeroDynamic Reference Point(*)");
+                aeroRefPntLbl.setBounds(10, 200, 300, 20);
+                panel.add(aeroRefPntLbl);
+
+                //temp: currently not getting correct values
+                // x y and z values for aero ref point
+                textFieldWLabel areoX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,240,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),80,240,100,20);
+
+                textFieldWLabel areoY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,240,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),260,240,100,20);
+
+                textFieldWLabel areoZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,240,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),440,240,100,20);
+                
+                //unit for aerodynamic ref point
+                JLabel aeroUnit = new JLabel("unit here");
+                aeroUnit.setBounds(590, 240, 100, 20);
+                panel.add(aeroUnit);
+
+                // Eye Point
+                JLabel eyePoint = new JLabel("Eye Point");
+                eyePoint.setBounds(10, 280, 300, 20);
+                panel.add(eyePoint);
+                // x y and z values for eypoint
+                textFieldWLabel eyeX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,320,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),80,320,100,20);
+
+                textFieldWLabel eyeY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,320,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),260,320,100,20);
+
+                textFieldWLabel eyeZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,320,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),440,320,100,20);
+                
+                //unit for eyepoint
+                JLabel eyePUnit = new JLabel("unit here");
+                eyePUnit.setBounds(590, 320, 100, 20);
+                panel.add(eyePUnit);
+
+                // Visual Reference Point
+                JLabel visRefPointLbl = new JLabel("Visual Reference Point(*)");
+                visRefPointLbl.setBounds(10, 360, 300, 20);
+                panel.add(visRefPointLbl);
+
+                // x y and z values for visual ref point
+                textFieldWLabel visX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,400,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),80,400,100,20);
+
+                textFieldWLabel visY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,400,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),260,400,100,20);
+
+                textFieldWLabel visZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,400,120,20,String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue()),440,400,100,20);
+                
+                 //unit for eyepoint
+                JLabel visRefPntUnit = new JLabel("unit here");
+                visRefPntUnit.setBounds(590, 400, 100, 20);
+                panel.add(visRefPntUnit);
+
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
 
                 // other way to do it.....
 		//  the first argument is a lambda used for dealing with an edit.  the second will set the dirty flag for the data store.
 		//  the rest are 'obvious'....
 		//textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,"wingarea(*) = ",10,40,200,20,String.valueOf(DS.cfg.getMetrics().getWingarea().getValue()),100,40,150,20);
-                //will implement this way as current version takes to many lines.
         }
 }
