@@ -5,6 +5,15 @@ import uta.cse3310.dataStore;
 import javax.swing.*;
 import java.awt.*;
 
+/*
+The object that will be used to hold the XML information is in App.java line 43
+- cfg is the name of said object
+
+
+
+
+ */
+
 public class baseTab {
     // attributes common to all tabs
     public JPanel panel;
