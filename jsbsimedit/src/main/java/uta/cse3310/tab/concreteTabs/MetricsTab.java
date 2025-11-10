@@ -10,6 +10,9 @@ import uta.cse3310.dataStore;
 import uta.cse3310.tabFrame;
 import uta.cse3310.tab.widgets.textFieldWLabel;
 
+import generated.Metrics;
+
+
 public class MetricsTab extends simpleTab {
         // attributes that only pertain to the 'concrete' tab called oneTab
 
@@ -140,5 +143,14 @@ public class MetricsTab extends simpleTab {
 
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
 
+
+		System.out.println("Locations:");
+		for (Metrics.Location  l : DS.cfg.getMetrics().getLocation() ) {
+                     System.out.println(l.getX());
+                     System.out.println(l.getY());
+                     System.out.println(l.getZ());
+		     System.out.println(l.getUnit());
+		}
+		System.out.println("End Locations:");
         }
 }
