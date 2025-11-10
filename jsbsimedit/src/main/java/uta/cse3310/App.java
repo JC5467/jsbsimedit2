@@ -49,6 +49,7 @@ public class App {
             System.out.println(cfg.getAerodynamics().getAxis().get(0).getDocumentationOrFunction());
             System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
 
+
             // Marshaller m = jc.createMarshaller();
             // m.setProperty("jaxb.formatted.output", true);
             // m.marshal(cfg, System.out);
