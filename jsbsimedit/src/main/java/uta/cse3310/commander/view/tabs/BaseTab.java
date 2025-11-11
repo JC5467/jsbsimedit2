@@ -10,7 +10,7 @@ public abstract class BaseTab {
 
 
 /*
-The object that will be used to hold the XML information is in App.java line 43
+The object that will be used to hold the XML information is in dataStore.java
 - cfg is the name of said object --  FdmConfig cfg = (FdmConfig) um.unmarshal(file);
 takes your f16.xml and, using JAXB and the generated package, turns it into a full Java object graph:
 You can access other sections using cfg for ex - cfg.getMassBalance(), cfg.getName(), etc.
@@ -30,7 +30,7 @@ For example -
         return fdmConfig;
     }
 
-Then before running the program add this line anywhere starting from line 50 and below in App.java to make the object visable to all tabs
+Then before running the program add this line and the one below in tabFrame.java but also could be dataStore test to check to make the object visible to all tabs
  - uta.cse3310.tab.baseTab.setFdmConfig(cfg);
  Make sure to add for the correct tab you are working on.
 
