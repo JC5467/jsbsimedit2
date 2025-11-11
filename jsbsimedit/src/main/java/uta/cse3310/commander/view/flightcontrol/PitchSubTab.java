@@ -1,14 +1,21 @@
 package uta.cse3310.commander.view.flightcontrol;
 
+
 import javax.swing.*;
+import java.awt.BorderLayout;
+
+import uta.cse3310.commander.view.flightcontrol.DragAndDropCanvas;
 
 public class PitchSubTab {
 
     private JPanel panel;
 
     public JComponent buildPanel() {
-        panel = new JPanel();
-        panel.add(new JLabel("Pitch Subtab UI placeholder"));
+        panel = new JPanel(new BorderLayout());
+        
+        DragAndDropCanvas canvas = new DragAndDropCanvas();
+        panel.add(canvas.getPanel(), BorderLayout.CENTER);
+        
         return panel;
     }
 
