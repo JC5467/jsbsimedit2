@@ -1,8 +1,16 @@
 package uta.cse3310.commander.view.flightcontrol;
 
+import javax.swing.*;
+
 public class PitchSubTab {
-    // Pitch control subsystem UI
-    public void initializePitchControls() {
-        // TODO: Implement pitch control UI
+
+    private JPanel panel;
+
+    public JComponent buildPanel() {
+        panel = new JPanel();
+        panel.add(new JLabel("Pitch Subtab UI placeholder"))
+        return panel;
     }
+
+    //later add a load from XML method
 }

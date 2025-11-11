@@ -1,8 +1,15 @@
 package uta.cse3310.commander.view.flightcontrol;
 
+import javax.swing.*;
+
 public class RollSubTab {
-    // Roll control subsystem UI
-    public void initializeRollControls() {
-        // TODO: Implement roll control UI
+    private JPanel panel;
+
+    public JComponent buildPanel() {
+        panel = new JPanel();
+        panel.add(new JLabel("Roll Subtab UI placeholder"))
+        return panel;
     }
+
+    //later add a load from XML method
 }

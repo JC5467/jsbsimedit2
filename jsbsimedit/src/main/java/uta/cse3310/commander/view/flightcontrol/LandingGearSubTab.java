@@ -1,8 +1,15 @@
 package uta.cse3310.commander.view.flightcontrol;
 
+import javax.swing.*;
+
 public class LandingGearSubTab {
-    // Landing Gear control subsystem UI
-    public void initializeLandingGearControls() {
-        // TODO: Implement landing gear control UI
+    private JPanel panel;
+
+    public JComponent buildPanel() {
+        panel = new JPanel();
+        panel.add(new JLabel("Landing Gear Subtab UI placeholder"))
+        return panel;
     }
+
+    //later add a load from XML method
 }
