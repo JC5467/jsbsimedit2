@@ -2,7 +2,7 @@ package uta.cse3310.commander.view.tabs;
 
 import javax.swing.*;
 
-import generated.FdmConfig;
+//import generated.FdmConfig;
 
 import java.awt.*;
 
