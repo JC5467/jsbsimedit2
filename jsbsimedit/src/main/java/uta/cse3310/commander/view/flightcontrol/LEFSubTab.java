@@ -7,7 +7,7 @@ public class LEFSubTab {
 
     public JComponent buildPanel() {
         panel = new JPanel();
-        panel.add(new JLabel("Leading Edge Flap Subtab UI placeholder"))
+        panel.add(new JLabel("Leading Edge Flap Subtab UI placeholder"));
         return panel;
     }
 

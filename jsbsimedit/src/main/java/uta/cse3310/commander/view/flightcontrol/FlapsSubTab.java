@@ -7,7 +7,7 @@ public class FlapsSubTab {
 
     public JComponent buildPanel() {
         panel = new JPanel();
-        panel.add(new JLabel("Flaps Subtab UI placeholder"))
+        panel.add(new JLabel("Flaps Subtab UI placeholder"));
         return panel;
     }
 

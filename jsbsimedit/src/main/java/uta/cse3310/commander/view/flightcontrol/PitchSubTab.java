@@ -8,7 +8,7 @@ public class PitchSubTab {
 
     public JComponent buildPanel() {
         panel = new JPanel();
-        panel.add(new JLabel("Pitch Subtab UI placeholder"))
+        panel.add(new JLabel("Pitch Subtab UI placeholder"));
         return panel;
     }
 

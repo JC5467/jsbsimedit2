@@ -1,6 +1,9 @@
 package uta.cse3310.commander.view.tabs;
 
 import javax.swing.*;
+
+import generated.FdmConfig;
+
 import java.awt.*;
 
 import uta.cse3310.commander.view.flightcontrol.*;
@@ -43,8 +46,11 @@ public class FlightControlTab extends BaseTab{
         rootPanel.add(subTabs, BorderLayout.CENTER);
     }
 
-
-    //have subtabs read/load XML Data
+    @Override
+    public void refreshData() {
+        //later we can call the methods from the subtabs to load XML data
+    }
+    
 
 
     public JPanel getPanel() {
