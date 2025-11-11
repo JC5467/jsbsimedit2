@@ -1,13 +1,19 @@
 package uta.cse3310.commander.view.flightcontrol;
 
 import javax.swing.*;
+import java.awt.BorderLayout;
+
+import uta.cse3310.commander.view.flightcontrol.DragAndDropCanvas;
 
 public class LandingGearSubTab {
     private JPanel panel;
 
     public JComponent buildPanel() {
-        panel = new JPanel();
-        panel.add(new JLabel("Landing Gear Subtab UI placeholder"));
+        panel = new JPanel(new BorderLayout());
+        
+        DragAndDropCanvas canvas = new DragAndDropCanvas();
+        panel.add(canvas.getPanel(), BorderLayout.CENTER);
+        
         return panel;
     }
 
