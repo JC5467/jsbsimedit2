@@ -104,9 +104,8 @@ public class FlightControlView extends JComponent {
         g2.setColor(new Color(0, 0, 0));
         g2.setStroke(EDGE_STROKE);
         for (FlightControlModel.Edge e : model.edges) {
-            Point a = e.from.outputPort();
-            Point b = e.to.inputPort();
-            drawOrth(g2, a, b);
+            drawOrth(g2, e.fromPoint, e.toPoint);
+            drawArrowHead(g2, e.fromPoint, e.toPoint);
         }
     }
 
@@ -115,6 +114,7 @@ public class FlightControlView extends JComponent {
             g2.setColor(new Color(255, 220, 120));
             g2.setStroke(PREVIEW_STROKE);
             drawOrth(g2, previewFrom.outputPort(), previewTo);
+            drawArrowHead(g2, previewFrom.outputPort(), previewTo);
         }
     }
 
@@ -150,5 +150,27 @@ public class FlightControlView extends JComponent {
             if (n.inputPortRect(PORT_SIZE).contains(p)) return n;
         }
         return null;
+    }
+
+    private void drawArrowHead(Graphics2D g2, Point from, Point to){
+        double phi = Math.toRadians(20);
+        int barb = 10;
+
+        double dy = to.y - from.y;
+        double dx = to.x - from.x;
+        double theta = Math.atan2(dy, dx);
+
+        double x, y, rho;
+
+        rho = theta + phi;
+        x = to.x - barb * Math.cos(rho);
+        y = to.y - barb * Math.sin(rho);
+        g2.drawLine(to.x, to.y, (int)x, (int)y);
+
+        rho = theta - phi;
+        x = to.x - barb * Math.cos(rho);
+        y = to.y - barb * Math.sin(rho);
+        g2.drawLine(to.x, to.y, (int)x, (int)y);
+
     }
 }

@@ -10,6 +10,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Rectangle;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -129,6 +130,13 @@ public final class FlightControlController {
                 if (draggingNode != null && dragOffset != null) {
                     draggingNode.bounds.x = p.x - dragOffset.x;
                     draggingNode.bounds.y = p.y - dragOffset.y;
+
+                    for (FlightControlModel.Edge edge : model.edges) {
+                        if(edge.from == draggingNode || edge.to == draggingNode) {
+                            edge.updatePoints();
+                        }
+                    }
+
                     view.repaint();
                 }
             }
@@ -139,9 +147,11 @@ public final class FlightControlController {
 
                 if (connectFrom != null) {
                     // Can we connect to an INPUT port?
-                    FlightControlModel.Node to = view.nodeWithInputAt(p);
+                    FlightControlModel.Node to = view.nodeAt(p);
                     if (to != null && to != connectFrom) {
-                        model.addEdge(connectFrom, to);
+                        Point fromAttach = getAttachedPoint(connectFrom, to, true);
+                        Point toAttach = getAttachedPoint(to, connectFrom, false);
+                        model.edges.add(new FlightControlModel.Edge(connectFrom, to, fromAttach, toAttach));
                     }
                     connectFrom = null;
                     view.clearConnectionPreview();
@@ -155,6 +165,31 @@ public final class FlightControlController {
 
         view.addMouseListener(ma);
         view.addMouseMotionListener(ma);
+    }
+
+    private static Point getAttachedPoint(FlightControlModel.Node a, FlightControlModel.Node b, boolean isFrom) {
+        Rectangle r = a.bounds;
+        int xMid = r.x + r.width / 2;
+        int yMid = r.y + r.height / 2;
+
+        int dx = (b.bounds.x + b.bounds.width / 2) - xMid;
+        int dy = (b.bounds.y + b.bounds.height) - xMid;
+
+        if (Math.abs(dx) > Math.abs(dy)) {
+            if (dx > 0) {
+                return new Point(r.x + r.width, yMid);
+            }
+            else {
+                return new Point(r.x, yMid);
+            }
+        } else {
+            if(dy > 0){
+                return new Point(xMid, r.y + r.height);
+            }
+            else{
+                return new Point(xMid, r.y);
+            }
+        }
     }
 
     // ---------------- DnD: drop nodes onto canvas ----------------
