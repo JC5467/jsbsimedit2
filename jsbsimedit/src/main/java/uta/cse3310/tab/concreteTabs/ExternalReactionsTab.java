@@ -65,15 +65,20 @@ public class ExternalReactionsTab extends simpleTab {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Buttons
-        JPanel buttonPanel = new JPanel();
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // center alignment + spacing
+
         JButton addButton = new JButton("Add Force");
         JButton deleteButton = new JButton("Delete Force");
-        JButton saveButton = new JButton("Save Changes");
+        JButton saveButton = new JButton("Save Force"); // renamed for clarity
 
         buttonPanel.add(addButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(saveButton);
+
+        // add the centered panel to the bottom
         panel.add(buttonPanel, BorderLayout.SOUTH);
+
 
         // Button actions
         addButton.addActionListener(e -> {
