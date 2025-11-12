@@ -2,6 +2,7 @@ package uta.cse3310;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -18,14 +19,10 @@ import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab;
 
 public class tabFrame {
-    baseTab frameTabs[];
+    Vector<baseTab> frameTabs;  // Changed from array to Vector
 
     public void dataLoaded() {
-        // this function is called when new xml file is loaded
         System.out.println("in dataLoaded");
-
-        // for each frame in frameTabs()
-        // tell them to load the data
         for (baseTab t : frameTabs) {
             System.out.println("the label is " + t.label);
             t.loadData();
@@ -33,69 +30,54 @@ public class tabFrame {
     }
 
     public tabFrame() {
-
         System.out.println("in tabFrame constructor");
 
-        // start out with no xml file
         dataStore DS = new dataStore(this);
-
-        // make the 'main' panel
         new JSBSimCommanderApp(DS);
 
-        // Create the main frame
         JFrame frame = new JFrame("JTabbedPane Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1280,800);
-        frame.setLocationRelativeTo(null); // Center the frame
+        frame.setSize(1280, 800);
+        frame.setLocationRelativeTo(null);
 
-        // Create a JTabbedPane
         JTabbedPane tabbedPane = new JTabbedPane();
 
-        // demonstrates using inheritiance to structure code for each
-        // type and each special 'tab' in the program.
+        // Use Vector instead of array
+        frameTabs = new Vector<>();
 
-        // the array is probably not the ideal data structure for this list, but it is
-        // simple.
+        frameTabs.add(new ExternalReactionsTab(this, DS, "External Reactions Tab"));
+        tabbedPane.addTab("External Reactions", null, frameTabs.lastElement().panel, "This is the External Reactions tab.");
+        tabbedPane.setMnemonicAt(0, KeyEvent.VK_2);
 
-        // create the array
-        frameTabs = new uta.cse3310.tab.baseTab[8];
+        frameTabs.add(new GroundReactionsTab(this, DS, "Ground Reactions Tab"));
+        tabbedPane.addTab("Ground Reactions", null, frameTabs.lastElement().panel, "This is the Ground Reactions tab.");
+        tabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
 
-        frameTabs[0] = new ExternalReactionsTab(this, DS, "External Reactions Tab");
-        tabbedPane.addTab("External Reactions", null, frameTabs[0].panel, "This is the External Reactions tab.");
-        tabbedPane.setMnemonicAt(0, KeyEvent.VK_2); // Set mnemonic for Tab 2
+        frameTabs.add(new HookSystemTab(this, DS, "Hook System Tab"));
+        tabbedPane.addTab("Hook", null, frameTabs.lastElement().panel, "This is the Hook System tab.");
+        tabbedPane.setMnemonicAt(2, KeyEvent.VK_4);
 
-        frameTabs[1] = new GroundReactionsTab(this, DS, "Ground Reactions Tab");
-        tabbedPane.addTab("Ground Reactions", null, frameTabs[1].panel, "This is the Ground Reactions tab.");
-        tabbedPane.setMnemonicAt(1, KeyEvent.VK_3); // Set mnemonic for Tab 3
+        frameTabs.add(new MassBalanceTab(this, DS, "Mass Balance Tab"));
+        tabbedPane.addTab("Mass Balance", null, frameTabs.lastElement().panel, "This is the Mass Balance tab.");
+        tabbedPane.setMnemonicAt(3, KeyEvent.VK_5);
 
-        frameTabs[2] = new HookSystemTab(this, DS, "Hook System Tab");
-        tabbedPane.addTab("Hook", null, frameTabs[2].panel, "This is the Hook System tab.");
-        tabbedPane.setMnemonicAt(2, KeyEvent.VK_4); // Set mnemonic for Tab 4
+        frameTabs.add(new MetricsTab(this, DS, "Metrics"));
+        tabbedPane.addTab("Metrics", null, frameTabs.lastElement().panel, "This is the Metrics tab.");
+        tabbedPane.setMnemonicAt(4, KeyEvent.VK_6);
 
-        frameTabs[3] = new MassBalanceTab(this, DS, "Mass Balance Tab");
-        tabbedPane.addTab("Mass Balance", null, frameTabs[3].panel, "This is the Mass Balance tab.");
-        tabbedPane.setMnemonicAt(3, KeyEvent.VK_5); // Set mnemonic for Tab 5
+        frameTabs.add(new PropulsionTab(this, DS, "Propulsion Tab"));
+        tabbedPane.addTab("Propulsion", null, frameTabs.lastElement().panel, "This is the Propulsion tab.");
+        tabbedPane.setMnemonicAt(5, KeyEvent.VK_7);
 
-        frameTabs[4] = new MetricsTab(this, DS, "Metrics");
-        tabbedPane.addTab("Metrics", null, frameTabs[4].panel, "This is the Metrics tab.");
-        tabbedPane.setMnemonicAt(4, KeyEvent.VK_6); // Set mnemonic for Tab 6
+        frameTabs.add(new FileHeaderTab(this, DS, "General Information Tab"));
+        tabbedPane.addTab("General Information", null, frameTabs.lastElement().panel, "This is the general information tab.");
+        tabbedPane.setMnemonicAt(6, KeyEvent.VK_8);
 
-        frameTabs[5] = new PropulsionTab(this, DS, "Propulsion Tab");
-        tabbedPane.addTab("Propulsion", null, frameTabs[5].panel, "This is the Propulsion tab.");
-        tabbedPane.setMnemonicAt(5, KeyEvent.VK_7); // Set mnemonic for Tab 7
-                                                    //
-        frameTabs[6] = new FileHeaderTab(this, DS, "General Information Tab");
-        tabbedPane.addTab("General Information", null, frameTabs[6].panel, "This is the general information tab.");
-        tabbedPane.setMnemonicAt(6, KeyEvent.VK_8); // Set mnemonic for Tab 8
+        frameTabs.add(new FlightControlTab(this, DS, "Flight Control Tab"));
+        tabbedPane.addTab("Flight Control", null, frameTabs.lastElement().panel, "This is the Flight Control tab.");
+        tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
 
-        frameTabs[7] = new FlightControlTab(this, DS, "Flight Control Tab");
-        tabbedPane.addTab("xxxFlight Control", null, frameTabs[7].panel, "This is the Flight Control tab.");
-        tabbedPane.setMnemonicAt(7, KeyEvent.VK_9); // Set mnemonic for Tab 9
-
-        // Add the JTabbedPane to the frame
         frame.add(tabbedPane, BorderLayout.CENTER);
-
-        // Make the frame visible
         frame.setVisible(true);
     }
 }
