@@ -72,28 +72,28 @@ public class MetricsTab extends simpleTab {
                 textFieldWLabel L7 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,L,340,160,200,20,V,430,160,100,20,U,550,160,80,20);
 
                 // x y and z values for aero ref point
-                Metrics.Location lc = DS.cfg.getMetrics().getLocation().get(0);//plan to simplify this to account for out bounds cases and reduce line count
-                U = String.valueOf(lc.getUnit());
+                Metrics.Location Aero = DS.cfg.getMetrics().getLocation().get(0);//plan to simplify this to account for out bounds cases and reduce line count
+                U = String.valueOf(Aero.getUnit());
                 textFieldWUnit aeroLblWUnit = new textFieldWUnit(panel,"AeroDynamic Reference Point(*)",10, 200, 300, 20,U,590, 240, 100, 20);
-                textFieldWLabel areoX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,240,120,20,String.valueOf(lc.getX()),80,240,100,20);
-                textFieldWLabel areoY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,240,120,20,String.valueOf(lc.getY()),260,240,100,20);
-                textFieldWLabel areoZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,240,120,20,String.valueOf(lc.getZ()),440,240,100,20);
+                textFieldWLabel areoX = new textFieldWLabel((Double) -> Aero.getX(),DS::setDirty,panel,"X = ",30,240,120,20,String.valueOf(Aero.getX()),80,240,100,20);
+                textFieldWLabel areoY = new textFieldWLabel((Double) -> Aero.getY(),DS::setDirty,panel,"Y = ",210,240,120,20,String.valueOf(Aero.getY()),260,240,100,20);
+                textFieldWLabel areoZ = new textFieldWLabel((Double) -> Aero.getZ(),DS::setDirty,panel,"Z = ",390,240,120,20,String.valueOf(Aero.getZ()),440,240,100,20);
 
-                // x y and z values for eypoint
-                lc = DS.cfg.getMetrics().getLocation().get(1);
-                U = String.valueOf(lc.getUnit());
+                //x y and z values for eypoint
+                Metrics.Location Eye = DS.cfg.getMetrics().getLocation().get(1);
+                U = String.valueOf(Eye.getUnit());
                 textFieldWUnit eyeFieldWUnit = new textFieldWUnit(panel,"Eye Point",10, 280, 300, 20,U,590, 320, 100, 20);
-                textFieldWLabel eyeX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,320,120,20,String.valueOf(lc.getX()),80,320,100,20);
-                textFieldWLabel eyeY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,320,120,20,String.valueOf(lc.getY()),260,320,100,20);
-                textFieldWLabel eyeZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,320,120,20,String.valueOf(lc.getZ()),440,320,100,20);
+                textFieldWLabel eyeX = new textFieldWLabel((Double) -> Eye.getX(),DS::setDirty,panel,"X = ",30,320,120,20,String.valueOf(Eye.getX()),80,320,100,20);
+                textFieldWLabel eyeY = new textFieldWLabel((Double) -> Eye.getY(),DS::setDirty,panel,"Y = ",210,320,120,20,String.valueOf(Eye.getY()),260,320,100,20);
+                textFieldWLabel eyeZ = new textFieldWLabel((Double) -> Eye.getZ(),DS::setDirty,panel,"Z = ",390,320,120,20,String.valueOf(Eye.getZ()),440,320,100,20);
 
                 // x y and z values for visual ref point
-                lc = DS.cfg.getMetrics().getLocation().get(2);
-                U = String.valueOf(lc.getUnit());
+                Metrics.Location Vis = DS.cfg.getMetrics().getLocation().get(2);
+                U = String.valueOf(Vis.getUnit());
                 textFieldWUnit visFieldWUnit = new textFieldWUnit(panel,"Visual Reference Point(*)",10, 360, 300, 20,U,590, 400, 100, 20);
-                textFieldWLabel visX = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"X = ",30,400,120,20,String.valueOf(lc.getX()),80,400,100,20);
-                textFieldWLabel visY = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Y = ",210,400,120,20,String.valueOf(lc.getY()),260,400,100,20);
-                textFieldWLabel visZ = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,"Z = ",390,400,120,20,String.valueOf(lc.getZ()),440,400,100,20);
+                textFieldWLabel visX = new textFieldWLabel((Double) -> Vis.getX(),DS::setDirty,panel,"X = ",30,400,120,20,String.valueOf(Vis.getX()),80,400,100,20);
+                textFieldWLabel visY = new textFieldWLabel((Double) -> Vis.getY(),DS::setDirty,panel,"Y = ",210,400,120,20,String.valueOf(Vis.getY()),260,400,100,20);
+                textFieldWLabel visZ = new textFieldWLabel((Double) -> Vis.getZ(),DS::setDirty,panel,"Z = ",390,400,120,20,String.valueOf(Vis.getZ()),440,400,100,20);
 
                 panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
                 
