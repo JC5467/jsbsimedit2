@@ -89,7 +89,7 @@ public class tabFrame {
         tabbedPane.setMnemonicAt(6, KeyEvent.VK_8); // Set mnemonic for Tab 8
 
         frameTabs[7] = new FlightControlTab(this, DS, "Flight Control Tab");
-        tabbedPane.addTab("Flight Control", null, frameTabs[7].panel, "This is the Flight Control tab.");
+        tabbedPane.addTab("xxxFlight Control", null, frameTabs[7].panel, "This is the Flight Control tab.");
         tabbedPane.setMnemonicAt(7, KeyEvent.VK_9); // Set mnemonic for Tab 9
 
         // Add the JTabbedPane to the frame
