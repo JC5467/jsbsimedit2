@@ -73,10 +73,31 @@ public class FlightControlModel {
     public static final class Edge {
         public final Node from; // uses output port
         public final Node to;   // uses input port
-        public Edge(Node from, Node to) {
+
+        private final int fromRelX, fromRelY;
+        private final int toRelX, toRelY;
+
+        public Point fromPoint;
+        public Point toPoint;
+
+        public Edge(Node from, Node to, Point fromAttach, Point toAttach) {
             this.from = from;
             this.to = to;
+            
+            this.fromRelX = fromAttach.x - from.bounds.x;
+            this.fromRelY = fromAttach.y - from.bounds.y;
+            this.toRelX = toAttach.x - to.bounds.x;
+            this.toRelY = toAttach.y - to.bounds.y;
+
+            this.fromPoint = new Point(fromAttach);
+            this.toPoint = new Point(toAttach);
+
         }
+
+        public void updatePoints() {
+            fromPoint.setLocation(from.bounds.x + fromRelX, from.bounds.y + fromRelY);
+            toPoint.setLocation(to.bounds.x + toRelX, to.bounds.y + toRelY);
+    }   
     }
 
     // ---- The graph model ----
@@ -91,7 +112,11 @@ public class FlightControlModel {
     }
     public void addEdge(Node from, Node to) {
         if (from != null && to != null && from != to) {
-            edges.add(new Edge(from, to));
+            Point fromAttach = from.outputPort();
+            Point toAttach = to.inputPort();
+            edges.add(new Edge(from, to, fromAttach, toAttach));
         }
     }
+
+    
 }
