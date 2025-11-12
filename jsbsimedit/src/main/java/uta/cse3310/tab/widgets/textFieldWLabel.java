@@ -14,7 +14,6 @@ public class textFieldWLabel {
         private JLabel label;
         private JTextField tf;
         private JLabel jl;
-
 	// if you want a label, use this one...
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
                         Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
