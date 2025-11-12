@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import java.awt.*;
 
-import uta.cse3310.commander.view.flightcontrol.*;
+import uta.cse3310.tab.concreteTabs.flightcontrol.*;
 
 public class FlightControlTab extends BaseTab{
 
@@ -22,7 +22,6 @@ public class FlightControlTab extends BaseTab{
     private FlapsSubTab flaps = new FlapsSubTab();
     private SpeedbrakeSubTab speedbrake = new SpeedbrakeSubTab();
     private LandingGearSubTab landingGear = new LandingGearSubTab();
-    private CanopySubTab canopy = new CanopySubTab();
 
     
     @Override
@@ -41,7 +40,6 @@ public class FlightControlTab extends BaseTab{
         subTabs.addTab("Flaps", flaps.buildPanel());
         subTabs.addTab("Speedbrake", speedbrake.buildPanel());
         subTabs.addTab("Landing Gear", landingGear.buildPanel());
-        subTabs.addTab("Canopy", canopy.buildPanel());
 
         rootPanel.add(subTabs, BorderLayout.CENTER);
     }

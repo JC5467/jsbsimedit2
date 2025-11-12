@@ -1,4 +1,4 @@
-package uta.cse3310.commander.view.flightcontrol;
+package uta.cse3310.tab.concreteTabs.flightcontrol;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

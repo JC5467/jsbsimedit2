@@ -21,7 +21,7 @@ import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 
 import uta.cse3310.commander.model.FlightControlModel;
-import uta.cse3310.commander.view.flightcontrol.FlightControlView;
+import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 
 public final class FlightControlController {
     public static void start(JPanel host) {

@@ -10,7 +10,7 @@ import uta.cse3310.tab.baseTab;
 import uta.cse3310.tabFrame;
 
 //subtabs imported
-import uta.cse3310.commander.view.flightcontrol.*;
+import uta.cse3310.tab.concreteTabs.flightcontrol.*;
 
 
 public class FlightControlTab extends baseTab {
@@ -29,8 +29,7 @@ public class FlightControlTab extends baseTab {
     private FlapsSubTab flaps = new FlapsSubTab();
     private SpeedbrakeSubTab speedbrake = new SpeedbrakeSubTab();
     private LandingGearSubTab landingGear = new LandingGearSubTab();
-    private CanopySubTab canopy = new CanopySubTab();
-
+    
     public FlightControlTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
         this.TF = tf;
@@ -48,7 +47,7 @@ public class FlightControlTab extends baseTab {
         subTabs.addTab("Flaps", flaps.buildPanel());
         subTabs.addTab("Speedbrake", speedbrake.buildPanel());
         subTabs.addTab("Landing Gear", landingGear.buildPanel());
-        subTabs.addTab("Canopy", canopy.buildPanel());
+  
 
         panel.add(subTabs, BorderLayout.CENTER);
     }

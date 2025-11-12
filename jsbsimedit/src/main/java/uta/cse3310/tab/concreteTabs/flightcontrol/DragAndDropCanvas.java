@@ -1,10 +1,10 @@
-package uta.cse3310.commander.view.flightcontrol;
+package uta.cse3310.tab.concreteTabs.flightcontrol;
 
 import javax.swing.*;
 import java.awt.*;
 
 import uta.cse3310.commander.model.FlightControlModel;
-import uta.cse3310.commander.view.flightcontrol.FlightControlView;
+import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 import uta.cse3310.commander.controller.FlightControlController;
 
 

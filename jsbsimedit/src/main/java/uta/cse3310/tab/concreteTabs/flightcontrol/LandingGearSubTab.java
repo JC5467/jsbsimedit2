@@ -1,9 +1,9 @@
-package uta.cse3310.commander.view.flightcontrol;
+package uta.cse3310.tab.concreteTabs.flightcontrol;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
 
-import uta.cse3310.commander.view.flightcontrol.DragAndDropCanvas;
+import uta.cse3310.tab.concreteTabs.flightcontrol.DragAndDropCanvas;
 
 public class LandingGearSubTab {
     private JPanel panel;
