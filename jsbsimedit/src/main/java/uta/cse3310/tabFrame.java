@@ -17,6 +17,7 @@ import uta.cse3310.tab.concreteTabs.HookSystemTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
 import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab;
+import uta.cse3310.tab.concreteTabs.AerodynamicsTab;
 
 public class tabFrame {
     Vector<baseTab> frameTabs;  // Changed from array to Vector
@@ -76,6 +77,10 @@ public class tabFrame {
         frameTabs.add(new FlightControlTab(this, DS, "Flight Control Tab"));
         tabbedPane.addTab("Flight Control", null, frameTabs.lastElement().panel, "This is the Flight Control tab.");
         tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
+
+        frameTabs.add(new AerodynamicsTab(this, DS, "Aerodynamics Tab"));
+        tabbedPane.addTab("Aerodynamics", null, frameTabs.lastElement().panel, "This is the Aerodynamics tab.");
+        tabbedPane.setMnemonicAt(8, KeyEvent.VK_0);
 
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setVisible(true);
