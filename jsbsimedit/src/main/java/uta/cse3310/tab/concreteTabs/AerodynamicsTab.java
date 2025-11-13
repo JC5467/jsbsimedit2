@@ -12,10 +12,7 @@ import uta.cse3310.dataStore;
 import uta.cse3310.tab.simpleTab;
 import uta.cse3310.tabFrame;
 
-/**
- * Aerodynamics Tab – same pattern as MetricsTab.
- * Pulls all data directly from DS.cfg (no model).
- */
+
 public class AerodynamicsTab extends simpleTab {
 
     private JTabbedPane axisTabs;
@@ -27,7 +24,7 @@ public class AerodynamicsTab extends simpleTab {
     }
 
     /**
-     * Called when new data is loaded — same pattern as MetricsTab.
+     * Called when new data is loaded 
      */
     @Override
     public void loadData() {
@@ -56,7 +53,7 @@ public class AerodynamicsTab extends simpleTab {
             return;
         }
 
-        // Create a tab for each axis (DRAG, LIFT, SIDE, ROLL, etc.)
+        // a tab for each axis (DRAG, LIFT, SIDE, ROLL, etc.)
         for (Axis a : axisList) {
             JPanel axisPanel = createAxisPanel(a);
             axisTabs.addTab(a.getName(), axisPanel);
@@ -125,11 +122,7 @@ public class AerodynamicsTab extends simpleTab {
             p.add(desc);
         }
 
-        // A <function> can have:
-        // - value
-        // - table
-        // - domain/range pairs (depending on schema)
-        // Show Value if exists
+        
         if (f.getValue() != null) {
 
             JPanel valueRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
