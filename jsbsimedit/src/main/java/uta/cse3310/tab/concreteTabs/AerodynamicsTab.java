@@ -23,9 +23,8 @@ public class AerodynamicsTab extends simpleTab {
         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
     }
 
-    /**
-     * Called when new data is loaded 
-     */
+    
+    //called when new data is loaded
     @Override
     public void loadData() {
 
@@ -83,7 +82,7 @@ public class AerodynamicsTab extends simpleTab {
         content.add(title);
         content.add(Box.createVerticalStrut(8));
 
-        // Go through list: contains documentation strings and Axis.Function objects
+        // Go through list
         for (Object obj : axis.getDocumentationOrFunction()) {
 
             if (obj instanceof String) {
@@ -146,7 +145,7 @@ public class AerodynamicsTab extends simpleTab {
             p.add(valueRow);
         }
 
-        // Table present?
+        // Table if present
         if (f.getTable() != null) {
             JLabel tableLabel = new JLabel("Contains table data (editing not implemented)");
             tableLabel.setFont(new Font("Arial", Font.ITALIC, 11));
