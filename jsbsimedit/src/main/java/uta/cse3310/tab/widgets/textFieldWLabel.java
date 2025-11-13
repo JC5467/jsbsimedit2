@@ -52,14 +52,24 @@ public class textFieldWLabel {
 
                         public void removeUpdate(DocumentEvent e) {
                                 DF.set();
-                                System.out.println("inside the lambda " + tf.getText());
-                                System.out.println("remove");
+                                String text = tf.getText();
+                                if(text.isEmpty()){
+                                System.out.println("Text Box Empty. Please enter numeric value.");
+                                } else {
+                                System.out.println("New Value: " + tf.getText());
+                                System.out.println("remove");      
+                                }
                         }
 
                         public void insertUpdate(DocumentEvent e) {
                                 DF.set();
-                                System.out.println("inside the lambda " + tf.getText());
+                                String text = tf.getText();
+                                if(text.matches("\\d+")){
+                                System.out.println("New Value: " + tf.getText());
                                 System.out.println("insert");
+                                } else {
+                                  System.out.println("Invalid Figure in Text Box");
+                                }
                         }
                 });
         }
