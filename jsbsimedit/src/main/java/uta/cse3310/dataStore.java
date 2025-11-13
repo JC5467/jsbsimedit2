@@ -71,6 +71,16 @@ public class dataStore {
             Unmarshaller um = jc.createUnmarshaller();
             cfg = (FdmConfig) um.unmarshal(file);
 
+                        /*THIS WAS MOVED inside the try scope.
+                         * no need to set outside of try because it was 
+                         * set at the begining of method.
+                        */
+            // set flags so the using tabs can know if the data has changed
+            version = version + 1;
+            valid = true;
+            dirty = false;
+            tf.dataLoaded();
+
             /*
              * eventually, delete this stuff. just not now
              * System.out.println(cfg);
@@ -89,12 +99,6 @@ public class dataStore {
         } catch (JAXBException e) {
             e.printStackTrace();
         }
-
-        // set flags so the using tabs can know if the data has changed
-        version = version + 1;
-        valid = true;
-        dirty = false;
-        tf.dataLoaded();
     }
 
 }
