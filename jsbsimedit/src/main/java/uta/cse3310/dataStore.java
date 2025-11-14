@@ -5,6 +5,7 @@ import uta.cse3310.tabFrame;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.Marshaller;
 
 import generated.FdmConfig;
 
@@ -28,15 +29,28 @@ public class dataStore {
     public boolean dirty;
 
     public void setDirty() {
-            System.out.println("setDirty");
-	    dirty = true;
+        System.out.println("setDirty");
+        dirty = true;
+    }
+
+    /**
+     * Save current cfg to the specified file using JAXB marshalling.
+     */
+    public void saveToFile(File f) throws JAXBException {
+        if (cfg == null)
+            throw new JAXBException("No configuration loaded to save.");
+        JAXBContext jc = JAXBContext.newInstance("generated");
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        m.marshal(cfg, f);
+        fileName = f.getPath();
+        clearDirty();
     }
 
     public void clearDirty() {
-            System.out.println("setUndirty");
-	    dirty = false;
+        System.out.println("setUndirty");
+        dirty = false;
     }
-
 
     public dataStore(tabFrame TF) {
         System.out.println("in the constructor for dataStore");
@@ -71,10 +85,11 @@ public class dataStore {
             Unmarshaller um = jc.createUnmarshaller();
             cfg = (FdmConfig) um.unmarshal(file);
 
-                        /*THIS WAS MOVED inside the try scope.
-                         * no need to set outside of try because it was 
-                         * set at the begining of method.
-                        */
+            /*
+             * THIS WAS MOVED inside the try scope.
+             * no need to set outside of try because it was
+             * set at the begining of method.
+             */
             // set flags so the using tabs can know if the data has changed
             version = version + 1;
             valid = true;
