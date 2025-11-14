@@ -80,8 +80,8 @@ public class textFieldWLabel {
                  tf.addFocusListener(new FocusAdapter() {
 
                         public void focusLost(FocusEvent e) {
-                                if(textField.getText().isEmpty()) {
-                                   textField.setText("0.0");
+                                if(tf.getText().isEmpty()) {
+                                   tf.setText("0.0");
                                 }
                         }
                 });
