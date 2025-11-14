@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.event.FocusListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusAdapter;
 
 
 
@@ -74,14 +77,14 @@ public class textFieldWLabel {
                         }
                 });
 
-               /* tf.addFocusListener(new FocusAdapter() {
+                 tf.addFocusListener(new FocusAdapter() {
 
                         public void focusLost(FocusEvent e) {
                                 if(textField.getText().isEmpty()) {
                                    textField.setText("0.0");
                                 }
                         }
-                });*/
+                });
 
         }
 }
