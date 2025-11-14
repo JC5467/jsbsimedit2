@@ -14,7 +14,7 @@ public class JSBSimCommanderApp implements ActionListener {
 	public JSBSimCommanderApp(dataStore ds) {
 		DS = ds;
 		// Frame
-		frame = new JFrame("JSBsim Command");
+		frame = new JFrame("JSBSim Commander");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
@@ -50,8 +50,8 @@ public class JSBSimCommanderApp implements ActionListener {
 				System.out.println("opening xml file");
 				// build up the data store
 				DS.openFile(fb.Chosen_file);
-				// not sure what Aircraft model does.. so i am leaving it alone
-				new AirCraftModel(fb.Chosen_file); // Close JSBSimcommand if file found and open AirCraft Command
+				// open the Aircraft Commander with the dataStore
+				new AirCraftModel(DS); 
 				frame.dispose();
 			}
 		}
