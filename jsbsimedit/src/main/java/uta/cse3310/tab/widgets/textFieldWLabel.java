@@ -64,7 +64,7 @@ public class textFieldWLabel {
                         public void insertUpdate(DocumentEvent e) {
                                 DF.set();
                                 String text = tf.getText();
-                                if(text.matches("\\d+")){
+                                if(text.matches("-?\\d*\\.?\\d*")){
                                 System.out.println("New Value: " + tf.getText());
                                 System.out.println("insert");
                                 } else {
