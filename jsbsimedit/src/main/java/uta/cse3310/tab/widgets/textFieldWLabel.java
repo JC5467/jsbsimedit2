@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.FocusListener;
+import javax.swing.event.FocusEvent;
+import javax.swing.event.FocusAdapter;
 
 
 public class textFieldWLabel {
@@ -69,6 +72,15 @@ public class textFieldWLabel {
                                 System.out.println("insert");
                                 } else {
                                   System.out.println("Invalid Figure in Text Box");
+                                }
+                        }
+                });
+        // Text that adds 0 to empty text box when clicked off
+                tf.addFocusListener(new FocusAdapter() {
+
+                        public void focusLost(FocusEvent e) {
+                                if(textField.getText().isEmpty()) {
+                                   textField.setText("0.0");
                                 }
                         }
                 });
