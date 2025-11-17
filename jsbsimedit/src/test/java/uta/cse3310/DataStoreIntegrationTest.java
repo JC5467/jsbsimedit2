@@ -70,10 +70,10 @@ public class DataStoreIntegrationTest {
         ds.openFile(testXmlFile);
 
         // VERIFY STATE CHANGES
-        assertTrue("IT-001: DataStore should be valid after successful load", ds.valid);
-        assertFalse("IT-001: DataStore should not be dirty after load", ds.dirty);
-        assertTrue("IT-001: Version should be incremented to 1", ds.version == 1);
-        assertNotNull("IT-001: FdmConfig object (ds.cfg) should not be null", ds.cfg);
+        assertTrue("SYS-MEN-001: DataStore should be valid after successful load", ds.valid);
+        assertFalse("SYS-MEN-001: DataStore should not be dirty after load", ds.dirty);
+        assertTrue("SYS-MEN-001: Version should be incremented to 1", ds.version == 1);
+        assertNotNull("SYS-MEN-001: FdmConfig object (ds.cfg) should not be null", ds.cfg);
         
         // VERIFY INTERACTION (ensures UI was notified)
         Mockito.verify(mockTabFrame, Mockito.times(1)).dataLoaded();
@@ -96,10 +96,10 @@ public class DataStoreIntegrationTest {
         ds.openFile(malformedXmlFile);
         
         // VERIFY STATE CHANGES (should be unchanged from initial state)
-        assertFalse("IT-002: DataStore should NOT be valid after failed load", ds.valid);
-        assertTrue("IT-002: Version should remain 0 after failed load", ds.version == 0);
-        assertNull("IT-002: FdmConfig object should be null after failed load", ds.cfg);
-        
+        assertFalse("SYS-MEN-002: DataStore should NOT be valid after failed load", ds.valid);
+        assertTrue("SYS-MEN-002: Version should remain 0 after failed load", ds.version == 0);
+        assertNull("SYS-MEN-002: FdmConfig object should be null after failed load", ds.cfg);
+
         // VERIFY INTERACTION (ensures UI was NOT notified)
         Mockito.verify(mockTabFrame, Mockito.never()).dataLoaded();
     }

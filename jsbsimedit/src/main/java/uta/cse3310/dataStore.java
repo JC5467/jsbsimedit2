@@ -112,6 +112,7 @@ public class dataStore {
             // m.marshal(cfg, System.out);
 
         } catch (JAXBException e) {
+            System.err.println("ERROR: Failed to load or parse XML file");
             e.printStackTrace();
         }
     }
