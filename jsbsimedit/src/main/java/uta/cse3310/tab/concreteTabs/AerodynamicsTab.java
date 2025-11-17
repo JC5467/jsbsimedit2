@@ -1,8 +1,9 @@
 package uta.cse3310.tab.concreteTabs;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.util.List;
 
 import generated.Aerodynamics;
 import generated.Axis;
@@ -11,7 +12,6 @@ import generated.Function;
 import uta.cse3310.dataStore;
 import uta.cse3310.tab.simpleTab;
 import uta.cse3310.tabFrame;
-
 
 public class AerodynamicsTab extends simpleTab {
 
@@ -23,13 +23,8 @@ public class AerodynamicsTab extends simpleTab {
         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
     }
 
-    
-    //called when new data is loaded
     @Override
     public void loadData() {
-
-        System.out.println("in loadData() for Aerodynamics");
-        System.out.println("data structure is " + DS.valid + " and the version is " + DS.version);
 
         panel.removeAll();
 
@@ -44,7 +39,7 @@ public class AerodynamicsTab extends simpleTab {
         axisTabs = new JTabbedPane();
         axisTabs.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        List<Axis> axisList = aero.getAxis();
+        var axisList = aero.getAxis();
         if (axisList == null || axisList.isEmpty()) {
             panel.add(new JLabel("No <axis> entries found.", SwingConstants.CENTER));
             panel.revalidate();
@@ -52,7 +47,6 @@ public class AerodynamicsTab extends simpleTab {
             return;
         }
 
-        // a tab for each axis (DRAG, LIFT, SIDE, ROLL, etc.)
         for (Axis a : axisList) {
             JPanel axisPanel = createAxisPanel(a);
             axisTabs.addTab(a.getName(), axisPanel);
@@ -63,9 +57,6 @@ public class AerodynamicsTab extends simpleTab {
         panel.repaint();
     }
 
-    /**
-     * Build UI for one AXIS block.
-     */
     private JPanel createAxisPanel(Axis axis) {
 
         JPanel container = new JPanel(new BorderLayout());
@@ -73,23 +64,19 @@ public class AerodynamicsTab extends simpleTab {
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 
         JScrollPane scroll = new JScrollPane(content);
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        // Axis name label
-        JLabel title = new JLabel(axis.getName() + " Axis", SwingConstants.LEFT);
+        JLabel title = new JLabel(axis.getName() + " Axis");
         title.setFont(new Font("Arial", Font.BOLD, 16));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
-        content.add(title);
-        content.add(Box.createVerticalStrut(8));
 
-        // Go through list
+        content.add(title);
+        content.add(Box.createVerticalStrut(10));
+
         for (Object obj : axis.getDocumentationOrFunction()) {
 
-            if (obj instanceof String) {
-                // documentation entry
-                JLabel doc = new JLabel("Note: " + obj);
+            if (obj instanceof String s) {
+                JLabel doc = new JLabel("Note: " + s);
                 doc.setFont(new Font("Arial", Font.ITALIC, 11));
-                doc.setAlignmentX(Component.LEFT_ALIGNMENT);
                 content.add(doc);
                 content.add(Box.createVerticalStrut(5));
             }
@@ -104,64 +91,74 @@ public class AerodynamicsTab extends simpleTab {
         return container;
     }
 
-    /**
-     * Build UI for a single Function block inside an axis.
-     */
     private JPanel createFunctionPanel(Axis.Function f) {
 
         JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
-        p.setBorder(BorderFactory.createTitledBorder(f.getName() == null ? "Function" : f.getName()));
-        p.setAlignmentX(Component.LEFT_ALIGNMENT);
+        p.setBorder(BorderFactory.createTitledBorder(
+                f.getName() == null ? "Function" : f.getName()));
 
-        // Description if present
         if (f.getDescription() != null) {
-            JLabel desc = new JLabel("Description: " + f.getDescription());
-            desc.setFont(new Font("Arial", Font.ITALIC, 11));
-            p.add(desc);
-        }
+            JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            row.add(new JLabel("Description:"));
 
-        
-        if (f.getValue() != null) {
-
-            JPanel valueRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            valueRow.add(new JLabel("Value:"));
-
-            JTextField valueField = new JTextField(f.getValue().toString(), 8);
-
-            valueField.addActionListener(e -> {
-                try {
-                    double newVal = Double.parseDouble(valueField.getText());
-                    f.setValue(newVal);
+            JTextField text = new JTextField(f.getDescription(), 28);
+            text.getDocument().addDocumentListener(new SimpleDocListener() {
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    f.setDescription(text.getText());
                     DS.setDirty();
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(panel, "Invalid number.", 
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    valueField.setText(f.getValue().toString());
                 }
             });
 
-            valueRow.add(valueField);
-            p.add(valueRow);
+            row.add(text);
+            p.add(row);
         }
 
-        // Table if present
-        if (f.getTable() != null) {
-            JLabel tableLabel = new JLabel("Contains table data (editing not implemented)");
-            tableLabel.setFont(new Font("Arial", Font.ITALIC, 11));
-            p.add(tableLabel);
+        if (f.getValue() != null) {
+
+            JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            row.add(new JLabel("Value:"));
+
+            JTextField vField = new JTextField(f.getValue().toString(), 8);
+
+            vField.addActionListener(e -> updateValue(f, vField));
+            vField.addFocusListener(new java.awt.event.FocusAdapter() {
+                @Override
+                public void focusLost(java.awt.event.FocusEvent e) {
+                    updateValue(f, vField);
+                }
+            });
+
+            row.add(vField);
+            p.add(row);
         }
 
-        // Apply_at_cg boolean
         if (f.isApplyAtCg() != null) {
-            JCheckBox cgCheck = new JCheckBox("Apply at CG", f.isApplyAtCg());
-            cgCheck.addActionListener(e -> {
-                f.setApplyAtCg(cgCheck.isSelected());
+            JCheckBox cg = new JCheckBox("Apply at CG", f.isApplyAtCg());
+            cg.addActionListener(e -> {
+                f.setApplyAtCg(cg.isSelected());
                 DS.setDirty();
             });
-            p.add(cgCheck);
+            p.add(cg);
         }
 
         return p;
+    }
+
+    private void updateValue(Function f, JTextField txt) {
+        try {
+            double v = Double.parseDouble(txt.getText());
+            f.setValue(v);
+            DS.setDirty();
+        } catch (Exception ex) {
+            txt.setText(f.getValue().toString());
+        }
+    }
+
+    private abstract static class SimpleDocListener implements DocumentListener {
+        @Override public void insertUpdate(DocumentEvent e) { changedUpdate(e); }
+        @Override public void removeUpdate(DocumentEvent e) { changedUpdate(e); }
+        public abstract void changedUpdate(DocumentEvent e);
     }
 }
