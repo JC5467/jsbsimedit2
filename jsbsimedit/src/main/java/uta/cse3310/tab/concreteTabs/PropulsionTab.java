@@ -134,7 +134,9 @@ public void loadData()
             super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
             if (value instanceof Engine) 
             {
-                setText(((Engine) value).getName() + " (" + ((Engine) value).getFile() + ")");
+                Engine eng = (Engine) value;
+                String name = eng.getName() != null ? eng.getName() : ""; // fix leading "null"
+                setText(name + " (" + eng.getFile() + ")");
             }
             return this;
         }
