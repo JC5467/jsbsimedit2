@@ -20,6 +20,11 @@ import javax.swing.JScrollPane;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 
+import javax.swing.JTable;
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
+
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 
@@ -93,6 +98,17 @@ public final class FlightControlController {
             private Point dragOffset = null;
 
             private FlightControlModel.Node connectFrom = null; // node whose OUTPUT we grabbed
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    Point p = e.getPoint();
+                    FlightControlModel.Node node = view.nodeAt(p);
+                    if (node != null) {
+                        openNodePopup(node);
+                    }
+                }
+            }
 
             @Override
             public void mousePressed(MouseEvent e) {
@@ -226,6 +242,36 @@ public final class FlightControlController {
                 ex.printStackTrace();
                 return false;
             }
+        }
+    }
+
+    private static void openNodePopup(FlightControlModel.Node node) {
+        try {
+            String[][] data = {
+                {"Block ID",   String.valueOf(node.id)},
+                {"Block Type", node.type.label}
+            };
+
+            String[] cols = {"Field", "Value"};
+
+            JTable table = new JTable(data, cols);
+            JScrollPane sp = new JScrollPane(table);
+
+            JDialog d = new JDialog();
+            d.setTitle("Block Configuration");
+            d.setSize(400, 200);
+            d.setLocationRelativeTo(null);
+            d.add(sp);
+            d.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(
+                null,
+                "Error displaying block configuration.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }
