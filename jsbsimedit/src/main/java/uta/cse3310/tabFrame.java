@@ -53,32 +53,30 @@ public class tabFrame {
         tabbedPane.addTab("Ground Reactions", null, frameTabs.lastElement().panel, "This is the Ground Reactions tab.");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
 
-      
-
         frameTabs.add(new MassBalanceTab(this, DS, "Mass Balance Tab"));
         tabbedPane.addTab("Mass Balance", null, frameTabs.lastElement().panel, "This is the Mass Balance tab.");
-        tabbedPane.setMnemonicAt(3, KeyEvent.VK_5);
+        tabbedPane.setMnemonicAt(2, KeyEvent.VK_5);
 
         frameTabs.add(new MetricsTab(this, DS, "Metrics"));
         tabbedPane.addTab("Metrics", null, frameTabs.lastElement().panel, "This is the Metrics tab.");
-        tabbedPane.setMnemonicAt(4, KeyEvent.VK_6);
+        tabbedPane.setMnemonicAt(3, KeyEvent.VK_6);
 
         frameTabs.add(new PropulsionTab(this, DS, "Propulsion Tab"));
         tabbedPane.addTab("Propulsion", null, frameTabs.lastElement().panel, "This is the Propulsion tab.");
-        tabbedPane.setMnemonicAt(5, KeyEvent.VK_7);
+        tabbedPane.setMnemonicAt(4, KeyEvent.VK_7);
 
         frameTabs.add(new FileHeaderTab(this, DS, "General Information Tab"));
         tabbedPane.addTab("General Information", null, frameTabs.lastElement().panel, "This is the general information tab.");
-        tabbedPane.setMnemonicAt(6, KeyEvent.VK_8);
+        tabbedPane.setMnemonicAt(5, KeyEvent.VK_8);
 
         frameTabs.add(new FlightControlTab(this, DS, "Flight Control Tab"));
         tabbedPane.addTab("Flight Control", null, frameTabs.lastElement().panel, "This is the Flight Control tab.");
-        tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
+        tabbedPane.setMnemonicAt(6, KeyEvent.VK_9);
         
         //added for Aerodynamics tab
         frameTabs.add(new AerodynamicsTab(this, DS, "Aerodynamics Tab"));
         tabbedPane.addTab("Aerodynamics", null, frameTabs.lastElement().panel, "This is the Aerodynamics tab.");
-        tabbedPane.setMnemonicAt(8, KeyEvent.VK_0);
+        tabbedPane.setMnemonicAt(7, KeyEvent.VK_0);
 
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setVisible(true);
