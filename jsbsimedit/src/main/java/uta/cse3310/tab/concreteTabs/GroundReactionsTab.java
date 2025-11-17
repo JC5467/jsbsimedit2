@@ -2,6 +2,7 @@ package uta.cse3310.tab.concreteTabs;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.math.BigInteger;
 
 import javax.swing.event.DocumentEvent;
@@ -161,7 +162,10 @@ public class GroundReactionsTab extends simpleTab {
                     xField = new JTextField(String.valueOf(location.getX()));
                     yField = new JTextField(String.valueOf(location.getY()));
                     zField = new JTextField(String.valueOf(location.getZ()));
-                    locUnitField = new JTextField(String.valueOf(location.getUnit()));
+                    locUnitField = new JComboBox<>(LengthUnit.values());
+                    if (location.getUnit() != null) {
+                        locUnitField.setSelectedItem(location.getUnit());
+                    }
                     formPanel.add(new JLabel("X ="));
                     formPanel.add(xField);
 
@@ -177,7 +181,10 @@ public class GroundReactionsTab extends simpleTab {
 
                 if (spring != null) {
                     springCoeffField = new JTextField(String.valueOf(spring.getValue()));
-                    springUnitField = new JTextField(spring.getUnit().value());
+                    springUnitField = new JComboBox<>(SpringForceUnit.values());
+                    if (spring.getUnit() != null) {
+                        springUnitField.setSelectedItem(spring.getUnit());
+                    }
                     formPanel.add(new JLabel("Spring Coefficient ="));
                     formPanel.add(springCoeffField);
 
@@ -187,7 +194,10 @@ public class GroundReactionsTab extends simpleTab {
 
                 if (damp != null) {
                     dampCoeffField = new JTextField(String.valueOf(damp.getValue()));
-                    dampUnitField = new JTextField(damp.getUnit().value());
+                    dampUnitField = new JComboBox<>(DampForceUnit.values());
+                    if (damp.getUnit() != null) {
+                        dampUnitField.setSelectedItem(damp.getUnit());
+                    }
                     formPanel.add(new JLabel("Damping Coefficient ="));
                     formPanel.add(dampCoeffField);
 
@@ -209,7 +219,10 @@ public class GroundReactionsTab extends simpleTab {
 
                 if (steer != null) {
                     steerField = new JTextField(String.valueOf(steer.getValue()));
-                    steerUnitField = new JTextField(steer.getUnit().value());
+                    steerUnitField = new JComboBox<>(AngleUnit.values());
+                    if (steer.getUnit() != null) {
+                        steerUnitField.setSelectedItem(steer.getUnit());
+                    }
                     formPanel.add(new JLabel("Max Steer ="));
                     formPanel.add(steerField);
 
@@ -218,14 +231,22 @@ public class GroundReactionsTab extends simpleTab {
                 }
 
                 if (contact.getBrakeGroup() != null) {
-                    brakeField = new JTextField(contact.getBrakeGroup());
+                    String[] presetBrakeField = {"LEFT", "RIGHT", "CENTER", "NOSE", "TAIL", "NONE"};
+                    brakeField = new JComboBox<>(presetBrakeField);
+                    brakeField.setSelectedItem(contact.getBrakeGroup());
                     formPanel.add(new JLabel("Brake Group ="));
                     formPanel.add(brakeField);
                 }
 
                 if (contact.getRetractable() != null) {
-                    retractField = new JTextField(String.valueOf(contact.getRetractable()));
-                    formPanel.add(new JLabel("Retractable ="));
+                    retractField = new JCheckBox("Retractable");
+                    int retractValue = contact.getRetractable().intValue();
+                    if (retractValue == 0) {
+                        retractField.setSelected(false);
+                    } else {
+                        retractField.setSelected(true);
+                    }
+                    formPanel.add(new JLabel(""));
                     formPanel.add(retractField);
                 }
 
@@ -238,29 +259,34 @@ public class GroundReactionsTab extends simpleTab {
                     location.setX(Double.parseDouble(xField.getText()));
                     location.setY(Double.parseDouble(yField.getText()));
                     location.setZ(Double.parseDouble(zField.getText()));
-                    location.setUnit(LengthUnit.fromValue(locUnitField.getText()));
+                    location.setUnit((LengthUnit) locUnitField.getSelectedItem());
                     }
                     if (spring != null) {
                         spring.setValue(Double.parseDouble(springCoeffField.getText()));
-                        spring.setUnit(SpringForceUnit.fromValue(springUnitField.getText()));
+                        spring.setUnit((SpringForceUnit) springUnitField.getSelectedItem());
                     }
                     if (damp != null) {
                         damp.setValue(Double.parseDouble(dampCoeffField.getText()));
-                        damp.setUnit(DampForceUnit.fromValue(dampUnitField.getText()));
+                        damp.setUnit((DampForceUnit) dampUnitField.getSelectedItem());
                     }
                     contact.setStaticFriction(Double.parseDouble(staticField.getText()));
                     contact.setDynamicFriction(Double.parseDouble(dyanmicField.getText()));
                     contact.setRollingFriction(Double.parseDouble(rollField.getText()));
                     if (steer != null) {
                         steer.setValue(Double.parseDouble(steerField.getText()));
-                        steer.setUnit(AngleUnit.fromValue(steerUnitField.getText()));
+                        steer.setUnit((AngleUnit) steerUnitField.getSelectedItem());
                     }
                     if (contact.getBrakeGroup() != null) {
-                        contact.setBrakeGroup(brakeField.getText());
+                        contact.setBrakeGroup((String) brakeField.getSelectedItem());
                     }
                     if (contact.getRetractable() != null) {
-                        contact.setRetractable(new BigInteger(retractField.getText()));
+                        if (retractField.isSelected()) {
+                            contact.setRetractable(BigInteger.ONE);
+                        } else {
+                            contact.setRetractable(BigInteger.ZERO);
+                        }
                     }
+                
                     detail.dispose();
                     panel.repaint();
                 });
@@ -314,16 +340,16 @@ public class GroundReactionsTab extends simpleTab {
     private JTextField xField;
     private JTextField yField;
     private JTextField zField;
-    private JTextField locUnitField;
+    private JComboBox<LengthUnit> locUnitField;
     private JTextField springCoeffField;
-    private JTextField springUnitField;
+    private JComboBox<SpringForceUnit> springUnitField;
     private JTextField dampCoeffField;
-    private JTextField dampUnitField;
+    private JComboBox<DampForceUnit> dampUnitField;
     private JTextField staticField;
     private JTextField dyanmicField;
     private JTextField rollField;
     private JTextField steerField;
-    private JTextField steerUnitField;
-    private JTextField brakeField;
-    private JTextField retractField;
+    private JComboBox<AngleUnit> steerUnitField;
+    private JComboBox<String> brakeField;
+    private JCheckBox retractField;
 }
