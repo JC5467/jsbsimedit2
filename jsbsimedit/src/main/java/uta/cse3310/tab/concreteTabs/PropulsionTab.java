@@ -7,6 +7,7 @@ import uta.cse3310.dataStore;
 import uta.cse3310.tabFrame;
 
 import generated.Engine;
+import generated.Mass;
 import generated.Tank;
 
 
@@ -97,105 +98,60 @@ public void loadData()
     panel.removeAll();
     panel.setLayout(null);
 
-    // Models for lists
-    DefaultListModel<Engine> enginesModel = new DefaultListModel<>();
-    DefaultListModel<Engine> subscribedEnginesModel = new DefaultListModel<>();
-    DefaultListModel<Tank> tanksModel = new DefaultListModel<>();
-    DefaultListModel<Engine> thrustersModel = new DefaultListModel<>();
+    // Clear existing models instead of redeclaring new ones
+    enginesModel.clear();
+    thrustersModel.clear();
+    subscribedModel.clear();
+    tanksModel.clear();
 
-    // Separate lists for XML elements
+    // Load engines and tanks from XML
     for (Object obj : DS.cfg.getPropulsion().getDocumentationOrPropertyOrFunction()) 
     {
         if (obj instanceof Engine) 
         {
             Engine eng = (Engine) obj;
-            enginesModel.addElement(eng);
+            String name = eng.getName() != null ? eng.getName() : ""; // fix leading "null"
+            String file = eng.getFile() != null ? eng.getFile() : "";
+            String display = name + " (" + file + ")";
+            enginesModel.addElement(display);
+            thrustersModel.addElement(display);
         } 
         else if (obj instanceof Tank) 
         {
             Tank t = (Tank) obj;
-            tanksModel.addElement(t);
+            Mass cap = t.getCapacity();
+            String capStr = cap != null ? cap.getValue() + " " + cap.getUnit() : "0 LBS";
+            String text = "Tank (" + t.getType() + ") capacity=" + capStr;
+            tanksModel.addElement(text);
         }
     }
-
-
 
     // Engines Tab
     JLabel lblEng = new JLabel("Available Engines:");
     lblEng.setBounds(10, 10, 200, 20);
     panel.add(lblEng);
 
-    JList<Engine> enginesList = new JList<>(enginesModel);
-    enginesList.setCellRenderer(new DefaultListCellRenderer() 
-    {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
-        {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof Engine) 
-            {
-                Engine eng = (Engine) value;
-                String name = eng.getName() != null ? eng.getName() : ""; // fix leading "null"
-                setText(name + " (" + eng.getFile() + ")");
-            }
-            return this;
-        }
-    });
-
+    JList<String> enginesList = new JList<>(enginesModel);
     JScrollPane scrollEng = new JScrollPane(enginesList);
     scrollEng.setBounds(10, 35, 300, 150);
     panel.add(scrollEng);
-
-
 
     // Thrusters Tab
     JLabel lblThr = new JLabel("Available Thrusters:");
     lblThr.setBounds(330, 10, 200, 20);
     panel.add(lblThr);
 
-    JList<Engine> thrustersList = new JList<>(enginesModel); // Filter later if needed
-    thrustersList.setCellRenderer(new DefaultListCellRenderer() 
-    {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
-        {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof Engine) 
-            {
-                Engine eng = (Engine) value;
-                String name = eng.getName() != null ? eng.getName() : ""; // fix "null" showing up
-                setText(name + " (" + eng.getFile() + ")");
-            }
-            return this;
-        }
-    });
-
+    JList<String> thrustersList = new JList<>(thrustersModel);
     JScrollPane scrollThr = new JScrollPane(thrustersList);
     scrollThr.setBounds(330, 35, 300, 150);
     panel.add(scrollThr);
 
-
-
-    // Subscribed Engine(s) Tab
+    // Subscribed Engines Tab
     JLabel lblSub = new JLabel("Subscribed Engine(s)(*):");
     lblSub.setBounds(10, 200, 300, 20);
     panel.add(lblSub);
 
-    JList<Engine> subList = new JList<>(subscribedEnginesModel);
-    subList.setCellRenderer(new DefaultListCellRenderer() 
-    {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
-        {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof Engine) 
-            {
-                setText(((Engine) value).getName() + " (" + ((Engine) value).getFile() + ")");
-            }
-            return this;
-        }
-    });
-
+    JList<String> subList = new JList<>(subscribedModel);
     JScrollPane scrollSub = new JScrollPane(subList);
     scrollSub.setBounds(10, 225, 300, 150);
     panel.add(scrollSub);
@@ -212,28 +168,12 @@ public void loadData()
     btnDetailPair.setBounds(250, 385, 120, 25);
     panel.add(btnDetailPair);
 
-
-
     // Tanks Tab
     JLabel lblTanks = new JLabel("Tanks:");
     lblTanks.setBounds(330, 200, 200, 20);
     panel.add(lblTanks);
 
-    JList<Tank> tanksList = new JList<>(tanksModel);
-    tanksList.setCellRenderer(new DefaultListCellRenderer() 
-    {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
-        {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            if (value instanceof Tank) 
-            {
-                setText(((Tank) value).getName());
-            }
-            return this;
-        }
-    });
-
+    JList<String> tanksList = new JList<>(tanksModel);
     JScrollPane scrollTanks = new JScrollPane(tanksList);
     scrollTanks.setBounds(330, 225, 300, 150);
     panel.add(scrollTanks);
@@ -250,75 +190,132 @@ public void loadData()
     btnDetailTank.setBounds(620, 385, 120, 25);
     panel.add(btnDetailTank);
 
-    //Pair Buttons Functionality
+    // Populate tanksModel 
+    tanksModel.clear();
+
+    for (Object obj : DS.cfg.getPropulsion().getDocumentationOrPropertyOrFunction()) 
+    {
+        if (obj instanceof Tank) 
+        {
+            Tank t = (Tank) obj;
+
+            String locStr = "(0,0,0) IN";
+            if (t.getLocation() != null) 
+            {
+                locStr = "(" + t.getLocation().getX() + ", " 
+                          + t.getLocation().getY() + ", " 
+                          + t.getLocation().getZ() + ") " 
+                          + t.getLocation().getUnit();
+            }
+
+            String capStr = "0 LBS";
+            if (t.getCapacity() != null) 
+            {
+                capStr = t.getCapacity().getValue() + " " + t.getCapacity().getUnit();
+            }
+
+            String text = "Tank (" + t.getType() + ") location=" + locStr + " capacity=" + capStr;
+            tanksModel.addElement(text);
+        }
+    }
+
+
+    // BUTTON FUNCTIONALITY 
+
+    // New Pair
     btnNewPair.addActionListener(e -> 
     {
-        Engine selectedEngine = enginesList.getSelectedValue();
-        Engine selectedThruster = thrustersList.getSelectedValue();
-        if (selectedEngine != null && selectedThruster != null) 
+        String eName = enginesList.getSelectedValue() != null ? enginesList.getSelectedValue() : "";
+        String tName = thrustersList.getSelectedValue() != null ? thrustersList.getSelectedValue() : "";
+
+        if (!eName.isEmpty() && !tName.isEmpty())
         {
-            subscribedEnginesModel.addElement(selectedEngine);
-            System.out.println("New pair added: " + selectedEngine.getName() + " + " + selectedThruster.getName());
-        } else 
+            String pair = eName + " + " + tName;
+            subscribedModel.addElement(pair);
+            System.out.println("New pair added: " + pair);
+        }
+        else 
         {
-            JOptionPane.showMessageDialog(panel, "Select both an engine and a thruster to create a pair.");
+            JOptionPane.showMessageDialog(panel,"Select both an engine and a thruster to create a pair.");
         }
     });
 
     btnDelPair.addActionListener(e -> 
     {
-        Engine selected = subList.getSelectedValue();
-        if (selected != null) 
+        String selected = subList.getSelectedValue();
+        if (selected != null)
         {
-            subscribedEnginesModel.removeElement(selected);
-            System.out.println("Pair deleted: " + selected.getName());
+            subscribedModel.removeElement(selected);
+            System.out.println("Pair deleted: " + selected);
         }
     });
 
     btnDetailPair.addActionListener(e -> 
     {
-        Engine selected = subList.getSelectedValue();
-        if (selected != null) 
+        String selected = subList.getSelectedValue();
+        if (selected != null)
         {
-            JOptionPane.showMessageDialog(panel, "Details for: " + selected.getName());
+            JOptionPane.showMessageDialog(panel, "Details for: " + selected);
         }
     });
 
-    // Tank Buttons Functionality
+    // Tanks
     btnNewTank.addActionListener(e -> 
     {
-        String name = JOptionPane.showInputDialog(panel, "Enter Tank Name:");
-        if (name != null && !name.isEmpty()) 
+        JTextField typeField = new JTextField();
+        JTextField xField = new JTextField("0");
+        JTextField yField = new JTextField("0");
+        JTextField zField = new JTextField("0");
+        JTextField locUnitField = new JTextField("IN");
+        JTextField capField = new JTextField("0");
+        JTextField capUnitField = new JTextField("LBS");
+
+        JPanel inputPanel = new JPanel(new GridLayout(0,2));
+        inputPanel.add(new JLabel("Tank Type:")); inputPanel.add(typeField);
+        inputPanel.add(new JLabel("Location X:")); inputPanel.add(xField);
+        inputPanel.add(new JLabel("Location Y:")); inputPanel.add(yField);
+        inputPanel.add(new JLabel("Location Z:")); inputPanel.add(zField);
+        inputPanel.add(new JLabel("Location Unit:")); inputPanel.add(locUnitField);
+        inputPanel.add(new JLabel("Capacity:")); inputPanel.add(capField);
+        inputPanel.add(new JLabel("Capacity Unit:")); inputPanel.add(capUnitField);
+
+        int result = JOptionPane.showConfirmDialog(panel, inputPanel, "New Tank", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION)
         {
-            Tank newTank = new Tank();
-            newTank.setName(name);
-            tanksModel.addElement(newTank);
-            System.out.println("New tank added: " + name);
+            String type = typeField.getText();
+            String locStr = "(" + xField.getText() + "," + yField.getText() + "," + zField.getText() + ") " + locUnitField.getText();
+            String capStr = capField.getText() + " " + capUnitField.getText();
+            String newTankStr = "Tank (" + type + ") location=" + locStr + " capacity=" + capStr;
+
+            tanksModel.addElement(newTankStr);
         }
     });
 
     btnDelTank.addActionListener(e -> 
     {
-        Tank selected = tanksList.getSelectedValue();
-        if (selected != null) 
+        String selected = tanksList.getSelectedValue();
+        if (selected != null)
         {
             tanksModel.removeElement(selected);
-            System.out.println("Tank deleted: " + selected.getName());
         }
     });
 
     btnDetailTank.addActionListener(e -> 
     {
-        Tank selected = tanksList.getSelectedValue();
-        if (selected != null) 
+        String selected = tanksList.getSelectedValue();
+        if (selected != null)
         {
-            JOptionPane.showMessageDialog(panel, "Details for tank: " + selected.getName());
+            // Show full info including location and capacity
+            JOptionPane.showMessageDialog(panel, "Details for tank:\n" + selected);
         }
     });
 
     panel.revalidate();
     panel.repaint();
 }
+
+
+
 
 
 
