@@ -6,10 +6,6 @@ import java.math.BigInteger;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -19,6 +15,7 @@ import uta.cse3310.tabFrame;
 import generated.Contact;
 import generated.GroundReactions;
 import generated.Location;
+import generated.LengthUnit;
 import generated.Angle;
 import generated.AngleUnit;
 import generated.SpringForce;
@@ -31,10 +28,8 @@ public class GroundReactionsTab extends simpleTab {
     // attributes that only pertain to the 'concrete' tab called oneTab
     // Following UIID094 - UIID098
         // TODO: allow the user to edit the XML in the GUI
-        // TODO: implement DETAIL WINDOW
-        // TODO: DO NOT ALLOW USER TO EDIT TABLE FROM TAB, ONLY DETAIL WINDOW
-        // TODO: ADD SAVE + CANCEL BUTTON TO DETAIL
-        // TODO: FIX DOUBLE EXIT DETAIL
+        // TODO: FIX SAVE DETAIL
+        // TODO: LET USER SAVE TO XML
     
     public GroundReactionsTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
@@ -70,35 +65,92 @@ public class GroundReactionsTab extends simpleTab {
         //Button actions
             //add button logic
         addButton.addActionListener(e -> {
-        listModel.addElement(new Object[]{"new_contact", "", "", ""});
+            Contact newContact = new Contact();
+            newContact.setName("New Contact");
+            newContact.setType("BOGEY");
+            
+            Location location = new Location();
+            location.setX(0.0);
+            location.setY(0.0);
+            location.setZ(0.0);
+            location.setUnit(LengthUnit.IN);
+            newContact.setLocation(location);
+            
+            SpringForce spring = new SpringForce();
+            spring.setValue(0.0);
+            spring.setUnit(SpringForceUnit.LBS_FT);
+            newContact.setSpringCoeff(spring);
+            
+            DampForce damp = new DampForce();
+            damp.setValue(0.0);
+            damp.setUnit(DampForceUnit.LBS_FT_SEC);
+            newContact.setDampingCoeff(damp);
+            
+            newContact.setStaticFriction(0.0);
+            newContact.setDynamicFriction(0.0);
+            newContact.setRollingFriction(0.0);
+            
+            Angle steer = new Angle();
+            steer.setValue(0.0);
+            steer.setUnit(AngleUnit.DEG);
+            newContact.setMaxSteer(steer);
+            
+            newContact.setBrakeGroup("NONE");
+            newContact.setRetractable(BigInteger.ZERO);
+            DS.cfg.getGroundReactions().getContent().add(newContact);
+            listModel.addElement(newContact);
+            detailWindow(newContact);
         });
             //delete button logic
         deleteButton.addActionListener(e -> {
         selected = list.getSelectedIndex();
-        if (selected != -1){list.remove(selected);}
+        Object index = listModel.getElementAt(selected);
+        if (selected != -1){
+            Contact member = (Contact) index; 
+            listModel.remove(selected);
+            DS.cfg.getGroundReactions().getContent().remove(member);
+            panel.repaint();
+        }
         });
             //detail button logic
         detailButton.addActionListener(e -> {
             selected = list.getSelectedIndex();
             if (selected != -1) {
                 Contact contact = (Contact) list.getSelectedValue();
+                detailWindow(contact);
+            } else {
+                JOptionPane.showMessageDialog(panel, "Please select a contact first.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+    }
+
+    private void detailWindow(Contact contact) {
                 Location location = contact.getLocation();
                 SpringForce spring = contact.getSpringCoeff();
                 DampForce damp = contact.getDampingCoeff();
                 Angle steer = contact.getMaxSteer();
                 
                 //Create detail dialog with this data
-                detail = new JDialog((JFrame) SwingUtilities.getWindowAncestor(detailButton), "Landing Gear Setup");
+                detail = new JDialog((JFrame) SwingUtilities.getWindowAncestor(panel), "Landing Gear Setup");
                 detail.setSize(500, 600);
                 detail.setLocationRelativeTo(scrollPane);
                 detail.setModal(true);
                 
                 //Form panel
                 JPanel formPanel = new JPanel(new GridLayout(17, 2, 3, 5));
+                //Detail button panel
+                JPanel detailButtonPanel = new JPanel();
+                JButton detailOkButton = new JButton("Ok");
+                JButton detailCancelButton = new JButton("Cancel");
+
+                //detail cancel Button logic
+                detailCancelButton.addActionListener(e2 -> {
+                    detail.dispose();
+                });
 
                 //Fields to contact data
-                JTextField nameField = new JTextField(contact.getName());
-                JTextField typeField = new JTextField(contact.getType());
+                nameField = new JTextField(contact.getName());
+                typeField = new JTextField(contact.getType());
                 formPanel.add(new JLabel("Name:"));
                 formPanel.add(nameField);
 
@@ -106,10 +158,10 @@ public class GroundReactionsTab extends simpleTab {
                 formPanel.add(typeField);
 
                 if (location != null) {
-                    JTextField xField = new JTextField(String.valueOf(location.getX()));
-                    JTextField yField = new JTextField(String.valueOf(location.getY()));
-                    JTextField zField = new JTextField(String.valueOf(location.getZ()));
-                    JTextField locUnitField = new JTextField(String.valueOf(location.getUnit()));
+                    xField = new JTextField(String.valueOf(location.getX()));
+                    yField = new JTextField(String.valueOf(location.getY()));
+                    zField = new JTextField(String.valueOf(location.getZ()));
+                    locUnitField = new JTextField(String.valueOf(location.getUnit()));
                     formPanel.add(new JLabel("X ="));
                     formPanel.add(xField);
 
@@ -124,8 +176,8 @@ public class GroundReactionsTab extends simpleTab {
                 }
 
                 if (spring != null) {
-                    JTextField springCoeffField = new JTextField(String.valueOf(spring.getValue()));
-                    JTextField springUnitField = new JTextField(String.valueOf(spring.getUnit()));
+                    springCoeffField = new JTextField(String.valueOf(spring.getValue()));
+                    springUnitField = new JTextField(spring.getUnit().value());
                     formPanel.add(new JLabel("Spring Coefficient ="));
                     formPanel.add(springCoeffField);
 
@@ -134,8 +186,8 @@ public class GroundReactionsTab extends simpleTab {
                 }
 
                 if (damp != null) {
-                    JTextField dampCoeffField = new JTextField(String.valueOf(damp.getValue()));
-                    JTextField dampUnitField = new JTextField(String.valueOf(damp.getUnit()));
+                    dampCoeffField = new JTextField(String.valueOf(damp.getValue()));
+                    dampUnitField = new JTextField(damp.getUnit().value());
                     formPanel.add(new JLabel("Damping Coefficient ="));
                     formPanel.add(dampCoeffField);
 
@@ -143,9 +195,9 @@ public class GroundReactionsTab extends simpleTab {
                     formPanel.add(dampUnitField);
                 }
 
-                JTextField staticField = new JTextField(String.valueOf(contact.getStaticFriction()));
-                JTextField dyanmicField = new JTextField(String.valueOf(contact.getDynamicFriction()));
-                JTextField rollField = new JTextField(String.valueOf(contact.getRollingFriction()));
+                staticField = new JTextField(String.valueOf(contact.getStaticFriction()));
+                dyanmicField = new JTextField(String.valueOf(contact.getDynamicFriction()));
+                rollField = new JTextField(String.valueOf(contact.getRollingFriction()));
                 formPanel.add(new JLabel("Static Friction ="));
                 formPanel.add(staticField);
 
@@ -156,8 +208,8 @@ public class GroundReactionsTab extends simpleTab {
                 formPanel.add(rollField);
 
                 if (steer != null) {
-                    JTextField steerField = new JTextField(String.valueOf(steer.getValue()));
-                    JTextField steerUnitField = new JTextField(String.valueOf(steer.getUnit()));
+                    steerField = new JTextField(String.valueOf(steer.getValue()));
+                    steerUnitField = new JTextField(steer.getUnit().value());
                     formPanel.add(new JLabel("Max Steer ="));
                     formPanel.add(steerField);
 
@@ -166,24 +218,60 @@ public class GroundReactionsTab extends simpleTab {
                 }
 
                 if (contact.getBrakeGroup() != null) {
-                    JTextField brakeField = new JTextField(contact.getBrakeGroup());
+                    brakeField = new JTextField(contact.getBrakeGroup());
                     formPanel.add(new JLabel("Brake Group ="));
                     formPanel.add(brakeField);
                 }
 
                 if (contact.getRetractable() != null) {
-                    JTextField retractField = new JTextField(String.valueOf(contact.getRetractable()));
+                    retractField = new JTextField(String.valueOf(contact.getRetractable()));
                     formPanel.add(new JLabel("Retractable ="));
                     formPanel.add(retractField);
                 }
-                detail.add(formPanel);
+
+                //detail save button logic
+                detailOkButton.addActionListener(e2 -> {
+                    //update fields in contact
+                    contact.setName(nameField.getText());
+                    contact.setType(typeField.getText());
+                    if (location != null) {
+                    location.setX(Double.parseDouble(xField.getText()));
+                    location.setY(Double.parseDouble(yField.getText()));
+                    location.setZ(Double.parseDouble(zField.getText()));
+                    location.setUnit(LengthUnit.fromValue(locUnitField.getText()));
+                    }
+                    if (spring != null) {
+                        spring.setValue(Double.parseDouble(springCoeffField.getText()));
+                        spring.setUnit(SpringForceUnit.fromValue(springUnitField.getText()));
+                    }
+                    if (damp != null) {
+                        damp.setValue(Double.parseDouble(dampCoeffField.getText()));
+                        damp.setUnit(DampForceUnit.fromValue(dampUnitField.getText()));
+                    }
+                    contact.setStaticFriction(Double.parseDouble(staticField.getText()));
+                    contact.setDynamicFriction(Double.parseDouble(dyanmicField.getText()));
+                    contact.setRollingFriction(Double.parseDouble(rollField.getText()));
+                    if (steer != null) {
+                        steer.setValue(Double.parseDouble(steerField.getText()));
+                        steer.setUnit(AngleUnit.fromValue(steerUnitField.getText()));
+                    }
+                    if (contact.getBrakeGroup() != null) {
+                        contact.setBrakeGroup(brakeField.getText());
+                    }
+                    if (contact.getRetractable() != null) {
+                        contact.setRetractable(new BigInteger(retractField.getText()));
+                    }
+                    detail.dispose();
+                    panel.repaint();
+                });
+
+                detailButtonPanel.add(detailOkButton);
+                detailButtonPanel.add(detailCancelButton);
+                detail.add(formPanel, BorderLayout.CENTER);
+                detail.add(detailButtonPanel, BorderLayout.SOUTH);
                 detail.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(panel, "Please select a contact first.", "No Selection", JOptionPane.WARNING_MESSAGE);
-            }
-            detail.setVisible(true);
-        });
     }
+
     public void loadData() {
         panel.removeAll();
         loadUI();
@@ -221,4 +309,21 @@ public class GroundReactionsTab extends simpleTab {
     private JScrollPane scrollPane;
     private JDialog detail;
     private int selected;
+    private JTextField nameField;
+    private JTextField typeField;
+    private JTextField xField;
+    private JTextField yField;
+    private JTextField zField;
+    private JTextField locUnitField;
+    private JTextField springCoeffField;
+    private JTextField springUnitField;
+    private JTextField dampCoeffField;
+    private JTextField dampUnitField;
+    private JTextField staticField;
+    private JTextField dyanmicField;
+    private JTextField rollField;
+    private JTextField steerField;
+    private JTextField steerUnitField;
+    private JTextField brakeField;
+    private JTextField retractField;
 }
