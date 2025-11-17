@@ -9,15 +9,14 @@ import javax.swing.JTabbedPane;
 
 import uta.cse3310.commander.controller.JSBSimCommanderApp;
 import uta.cse3310.tab.baseTab;
+import uta.cse3310.tab.concreteTabs.AerodynamicsTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
 import uta.cse3310.tab.concreteTabs.FileHeaderTab;
 import uta.cse3310.tab.concreteTabs.FlightControlTab;
 import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
-import uta.cse3310.tab.concreteTabs.HookSystemTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
 import uta.cse3310.tab.concreteTabs.MetricsTab;
-import uta.cse3310.tab.concreteTabs.PropulsionTab;
-import uta.cse3310.tab.concreteTabs.AerodynamicsTab; //imported for aerodynamics tab
+import uta.cse3310.tab.concreteTabs.PropulsionTab; //imported for aerodynamics tab
 
 public class tabFrame {
     Vector<baseTab> frameTabs;  // Changed from array to Vector
@@ -54,9 +53,7 @@ public class tabFrame {
         tabbedPane.addTab("Ground Reactions", null, frameTabs.lastElement().panel, "This is the Ground Reactions tab.");
         tabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
 
-        frameTabs.add(new HookSystemTab(this, DS, "Hook System Tab"));
-        tabbedPane.addTab("Hook", null, frameTabs.lastElement().panel, "This is the Hook System tab.");
-        tabbedPane.setMnemonicAt(2, KeyEvent.VK_4);
+      
 
         frameTabs.add(new MassBalanceTab(this, DS, "Mass Balance Tab"));
         tabbedPane.addTab("Mass Balance", null, frameTabs.lastElement().panel, "This is the Mass Balance tab.");
