@@ -17,6 +17,7 @@ import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
 import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab; //imported for aerodynamics tab
+import uta.cse3310.tab.concreteTabs.BuoyantForcesTab;
 
 public class tabFrame {
     Vector<baseTab> frameTabs;  // Changed from array to Vector
