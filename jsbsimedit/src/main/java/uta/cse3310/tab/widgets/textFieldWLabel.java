@@ -60,8 +60,10 @@ public class textFieldWLabel {
                                 if(text.isEmpty()){
                                 System.out.println("Text Box Empty. Please enter numeric value.");
                                 } else {
+                                SF.setVal(Double.parseDouble(text));
                                 System.out.println("New Value: " + tf.getText());
                                 System.out.println("remove");      
+
                                 }
                         }
 
@@ -69,6 +71,7 @@ public class textFieldWLabel {
                                 DF.set();
                                 String text = tf.getText();
                                 if(text.matches("-?\\d*\\.?\\d*")){
+                                SF.setVal(Double.parseDouble(text));
                                 System.out.println("New Value: " + tf.getText());
                                 System.out.println("insert");
                                 } else {
