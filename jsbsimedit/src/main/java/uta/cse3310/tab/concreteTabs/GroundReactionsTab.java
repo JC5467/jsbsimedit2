@@ -47,7 +47,7 @@ public class GroundReactionsTab extends simpleTab {
     private void loadUI() {
         //JList
         listModel = new DefaultListModel<>();
-        list = new JList(listModel);
+        list = new JList<>(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         cellRender();
         scrollPane = new JScrollPane(list);
@@ -330,8 +330,8 @@ public class GroundReactionsTab extends simpleTab {
             }
         });
     }   
-    private JList list;
-    private DefaultListModel listModel;
+    private JList<Contact> list;
+    private DefaultListModel<Contact> listModel;
     private JScrollPane scrollPane;
     private JDialog detail;
     private int selected;
