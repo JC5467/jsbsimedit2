@@ -49,6 +49,20 @@ public class GroundReactionsTab extends simpleTab {
         listModel = new DefaultListModel<>();
         list = new JList<>(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        /*Implementation of SYS-FLC-074 Double click to edit landing gear*/
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = list.locationToIndex(e.getPoint());
+                    if (index != -1) {
+                        Contact contact = (Contact) list.getModel().getElementAt(index);
+                        detailWindow(contact);
+                    }
+                }
+            }
+        });
         cellRender();
         scrollPane = new JScrollPane(list);
         panel.add(scrollPane, BorderLayout.CENTER);
