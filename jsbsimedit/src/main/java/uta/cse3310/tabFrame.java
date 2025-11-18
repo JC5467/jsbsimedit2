@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.JOptionPane; // NEW IMPORT for error dialogs
 
 import uta.cse3310.commander.controller.JSBSimCommanderApp;
 import uta.cse3310.tab.baseTab;
@@ -20,13 +21,35 @@ import uta.cse3310.tab.concreteTabs.PropulsionTab; //imported for aerodynamics t
 import uta.cse3310.tab.concreteTabs.BuoyantForcesTab;
 
 public class tabFrame {
-    Vector<baseTab> frameTabs;  // Changed from array to Vector
+    Vector<baseTab> frameTabs; // Changed from array to Vector
+    
+    // We need a reference to the main JFrame to anchor the dialog box
+    private JFrame mainFrame; 
 
     public void dataLoaded() {
         System.out.println("in dataLoaded");
         for (baseTab t : frameTabs) {
             System.out.println("the label is " + t.label);
             t.loadData();
+        }
+    }
+
+    /**
+     * REQUIRED METHOD: Displays an error message to the user in a modal dialog.
+     * This is called by dataStore.openFile() when a JAXB or file error occurs.
+     * @param message The error message to display.
+     */
+    public void showError(String message) {
+        if (mainFrame != null) {
+            JOptionPane.showMessageDialog(
+                mainFrame,
+                message,
+                "File Load Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        } else {
+            // Fallback for when mainFrame isn't initialized yet
+            System.err.println("CRITICAL UI ERROR: Could not show dialog: " + message);
         }
     }
 
@@ -37,6 +60,7 @@ public class tabFrame {
         new JSBSimCommanderApp(DS);
 
         JFrame frame = new JFrame("JTabbedPane Example");
+        this.mainFrame = frame; // Store reference to the JFrame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1280, 800);
         frame.setLocationRelativeTo(null);

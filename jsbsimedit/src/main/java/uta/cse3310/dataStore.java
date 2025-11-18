@@ -6,10 +6,12 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.UnmarshalException;
 
 import generated.FdmConfig;
 
 import java.io.File;
+import java.io.FileNotFoundException; // Import must be present
 
 public class dataStore {
     public Boolean valid; // true if the file is usable
@@ -69,51 +71,60 @@ public class dataStore {
         System.out.println("the file name is " + f);
         fileName = f.getPath();
 
+        FdmConfig tempCfg = null;
+        String errorMessage = null;
+
         // read it in, convert to java
         try {
-
-            File file = new File(fileName);
-            // JAXBContext jaxbContext = JAXBContext.newInstance(FdmConfig.class);
-
-            // Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            // FdmConfig cfg = (FdmConfig) jaxbUnmarshaller.unmarshal(file);
-
-            // System.out.println(cfg.getName());
-
+            // This is the line that creates the file object, which is fine, 
+            // but the unmarshal call below is what throws the underlying exception.
+            File file = new File(fileName); 
+            
             JAXBContext jc = JAXBContext.newInstance("generated");
-
             Unmarshaller um = jc.createUnmarshaller();
-            cfg = (FdmConfig) um.unmarshal(file);
+            
+            // This is the file access operation, which can cause FileNotFoundException
+            tempCfg = (FdmConfig) um.unmarshal(file); 
 
-            /*
-             * THIS WAS MOVED inside the try scope.
-             * no need to set outside of try because it was
-             * set at the begining of method.
-             */
-            // set flags so the using tabs can know if the data has changed
+            // --- SUCCESS PATH ---
+            // If unmarshalling succeeds, update the main state variables
+            cfg = tempCfg;
             version = version + 1;
             valid = true;
             dirty = false;
-            tf.dataLoaded();
 
-            /*
-             * eventually, delete this stuff. just not now
-             * System.out.println(cfg);
-             * System.out.println(cfg.getFileheader().getCopyright());
-             * System.out.println(cfg.getFileheader().getVersion());
-             * System.out.println(cfg.getAerodynamics().getAxis().get(0).getName());
-             * System.out.println(cfg.getAerodynamics().getAxis().get(0).
-             * getDocumentationOrFunction());
-             * System.out.println(cfg.getAerodynamics().getAxis().get(0).getClass());
-             */
-
-            // Marshaller m = jc.createMarshaller();
-            // m.setProperty("jaxb.formatted.output", true);
-            // m.marshal(cfg, System.out);
+            if (tf != null) {
+                tf.dataLoaded();
+            }
+            
+       } catch (UnmarshalException e) {
+            // CATCH 2: Catches the specific XML structure/parsing error (e.g., malformed XML)
+            errorMessage = "XML Parsing Error: The file " + f.getName() + " is malformed or invalid.";
+            System.err.println("JAXB PARSE ERROR: " + errorMessage);
+            
+            // Print the linked SAX exception message for more detail
+            if (e.getLinkedException() != null) {
+                 System.err.println("Linked Exception Detail: " + e.getLinkedException().getMessage());
+            }
 
         } catch (JAXBException e) {
-            System.err.println("ERROR: Failed to load or parse XML file");
-            e.printStackTrace();
+            // CATCH 3: Catches other JAXB issues (e.g., context setup errors)
+            errorMessage = "A general JAXB error occurred during loading: " + e.getMessage();
+            System.err.println("JAXB ERROR: " + errorMessage);
+            
+        } catch (Exception e) {
+            // CATCH 4: Catches any other runtime exceptions that weren't expected
+            errorMessage = "An unexpected error occurred during file processing: " + e.getClass().getSimpleName() + ": " + e.getMessage();
+            System.err.println("UNEXPECTED ERROR: " + errorMessage);
+            
+        } finally {
+            // --- Post-Error Handling ---
+            if (errorMessage != null) {
+                // If any error occurred, notify the UI (safely checking for null tf)
+                if (tf != null) {
+                    tf.showError(errorMessage); 
+                }
+            }
         }
     }
 
