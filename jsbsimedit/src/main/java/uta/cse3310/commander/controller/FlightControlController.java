@@ -16,7 +16,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 
@@ -24,6 +23,8 @@ import javax.swing.JTable;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+
 
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
@@ -75,7 +76,9 @@ public final class FlightControlController {
         String iconFile  = pair[1];
 
         // Load icon from assets/componentImg directory
-        ImageIcon icon = new ImageIcon("assets/componentImg/" + iconFile);
+        ImageIcon icon = new ImageIcon(
+            FlightControlController.class.getResource("/assets/componentImg/" + iconFile)
+            );
 
         JLabel tag = new JLabel(labelName, icon, JLabel.LEFT);
         tag.setForeground(new Color(0, 0, 0));
@@ -83,6 +86,8 @@ public final class FlightControlController {
         tag.setBackground(new Color(245, 245, 245));
         tag.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
         tag.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        tag.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+
 
         // Draggable behavior
         tag.setTransferHandler(new TransferHandler("text") {
@@ -193,6 +198,19 @@ public final class FlightControlController {
                             FlightControlModel.Node tmp = src;
                             src = dst;
                             dst = tmp;
+                        }
+                        // Add checks before edges are created
+                        if (!isValidConnection(src.type, dst.type)) {
+                            JOptionPane.showMessageDialog(null,
+                            "Invalid connection: " +
+                            src.type.label + " → " + dst.type.label,
+                            "Connection Not Allowed",
+                            JOptionPane.WARNING_MESSAGE
+                            );
+                            connectFrom = null;
+                            view.clearConnectionPreview();
+                            return;
+                            
                         }
 
                         Point fromAttach = getAttachedPoint(src, dst, true);
