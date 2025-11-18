@@ -313,4 +313,23 @@ public final class FlightControlController {
             );
         }
     }
+     // Connection validation logic
+     private static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
+    // Prevent connecting a block to itself
+    if (src == dst) return false;
+
+    // Destination cannot output to anything
+    if (src == FlightControlModel.NodeType.DESTINATION) return false;
+
+    // Source should not receive inputs
+    if (dst == FlightControlModel.NodeType.SOURCE) return false;
+
+    // Example: Prevent Filter connecting directly to Destination
+    if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION)
+        return false;
+
+    // Default: allow connection
+    return true;
+}
+
 }
