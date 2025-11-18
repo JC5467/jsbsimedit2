@@ -20,6 +20,11 @@ import javax.swing.JScrollPane;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
 
+import javax.swing.JTable;
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
+
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 
@@ -95,6 +100,17 @@ public final class FlightControlController {
             private FlightControlModel.Node connectFrom = null; // node whose OUTPUT we grabbed
 
             @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    Point p = e.getPoint();
+                    FlightControlModel.Node node = view.nodeAt(p);
+                    if (node != null) {
+                        openNodePopup(node);
+                    }
+                }
+            }
+
+            @Override
             public void mousePressed(MouseEvent e) {
                 Point p = e.getPoint();
 
@@ -147,11 +163,21 @@ public final class FlightControlController {
 
                 if (connectFrom != null) {
                     // Can we connect to an INPUT port?
-                    FlightControlModel.Node to = view.nodeAt(p);
-                    if (to != null && to != connectFrom) {
-                        Point fromAttach = getAttachedPoint(connectFrom, to, true);
-                        Point toAttach = getAttachedPoint(to, connectFrom, false);
-                        model.edges.add(new FlightControlModel.Edge(connectFrom, to, fromAttach, toAttach));
+                    FlightControlModel.Node releaseNode = view.nodeAt(p);
+                    if (releaseNode != null && releaseNode != connectFrom) {
+                        FlightControlModel.Node src = connectFrom;
+                        FlightControlModel.Node dst = releaseNode;
+
+                        if (src.type == FlightControlModel.NodeType.DESTINATION &&
+                            dst.type == FlightControlModel.NodeType.SOURCE) {
+                            FlightControlModel.Node tmp = src;
+                            src = dst;
+                            dst = tmp;
+                        }
+
+                        Point fromAttach = getAttachedPoint(src, dst, true);
+                        Point toAttach = getAttachedPoint(dst, src, false);
+                        model.edges.add(new FlightControlModel.Edge(src, dst, fromAttach, toAttach));
                     }
                     connectFrom = null;
                     view.clearConnectionPreview();
@@ -168,28 +194,16 @@ public final class FlightControlController {
     }
 
     private static Point getAttachedPoint(FlightControlModel.Node a, FlightControlModel.Node b, boolean isFrom) {
-        Rectangle r = a.bounds;
-        int xMid = r.x + r.width / 2;
-        int yMid = r.y + r.height / 2;
-
-        int dx = (b.bounds.x + b.bounds.width / 2) - xMid;
-        int dy = (b.bounds.y + b.bounds.height) - xMid;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx > 0) {
-                return new Point(r.x + r.width, yMid);
-            }
-            else {
-                return new Point(r.x, yMid);
-            }
+        Rectangle portRect;
+        if (isFrom) {
+            portRect = a.outputPortRect(FlightControlView.PORT_SIZE);
         } else {
-            if(dy > 0){
-                return new Point(xMid, r.y + r.height);
-            }
-            else{
-                return new Point(xMid, r.y);
-            }
+            portRect = a.inputPortRect(FlightControlView.PORT_SIZE);
         }
+
+        int cx = portRect.x + portRect.width / 2;
+        int cy = portRect.y + portRect.height / 2;
+        return new Point(cx, cy);
     }
 
     // ---------------- DnD: drop nodes onto canvas ----------------
@@ -228,6 +242,36 @@ public final class FlightControlController {
                 ex.printStackTrace();
                 return false;
             }
+        }
+    }
+
+    private static void openNodePopup(FlightControlModel.Node node) {
+        try {
+            String[][] data = {
+                {"Block ID",   String.valueOf(node.id)},
+                {"Block Type", node.type.label}
+            };
+
+            String[] cols = {"Field", "Value"};
+
+            JTable table = new JTable(data, cols);
+            JScrollPane sp = new JScrollPane(table);
+
+            JDialog d = new JDialog();
+            d.setTitle("Block Configuration");
+            d.setSize(400, 200);
+            d.setLocationRelativeTo(null);
+            d.add(sp);
+            d.setVisible(true);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(
+                null,
+                "Error displaying block configuration.",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }

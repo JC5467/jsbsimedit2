@@ -120,13 +120,7 @@ public class FlightControlView extends JComponent {
 
     // Orthogonal polyline using midpoint rule
     private void drawOrth(Graphics2D g2, Point a, Point b) {
-        int xmid = a.x + (b.x - a.x) / 2;
-        Path2D path = new Path2D.Double();
-        path.moveTo(a.x, a.y);
-        path.lineTo(xmid, a.y);
-        path.lineTo(xmid, b.y);
-        path.lineTo(b.x, b.y);
-        g2.draw(path);
+        g2.drawLine(a.x, a.y, b.x, b.y);
     }
 
     // ---- Small helpers used by the controller ----

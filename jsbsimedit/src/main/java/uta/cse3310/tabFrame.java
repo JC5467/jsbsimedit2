@@ -9,15 +9,15 @@ import javax.swing.JTabbedPane;
 
 import uta.cse3310.commander.controller.JSBSimCommanderApp;
 import uta.cse3310.tab.baseTab;
+import uta.cse3310.tab.concreteTabs.AerodynamicsTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
 import uta.cse3310.tab.concreteTabs.FileHeaderTab;
 import uta.cse3310.tab.concreteTabs.FlightControlTab;
 import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
-import uta.cse3310.tab.concreteTabs.HookSystemTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
 import uta.cse3310.tab.concreteTabs.MetricsTab;
-import uta.cse3310.tab.concreteTabs.PropulsionTab;
-import uta.cse3310.tab.concreteTabs.AerodynamicsTab; //imported for aerodynamics tab
+import uta.cse3310.tab.concreteTabs.PropulsionTab; //imported for aerodynamics tab
+import uta.cse3310.tab.concreteTabs.BuoyantForcesTab;
 
 public class tabFrame {
     Vector<baseTab> frameTabs;  // Changed from array to Vector
@@ -46,43 +46,43 @@ public class tabFrame {
         // Use Vector instead of array
         frameTabs = new Vector<>();
 
-        frameTabs.add(new ExternalReactionsTab(this, DS, "External Reactions Tab"));
-        tabbedPane.addTab("External Reactions", null, frameTabs.lastElement().panel, "This is the External Reactions tab.");
-        tabbedPane.setMnemonicAt(0, KeyEvent.VK_2);
+frameTabs.add(new FileHeaderTab(this, DS, "General Information Tab"));
+tabbedPane.addTab("General Information", null, frameTabs.lastElement().panel, "This is the general information tab.");
+tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
 
-        frameTabs.add(new GroundReactionsTab(this, DS, "Ground Reactions Tab"));
-        tabbedPane.addTab("Ground Reactions", null, frameTabs.lastElement().panel, "This is the Ground Reactions tab.");
-        tabbedPane.setMnemonicAt(1, KeyEvent.VK_3);
+frameTabs.add(new ExternalReactionsTab(this, DS, "External Reactions Tab"));
+tabbedPane.addTab("External Reactions", null, frameTabs.lastElement().panel, "This is the External Reactions tab.");
+tabbedPane.setMnemonicAt(1, KeyEvent.VK_2);
 
-        frameTabs.add(new HookSystemTab(this, DS, "Hook System Tab"));
-        tabbedPane.addTab("Hook", null, frameTabs.lastElement().panel, "This is the Hook System tab.");
-        tabbedPane.setMnemonicAt(2, KeyEvent.VK_4);
+frameTabs.add(new GroundReactionsTab(this, DS, "Ground Reactions Tab"));
+tabbedPane.addTab("Ground Reactions", null, frameTabs.lastElement().panel, "This is the Ground Reactions tab.");
+tabbedPane.setMnemonicAt(2, KeyEvent.VK_3);
 
-        frameTabs.add(new MassBalanceTab(this, DS, "Mass Balance Tab"));
-        tabbedPane.addTab("Mass Balance", null, frameTabs.lastElement().panel, "This is the Mass Balance tab.");
-        tabbedPane.setMnemonicAt(3, KeyEvent.VK_5);
+frameTabs.add(new MassBalanceTab(this, DS, "Mass Balance Tab"));
+tabbedPane.addTab("Mass Balance", null, frameTabs.lastElement().panel, "This is the Mass Balance tab.");
+tabbedPane.setMnemonicAt(3, KeyEvent.VK_5);
 
-        frameTabs.add(new MetricsTab(this, DS, "Metrics"));
-        tabbedPane.addTab("Metrics", null, frameTabs.lastElement().panel, "This is the Metrics tab.");
-        tabbedPane.setMnemonicAt(4, KeyEvent.VK_6);
+frameTabs.add(new MetricsTab(this, DS, "Metrics"));
+tabbedPane.addTab("Metrics", null, frameTabs.lastElement().panel, "This is the Metrics tab.");
+tabbedPane.setMnemonicAt(4, KeyEvent.VK_6);
 
-        frameTabs.add(new PropulsionTab(this, DS, "Propulsion Tab"));
-        tabbedPane.addTab("Propulsion", null, frameTabs.lastElement().panel, "This is the Propulsion tab.");
-        tabbedPane.setMnemonicAt(5, KeyEvent.VK_7);
+frameTabs.add(new PropulsionTab(this, DS, "Propulsion Tab"));
+tabbedPane.addTab("Propulsion", null, frameTabs.lastElement().panel, "This is the Propulsion tab.");
+tabbedPane.setMnemonicAt(5, KeyEvent.VK_7);
 
-        frameTabs.add(new FileHeaderTab(this, DS, "General Information Tab"));
-        tabbedPane.addTab("General Information", null, frameTabs.lastElement().panel, "This is the general information tab.");
-        tabbedPane.setMnemonicAt(6, KeyEvent.VK_8);
+frameTabs.add(new FlightControlTab(this, DS, "Flight Control Tab"));
+tabbedPane.addTab("Flight Control", null, frameTabs.lastElement().panel, "This is the Flight Control tab.");
+tabbedPane.setMnemonicAt(6, KeyEvent.VK_8);
 
-        frameTabs.add(new FlightControlTab(this, DS, "Flight Control Tab"));
-        tabbedPane.addTab("Flight Control", null, frameTabs.lastElement().panel, "This is the Flight Control tab.");
-        tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
+frameTabs.add(new AerodynamicsTab(this, DS, "Aerodynamics Tab"));
+tabbedPane.addTab("Aerodynamics", null, frameTabs.lastElement().panel, "This is the Aerodynamics tab.");
+tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
+
+frameTabs.add(new BuoyantForcesTab(DS, "Buoyant Forces Tab"));
+tabbedPane.addTab("Buoyant Forces", null, frameTabs.lastElement().panel, "This is the Buoyant Forces tab.");
+tabbedPane.setMnemonicAt(8, KeyEvent.VK_B);
+
         
-        //added for Aerodynamics tab
-        frameTabs.add(new AerodynamicsTab(this, DS, "Aerodynamics Tab"));
-        tabbedPane.addTab("Aerodynamics", null, frameTabs.lastElement().panel, "This is the Aerodynamics tab.");
-        tabbedPane.setMnemonicAt(8, KeyEvent.VK_0);
-
         frame.add(tabbedPane, BorderLayout.CENTER);
         frame.setVisible(true);
     }
