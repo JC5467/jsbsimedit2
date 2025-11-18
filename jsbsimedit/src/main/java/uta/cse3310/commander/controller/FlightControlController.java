@@ -51,45 +51,65 @@ public final class FlightControlController {
 
     // ---------------- Palette ----------------
     private static JPanel buildPalette(FlightControlView view) {
-        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-        p.setBackground(new Color(245, 245, 245));
-        p.setBorder(new EmptyBorder(6, 8, 6, 8));
+    JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+    p.setBackground(new Color(245, 245, 245));
+    p.setBorder(new EmptyBorder(6, 8, 6, 8));
 
-        String[] names = {
-                "Source","Destination","Summer","PID","Gain",
-                "Filter","Dead Band","Switch","Kinemat","FCSFunction"
-        };
+    // Map names to icon files
+    String[][] items = {
+        {"Source",      "source.bmp"},
+        {"Destination", "destination.bmp"},
+        {"Summer",      "summer.bmp"},
+        {"PID",         "pid.bmp"},
+        {"Gain",        "gain.bmp"},
+        {"Filter",      "filter.bmp"},
+        {"Dead Band",   "deadband.bmp"},
+        {"Switch",      "switch.bmp"},
+        {"Kinemat",     "kinemat.bmp"},
+        {"FCSFunction", "func.bmp"}
+    };
 
-        for (String name : names) {
-            JLabel tag = new JLabel(name);
-            tag.setForeground(new Color(0, 0, 0));
-            tag.setOpaque(true);
-            tag.setBackground(new Color(245, 245, 245));
-            tag.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
-            tag.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+    for (String[] pair : items) {
 
-            // Make each label draggable as a string payload
-            tag.setTransferHandler(new TransferHandler("text") {
-                @Override
-                protected Transferable createTransferable(JComponent c) {
-                    return new StringSelection(((JLabel) c).getText());
-                }
-                @Override
-                public int getSourceActions(JComponent c) {
-                    return COPY;
-                }
-            });
-            tag.addMouseListener(new MouseAdapter() {
-                @Override public void mousePressed(MouseEvent e) {
-                    JComponent c = (JComponent) e.getSource();
-                    c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);
-                }
-            });
+        String labelName = pair[0];
+        String iconFile  = pair[1];
 
-            p.add(tag);
-        }
-        return p;
+        // Load icon from assets/componentImg directory
+        ImageIcon icon = new ImageIcon("assets/componentImg/" + iconFile);
+
+        JLabel tag = new JLabel(labelName, icon, JLabel.LEFT);
+        tag.setForeground(new Color(0, 0, 0));
+        tag.setOpaque(true);
+        tag.setBackground(new Color(245, 245, 245));
+        tag.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
+        tag.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+
+        // Draggable behavior
+        tag.setTransferHandler(new TransferHandler("text") {
+            @Override
+            protected Transferable createTransferable(JComponent c) {
+                return new StringSelection(((JLabel) c).getText());
+            }
+            @Override
+            public int getSourceActions(JComponent c) {
+                return COPY;
+            }
+        });
+
+        tag.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                JComponent c = (JComponent) e.getSource();
+                c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);
+            }
+        });
+
+        p.add(tag);
     }
+
+    return p;
+}
+
 
     // ---------------- Canvas mouse/controller logic ----------------
     private static void attachMouseControllers(FlightControlView view, FlightControlModel model) {
