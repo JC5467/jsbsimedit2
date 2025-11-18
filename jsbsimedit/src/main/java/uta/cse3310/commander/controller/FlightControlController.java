@@ -356,7 +356,7 @@ public final class FlightControlController {
         }
     }
      // Connection validation logic
-     private static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
+     public static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
     // Prevent connecting a block to itself
     if (src == dst) return false;
 
