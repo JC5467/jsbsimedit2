@@ -7,13 +7,14 @@ import generated.FdmConfig;
 
 import uta.cse3310.dataStore;
 import uta.cse3310.tab.baseTab;
+import uta.cse3310.tab.simpleTab;
 import uta.cse3310.tabFrame;
 
 //subtabs imported
 import uta.cse3310.tab.concreteTabs.flightcontrol.*;
 
 
-public class FlightControlTab extends baseTab {
+public class FlightControlTab extends simpleTab {
 
     private tabFrame TF;
     private dataStore DS;
