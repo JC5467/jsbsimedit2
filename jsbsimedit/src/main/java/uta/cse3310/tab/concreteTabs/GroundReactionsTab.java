@@ -131,6 +131,23 @@ public class GroundReactionsTab extends simpleTab {
                 DampForce damp = contact.getDampingCoeff();
                 Angle steer = contact.getMaxSteer();
                 
+                //Track if XML has attribute or not
+                boolean hasSteer = (steer != null); //If steer is null then initialize default values to show
+                if (steer == null) {
+                    steer = new Angle();
+                    steer.setValue(0.0);
+                    steer.setUnit(AngleUnit.DEG);
+                }
+                boolean hasBrakeGroup = (contact.getBrakeGroup() != null);
+                String origBrakeGroup = contact.getBrakeGroup() != null ? contact.getBrakeGroup() : "NONE";
+                boolean hasRetractable = (contact.getRetractable() != null);
+                int origRetractable = contact.getRetractable() != null ? contact.getRetractable().intValue() : 0;
+                
+                // Store original steer values; used for conditonal saving
+                final Angle finalSteer = steer;
+                double origSteerValue = finalSteer.getValue();
+                AngleUnit origSteerUnit = finalSteer.getUnit();
+
                 //Create detail dialog with this data
                 detail = new JDialog((JFrame) SwingUtilities.getWindowAncestor(panel), "Landing Gear Setup");
                 detail.setSize(500, 600);
@@ -158,6 +175,7 @@ public class GroundReactionsTab extends simpleTab {
                 formPanel.add(new JLabel("Type:"));
                 formPanel.add(typeField);
 
+                //Location
                 if (location != null) {
                     xField = new JTextField(String.valueOf(location.getX()));
                     yField = new JTextField(String.valueOf(location.getY()));
@@ -178,7 +196,8 @@ public class GroundReactionsTab extends simpleTab {
                     formPanel.add(new JLabel("Unit ="));
                     formPanel.add(locUnitField);
                 }
-
+                
+                //Spring_force
                 if (spring != null) {
                     springCoeffField = new JTextField(String.valueOf(spring.getValue()));
                     springUnitField = new JComboBox<>(SpringForceUnit.values());
@@ -191,7 +210,8 @@ public class GroundReactionsTab extends simpleTab {
                     formPanel.add(new JLabel("Unit ="));
                     formPanel.add(springUnitField);
                 }
-
+                
+                //Damp_force
                 if (damp != null) {
                     dampCoeffField = new JTextField(String.valueOf(damp.getValue()));
                     dampUnitField = new JComboBox<>(DampForceUnit.values());
@@ -205,6 +225,7 @@ public class GroundReactionsTab extends simpleTab {
                     formPanel.add(dampUnitField);
                 }
 
+                //Frictions
                 staticField = new JTextField(String.valueOf(contact.getStaticFriction()));
                 dyanmicField = new JTextField(String.valueOf(contact.getDynamicFriction()));
                 rollField = new JTextField(String.valueOf(contact.getRollingFriction()));
@@ -217,74 +238,87 @@ public class GroundReactionsTab extends simpleTab {
                 formPanel.add(new JLabel("Rolling Friction ="));
                 formPanel.add(rollField);
 
-                if (steer != null) {
-                    steerField = new JTextField(String.valueOf(steer.getValue()));
-                    steerUnitField = new JComboBox<>(AngleUnit.values());
-                    if (steer.getUnit() != null) {
-                        steerUnitField.setSelectedItem(steer.getUnit());
-                    }
-                    formPanel.add(new JLabel("Max Steer ="));
-                    formPanel.add(steerField);
-
-                    formPanel.add(new JLabel("Unit ="));
-                    formPanel.add(steerUnitField);
+                //Steer
+                steerField = new JTextField(String.valueOf(finalSteer.getValue()));
+                steerUnitField = new JComboBox<>(AngleUnit.values());
+                if (finalSteer.getUnit() != null) {
+                    steerUnitField.setSelectedItem(finalSteer.getUnit());
                 }
+                formPanel.add(new JLabel("Max Steer ="));
+                formPanel.add(steerField);
 
-                if (contact.getBrakeGroup() != null) {
-                    String[] presetBrakeField = {"LEFT", "RIGHT", "CENTER", "NOSE", "TAIL", "NONE"};
-                    brakeField = new JComboBox<>(presetBrakeField);
-                    brakeField.setSelectedItem(contact.getBrakeGroup());
-                    formPanel.add(new JLabel("Brake Group ="));
-                    formPanel.add(brakeField);
-                }
+                formPanel.add(new JLabel("Unit ="));
+                formPanel.add(steerUnitField);
 
-                if (contact.getRetractable() != null) {
-                    retractField = new JCheckBox("Retractable");
-                    int retractValue = contact.getRetractable().intValue();
-                    if (retractValue == 0) {
-                        retractField.setSelected(false);
-                    } else {
-                        retractField.setSelected(true);
-                    }
-                    formPanel.add(new JLabel(""));
-                    formPanel.add(retractField);
-                }
+                //Brake_group
+                String[] presetBrakeField = {"LEFT", "RIGHT", "CENTER", "NOSE", "TAIL", "NONE"};
+                brakeField = new JComboBox<>(presetBrakeField);
+                brakeField.setSelectedItem(origBrakeGroup);
+                formPanel.add(new JLabel("Brake Group ="));
+                formPanel.add(brakeField);
+
+                //Retractable
+                retractField = new JCheckBox("Retractable");
+                retractField.setSelected(origRetractable != 0);
+                formPanel.add(new JLabel(""));
+                formPanel.add(retractField);
 
                 //detail save button logic
                 detailOkButton.addActionListener(e2 -> {
                     //update fields in contact
                     contact.setName(nameField.getText());
                     contact.setType(typeField.getText());
+
+                    //Location
                     if (location != null) {
                     location.setX(Double.parseDouble(xField.getText()));
                     location.setY(Double.parseDouble(yField.getText()));
                     location.setZ(Double.parseDouble(zField.getText()));
                     location.setUnit((LengthUnit) locUnitField.getSelectedItem());
                     }
+
+                    //Spring
                     if (spring != null) {
                         spring.setValue(Double.parseDouble(springCoeffField.getText()));
                         spring.setUnit((SpringForceUnit) springUnitField.getSelectedItem());
                     }
+
+                    //Damp
                     if (damp != null) {
                         damp.setValue(Double.parseDouble(dampCoeffField.getText()));
                         damp.setUnit((DampForceUnit) dampUnitField.getSelectedItem());
                     }
+
+                    //Frictions
                     contact.setStaticFriction(Double.parseDouble(staticField.getText()));
                     contact.setDynamicFriction(Double.parseDouble(dyanmicField.getText()));
                     contact.setRollingFriction(Double.parseDouble(rollField.getText()));
-                    if (steer != null) {
-                        steer.setValue(Double.parseDouble(steerField.getText()));
-                        steer.setUnit((AngleUnit) steerUnitField.getSelectedItem());
+
+                    //For next 3 fields: the field will have a default value if NOT in XML. Editing the newly created values is the ONLY time it will save to XML.
+                    //Opening detail to show default values then saving will NOT write the default values to XML
+
+                    //Steer conditional save
+                    double newSteerValue = Double.parseDouble(steerField.getText());
+                    AngleUnit newSteerUnit = (AngleUnit) steerUnitField.getSelectedItem();
+                    boolean steerChanged = (newSteerValue != origSteerValue) || (!newSteerUnit.equals(origSteerUnit));
+                    if (hasSteer || steerChanged) {
+                        finalSteer.setValue(newSteerValue);
+                        finalSteer.setUnit(newSteerUnit);
+                        contact.setMaxSteer(finalSteer);
                     }
-                    if (contact.getBrakeGroup() != null) {
-                        contact.setBrakeGroup((String) brakeField.getSelectedItem());
+
+                    //Brake group conditional save
+                    String newBrakeGroup = (String) brakeField.getSelectedItem();
+                    boolean brakeChanged = !newBrakeGroup.equals(origBrakeGroup);
+                    if (hasBrakeGroup || brakeChanged) {
+                        contact.setBrakeGroup(newBrakeGroup);
                     }
-                    if (contact.getRetractable() != null) {
-                        if (retractField.isSelected()) {
-                            contact.setRetractable(BigInteger.ONE);
-                        } else {
-                            contact.setRetractable(BigInteger.ZERO);
-                        }
+
+                    //Retractable conditonal save
+                    int newRetractable = retractField.isSelected() ? 1 : 0;
+                    boolean retractChanged = (newRetractable != origRetractable);
+                    if (hasRetractable || retractChanged) {
+                        contact.setRetractable(retractField.isSelected() ? BigInteger.ONE : BigInteger.ZERO);
                     }
                 
                     detail.dispose();
