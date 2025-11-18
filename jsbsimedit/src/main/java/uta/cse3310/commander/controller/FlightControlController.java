@@ -11,6 +11,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Rectangle;
+import java.io.IOException; // New import for I/O Exception handling
+import java.net.URL; // Required for getResource
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -19,21 +21,23 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
+import javax.imageio.ImageIO; // NEW: For reliable image loading
+import java.awt.image.BufferedImage; // NEW: To hold the image data
 
 import javax.swing.JTable;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JOptionPane;
-import javax.swing.ImageIcon;
 
 
 import uta.cse3310.commander.model.FlightControlModel;
+import uta.cse3310.commander.model.FlightControlModel.NodeType;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 
 public final class FlightControlController {
     public static void start(JPanel host) {
         FlightControlModel model = new FlightControlModel();
-        FlightControlView view  = new FlightControlView(model);
+        FlightControlView view = new FlightControlView(model);
 
         JScrollPane scrollPane = new JScrollPane(view);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
@@ -50,6 +54,28 @@ public final class FlightControlController {
         host.add(scrollPane, BorderLayout.CENTER);
     }
 
+    // --- NEW: Helper method for reliable image loading ---
+    private static ImageIcon loadReliableImageIcon(URL url, String iconFile) {
+        if (url == null) {
+            // This happens if the file isn't found on the classpath
+            System.err.println("Warning: Could not find classpath resource for icon: /assets/componentImg/" + iconFile);
+            return null;
+        }
+        try {
+            // Use ImageIO.read() to read the image into a buffer
+            BufferedImage bufferedImage = ImageIO.read(url);
+            if (bufferedImage != null) {
+                // Return the ImageIcon created from the successfully loaded buffer
+                return new ImageIcon(bufferedImage);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading image file with ImageIO: " + url.toExternalForm());
+            // This BMP format is unsupported
+            e.printStackTrace();
+        } 
+        return null;
+    }
+
 
     // ---------------- Palette ----------------
     private static JPanel buildPalette(FlightControlView view) {
@@ -59,28 +85,32 @@ public final class FlightControlController {
 
     // Map names to icon files
     String[][] items = {
-        {"Source",      "source.bmp"},
+        {"Source", "source.bmp"},
         {"Destination", "destination.bmp"},
-        {"Summer",      "summer.bmp"},
-        {"PID",         "pid.bmp"},
-        {"Gain",        "gain.bmp"},
-        {"Filter",      "filter.bmp"},
-        {"Dead Band",   "deadband.bmp"},
-        {"Switch",      "switch.bmp"},
-        {"Kinemat",     "kinemat.bmp"},
+        {"Summer", "summer.bmp"},
+        {"PID", "pid.bmp"},
+        {"Gain", "gain.bmp"},
+        {"Filter", "filter.bmp"},
+        {"Dead Band", "deadband.bmp"},
+        {"Switch", "switch.bmp"},
+        {"Kinemat", "kinemat.bmp"},
         {"FCSFunction", "func.bmp"}
     };
 
     for (String[] pair : items) {
 
         String labelName = pair[0];
-        String iconFile  = pair[1];
+        String iconFile = pair[1];
 
-        // Load icon from assets/componentImg directory
-        ImageIcon icon = new ImageIcon(
-            FlightControlController.class.getResource("/assets/componentImg/" + iconFile)
-            );
+        ImageIcon icon = null;
 
+        // 1. Get the resource URL for the icon
+        URL resourceUrl = FlightControlController.class.getResource("/assets/componentImg/" + iconFile);
+        
+        // 2. Load the icon 
+        icon = loadReliableImageIcon(resourceUrl, iconFile);
+        
+        // 3. set up the JLabel
         JLabel tag = new JLabel(labelName, icon, JLabel.LEFT);
         tag.setForeground(new Color(0, 0, 0));
         tag.setOpaque(true);
@@ -226,6 +256,18 @@ public final class FlightControlController {
                 draggingNode = null;
                 dragOffset = null;
             }
+            
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // Allows the cursor to update when hovering over a node's output port or the node itself
+                if (view.nodeWithOutputAt(e.getPoint()) != null) {
+                    view.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                } else if (view.nodeAt(e.getPoint()) != null) {
+                    view.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                } else {
+                    view.setCursor(Cursor.getDefaultCursor());
+                }
+            }
         };
 
         view.addMouseListener(ma);
@@ -287,7 +329,7 @@ public final class FlightControlController {
     private static void openNodePopup(FlightControlModel.Node node) {
         try {
             String[][] data = {
-                {"Block ID",   String.valueOf(node.id)},
+                {"Block ID", String.valueOf(node.id)},
                 {"Block Type", node.type.label}
             };
 
