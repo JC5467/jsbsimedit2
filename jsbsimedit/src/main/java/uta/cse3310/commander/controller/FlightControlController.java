@@ -72,80 +72,87 @@ public final class FlightControlController {
             System.err.println("Error reading image file with ImageIO: " + url.toExternalForm());
             // This BMP format is unsupported
             e.printStackTrace();
-        } 
+        }
         return null;
     }
 
-
     // ---------------- Palette ----------------
     private static JPanel buildPalette(FlightControlView view) {
-    JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
-    p.setBackground(new Color(245, 245, 245));
-    p.setBorder(new EmptyBorder(6, 8, 6, 8));
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
+        p.setBackground(new Color(245, 245, 245));
+        p.setBorder(new EmptyBorder(6, 8, 6, 8));
 
-    // Map names to icon files
-    String[][] items = {
-        {"Source", "source.bmp"},
-        {"Destination", "destination.bmp"},
-        {"Summer", "summer.bmp"},
-        {"PID", "pid.bmp"},
-        {"Gain", "gain.bmp"},
-        {"Filter", "filter.bmp"},
-        {"Dead Band", "deadband.bmp"},
-        {"Switch", "switch.bmp"},
-        {"Kinemat", "kinemat.bmp"},
-        {"FCSFunction", "func.bmp"}
-    };
+        // Map names to icon files
+        String[][] items = {
+            {"Source", "source.bmp"},
+            {"Destination", "destination.bmp"},
+            {"Summer", "summer.bmp"},
+            {"PID", "pid.bmp"},
+            {"Gain", "gain.bmp"},
+            {"Filter", "filter.bmp"},
+            {"Dead Band", "deadband.bmp"},
+            {"Switch", "switch.bmp"},
+            {"Kinemat", "kinemat.bmp"},
+            {"FCSFunction", "func.bmp"}
+        };
 
-    for (String[] pair : items) {
+        for (String[] pair : items) {
+            String labelName = pair[0];
+            String iconFile = pair[1];
 
-        String labelName = pair[0];
-        String iconFile = pair[1];
+            ImageIcon icon = null;
 
-        ImageIcon icon = null;
+            // 1. Locate the image using the classpath
+            URL resourceUrl = FlightControlController.class.getResource("/assets/componentImg/" + iconFile);
 
-        // 1. Get the resource URL for the icon
-        URL resourceUrl = FlightControlController.class.getResource("/assets/componentImg/" + iconFile);
-        
-        // 2. Load the icon 
-        icon = loadReliableImageIcon(resourceUrl, iconFile);
-        
-        // 3. set up the JLabel
-        JLabel tag = new JLabel(labelName, icon, JLabel.LEFT);
-        tag.setForeground(new Color(0, 0, 0));
-        tag.setOpaque(true);
-        tag.setBackground(new Color(245, 245, 245));
-        tag.setBorder(BorderFactory.createEmptyBorder(6, 10, 6, 10));
-        tag.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-        tag.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+            // 2. Try to load the icon reliably using ImageIO if the resource is found
+            icon = loadReliableImageIcon(resourceUrl, iconFile);
 
-
-        // Draggable behavior
-        tag.setTransferHandler(new TransferHandler("text") {
-            @Override
-            protected Transferable createTransferable(JComponent c) {
-                return new StringSelection(((JLabel) c).getText());
+            // If icon is still null at this point, we will gracefully fall back to text-only
+            JLabel tag;
+            if (icon != null) {
+                tag = new JLabel(labelName, icon, JLabel.CENTER);
+            } else {
+                System.err.println("Falling back to text-only label for: " + labelName);
+                tag = new JLabel(labelName);
             }
-            @Override
-            public int getSourceActions(JComponent c) {
-                return COPY;
-            }
-        });
 
-        tag.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                JComponent c = (JComponent) e.getSource();
-                c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);
-            }
-        });
+            tag.setOpaque(true);
+            tag.setBackground(new Color(250, 250, 250));
+            tag.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+                new EmptyBorder(4, 6, 4, 6)
+            ));
+            tag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
-        p.add(tag);
+            // TransferHandler for drag-and-drop
+            tag.setTransferHandler(
+                new TransferHandler("text") {
+                    @Override
+                    protected Transferable createTransferable(JComponent c) {
+                        return new StringSelection(((JLabel) c).getText());
+                    }
+
+                    @Override
+                    public int getSourceActions(JComponent c) {
+                        return COPY;
+                    }
+                }
+            );
+
+            tag.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    JComponent c = (JComponent) e.getSource();
+                    c.getTransferHandler().exportAsDrag(c, e, TransferHandler.COPY);
+                }
+            });
+
+            p.add(tag);
+        }
+
+        return p;
     }
-
-    return p;
-}
-
 
     // ---------------- Canvas mouse/controller logic ----------------
     private static void attachMouseControllers(FlightControlView view, FlightControlModel model) {
@@ -161,6 +168,10 @@ public final class FlightControlController {
                     Point p = e.getPoint();
                     FlightControlModel.Node node = view.nodeAt(p);
                     if (node != null) {
+                        if (node.type == FlightControlModel.NodeType.SUMMER) {
+                            createDestinationForSummer(node, model, view);
+                            return;
+                        }
                         openNodePopup(node);
                     }
                 }
@@ -191,29 +202,6 @@ public final class FlightControlController {
             }
 
             @Override
-            public void mouseDragged(MouseEvent e) {
-                Point p = e.getPoint();
-
-                if (connectFrom != null) {
-                    view.setConnectionPreview(connectFrom, p);
-                    return;
-                }
-
-                if (draggingNode != null && dragOffset != null) {
-                    draggingNode.bounds.x = p.x - dragOffset.x;
-                    draggingNode.bounds.y = p.y - dragOffset.y;
-
-                    for (FlightControlModel.Edge edge : model.edges) {
-                        if(edge.from == draggingNode || edge.to == draggingNode) {
-                            edge.updatePoints();
-                        }
-                    }
-
-                    view.repaint();
-                }
-            }
-
-            @Override
             public void mouseReleased(MouseEvent e) {
                 Point p = e.getPoint();
 
@@ -234,14 +222,22 @@ public final class FlightControlController {
                         if (!isValidConnection(src.type, dst.type)) {
                             JOptionPane.showMessageDialog(null,
                             "Invalid connection: " +
-                            src.type.label + " → " + dst.type.label,
-                            "Connection Not Allowed",
-                            JOptionPane.WARNING_MESSAGE
-                            );
+                            src.type.label + " -> " + dst.type.label,
+                            "Connection Error", JOptionPane.ERROR_MESSAGE);
                             connectFrom = null;
                             view.clearConnectionPreview();
                             return;
-                            
+                        }
+
+                        Rectangle dstInputRect = dst.inputPortRect(FlightControlView.PORT_SIZE);
+                        if (!dstInputRect.contains(p)) {
+                            JOptionPane.showMessageDialog(null,
+                            "Connections must be made to the input port of the destination node.",
+                            "Connection Error",
+                            JOptionPane.ERROR_MESSAGE);
+                            connectFrom = null;
+                            view.clearConnectionPreview();
+                            return;
                         }
 
                         Point fromAttach = getAttachedPoint(src, dst, true);
@@ -256,7 +252,7 @@ public final class FlightControlController {
                 draggingNode = null;
                 dragOffset = null;
             }
-            
+
             @Override
             public void mouseMoved(MouseEvent e) {
                 // Allows the cursor to update when hovering over a node's output port or the node itself
@@ -268,10 +264,42 @@ public final class FlightControlController {
                     view.setCursor(Cursor.getDefaultCursor());
                 }
             }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point p = e.getPoint();
+
+                if (connectFrom != null) {
+                    // Update the preview of a potential connection
+                    view.setConnectionPreview(connectFrom, p);
+                    return;
+                }
+
+                if (draggingNode != null && dragOffset != null) {
+                    draggingNode.bounds.x = p.x - dragOffset.x;
+                    draggingNode.bounds.y = p.y - dragOffset.y;
+
+                    for (FlightControlModel.Edge edge : model.edges) {
+                        if(edge.from == draggingNode || edge.to == draggingNode) {
+                            edge.updatePoints();
+                        }
+                    }
+
+                    view.repaint();
+                }
+            }
         };
 
         view.addMouseListener(ma);
         view.addMouseMotionListener(ma);
+    }
+
+    private static void createDestinationForSummer(FlightControlModel.Node summerNode, FlightControlModel model, FlightControlView view) {
+        int destX = summerNode.bounds.x + summerNode.bounds.width + 40;
+        int destY = summerNode.bounds.y;
+        FlightControlModel.Node dest = model.addNode(FlightControlModel.NodeType.DESTINATION, destX, destY);
+        model.addEdge(summerNode, dest);
+        view.repaint();
     }
 
     private static Point getAttachedPoint(FlightControlModel.Node a, FlightControlModel.Node b, boolean isFrom) {
@@ -305,18 +333,26 @@ public final class FlightControlController {
         @Override
         public boolean importData(TransferSupport s) {
             if (!canImport(s)) return false;
+
             try {
-                String label = (String) s.getTransferable().getTransferData(DataFlavor.stringFlavor);
-                FlightControlModel.NodeType type = FlightControlModel.NodeType.fromLabel(label);
+                Transferable t = s.getTransferable();
+                String label = (String) t.getTransferData(DataFlavor.stringFlavor);
 
-                // Where was it dropped?
-                TransferHandler.DropLocation dl = (TransferHandler.DropLocation) s.getDropLocation();
-                Point drop = dl.getDropPoint();
+                FlightControlModel.NodeType type = null;
+                for (FlightControlModel.NodeType nt : FlightControlModel.NodeType.values()) {
+                    if (nt.label.equals(label)) {
+                        type = nt;
+                        break;
+                    }
+                }
+                if (type == null) {
+                    System.err.println("Unknown node type label: " + label);
+                    return false;
+                }
 
-                // Create node with its top-left near the drop point
-                int x = drop.x - 70;
-                int y = drop.y - 35;
-                model.addNode(type, x, y);
+                Point dropPoint = s.getDropLocation().getDropPoint();
+                FlightControlModel.Node newNode = model.addNode(type, dropPoint.x, dropPoint.y);
+
                 view.repaint();
                 return true;
             } catch (Exception ex) {
@@ -327,51 +363,41 @@ public final class FlightControlController {
     }
 
     private static void openNodePopup(FlightControlModel.Node node) {
-        try {
-            String[][] data = {
-                {"Block ID", String.valueOf(node.id)},
-                {"Block Type", node.type.label}
-            };
+        String[][] data = {
+            {"Block ID", String.valueOf(node.id)},
+            {"Block Type", node.type.label}
+        };
 
-            String[] cols = {"Field", "Value"};
+        String[] cols = {"Field", "Value"};
 
-            JTable table = new JTable(data, cols);
-            JScrollPane sp = new JScrollPane(table);
+        JTable table = new JTable(data, cols);
+        JScrollPane sp = new JScrollPane(table);
 
-            JDialog d = new JDialog();
-            d.setTitle("Block Configuration");
-            d.setSize(400, 200);
-            d.setLocationRelativeTo(null);
-            d.add(sp);
-            d.setVisible(true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(
-                null,
-                "Error displaying block configuration.",
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-            );
-        }
+        JDialog d = new JDialog();
+        d.setTitle("Block Configuration");
+        d.setSize(400, 200);
+        d.setLocationRelativeTo(null);
+        d.add(sp);
+        d.setVisible(true);
     }
-     // Connection validation logic
-     public static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
-    // Prevent connecting a block to itself
-    if (src == dst) return false;
 
-    // Destination cannot output to anything
-    if (src == FlightControlModel.NodeType.DESTINATION) return false;
+    // Connection validation logic
+    public static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
+        // Prevent connecting a block to itself
+        if (src == dst) return false;
 
-    // Source should not receive inputs
-    if (dst == FlightControlModel.NodeType.SOURCE) return false;
+        // Destination cannot output to anything
+        if (src == FlightControlModel.NodeType.DESTINATION) return false;
 
-    // Example: Prevent Filter connecting directly to Destination
-    if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION)
-        return false;
+        // Source should not receive inputs
+        if (dst == FlightControlModel.NodeType.SOURCE) return false;
 
-    // Default: allow connection
-    return true;
-}
+        // Example: Prevent Filter connecting directly to Destination
+        if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION)
+            return false;
+
+        // Default: allow connection
+        return true;
+    }
 
 }
