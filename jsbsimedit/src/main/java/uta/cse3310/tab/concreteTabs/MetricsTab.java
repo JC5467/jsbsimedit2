@@ -29,9 +29,8 @@ public class MetricsTab extends simpleTab {
                 System.out.println("this is in loadData() for Metrics");
                 System.out.println("data structure is " + DS.valid + " and the version is " + DS.version);
                 panel.removeAll();
-                // Next, extract the info for each data item from the datastore, and build
-                // the widgets
 		String V,L,U;
+                
                 // Wingarea
 		V = String.valueOf(DS.cfg.getMetrics().getWingarea().getValue());
                 L = "wingarea(*) = ";		 // just to make the next line simpler U,220,40,80,20
@@ -125,69 +124,49 @@ public class MetricsTab extends simpleTab {
 
                 // x y and z values for aero ref point
                 Metrics.Location Aero = DS.cfg.getMetrics().getLocation().get(0);//plan to simplify this to account for out bounds cases and reduce line count
-
-                JLabel aeroLabel = new JLabel("AeroDynamic Reference Point(*)");
-                aeroLabel.setBounds(10, 200, 300, 20);
-                panel.add(aeroLabel);
-                
+                U = String.valueOf(Aero.getUnit());
+                textFieldWUnit aeroLblWUnit = new textFieldWUnit(panel,"AeroDynamic Reference Point(*)",10, 200, 300, 20,"Unit : ",590, 240, 60, 20,U,660,240,100,20);
                 textFieldWLabel areoX = new textFieldWLabel((Double) -> Aero.getX(),DS::setDirty,panel,"X = ",30,240,120,20,String.valueOf(Aero.getX()),80,240,100,20);
                 textFieldWLabel areoY = new textFieldWLabel((Double) -> Aero.getY(),DS::setDirty,panel,"Y = ",210,240,120,20,String.valueOf(Aero.getY()),260,240,100,20);
                 textFieldWLabel areoZ = new textFieldWLabel((Double) -> Aero.getZ(),DS::setDirty,panel,"Z = ",390,240,120,20,String.valueOf(Aero.getZ()),440,240,100,20);
-                JComboBox<LengthUnit> aeroUnit = new JComboBox<>(LengthUnit.values());
-                aeroUnit.setSelectedItem(Aero.getUnit());
-                aeroUnit.setBounds(590, 240, 100, 20);
-                panel.add(aeroUnit);
-                aeroUnit.addActionListener(e -> {
-                    Aero.setUnit((LengthUnit) aeroUnit.getSelectedItem());
-                    DS.setDirty();
-                });
+
+                // JLabel aeroLabel = new JLabel("AeroDynamic Reference Point(*)");
+                // aeroLabel.setBounds(10, 200, 300, 20);
+                // panel.add(aeroLabel);          
+                // JComboBox<LengthUnit> aeroUnit = new JComboBox<>(LengthUnit.values());
+                // aeroUnit.setSelectedItem(Aero.getUnit());
+                // aeroUnit.setBounds(590, 240, 100, 20);
+                // panel.add(aeroUnit);
+                // aeroUnit.addActionListener(e -> {
+                //     Aero.setUnit((LengthUnit) aeroUnit.getSelectedItem());
+                //     DS.setDirty();
+                // });
 
                 //x y and z values for eypoint
                 Metrics.Location Eye = DS.cfg.getMetrics().getLocation().get(1);
-
-                JLabel eyeLabel = new JLabel("Eye Point");
-                eyeLabel.setBounds(10, 280, 300, 20);
-                panel.add(eyeLabel);
-
+                U = String.valueOf(Eye.getUnit());
+                textFieldWUnit eyeFieldWUnit = new textFieldWUnit(panel,"Eye Point",10, 280, 300, 20,"Unit : ",590, 320, 60, 20,U,660,320,100,20);
                 textFieldWLabel eyeX = new textFieldWLabel((Double) -> Eye.getX(),DS::setDirty,panel,"X = ",30,320,120,20,String.valueOf(Eye.getX()),80,320,100,20);
                 textFieldWLabel eyeY = new textFieldWLabel((Double) -> Eye.getY(),DS::setDirty,panel,"Y = ",210,320,120,20,String.valueOf(Eye.getY()),260,320,100,20);
                 textFieldWLabel eyeZ = new textFieldWLabel((Double) -> Eye.getZ(),DS::setDirty,panel,"Z = ",390,320,120,20,String.valueOf(Eye.getZ()),440,320,100,20);
-                JComboBox<LengthUnit> eyeUnit = new JComboBox<>(LengthUnit.values());
-                eyeUnit.setSelectedItem(Eye.getUnit());
-                eyeUnit.setBounds(590, 320, 100, 20);
-                panel.add(eyeUnit);
-                eyeUnit.addActionListener(e -> {
-                    Eye.setUnit((LengthUnit) eyeUnit.getSelectedItem());
-                    DS.setDirty();
-                });
 
                 // x y and z values for visual ref point
                 Metrics.Location Vis = DS.cfg.getMetrics().getLocation().get(2);
-
-                JLabel visLabel = new JLabel("Visual Reference Point(*)");
-                visLabel.setBounds(10, 360, 300, 20);
-                panel.add(visLabel);
-
+                U = String.valueOf(Vis.getUnit());
+                textFieldWUnit visFieldWUnit = new textFieldWUnit(panel,"Visual Reference Point(*)",10, 360, 300, 20,"Unit : ",590, 400, 60, 20,U,660,400,100,20);
                 textFieldWLabel visX = new textFieldWLabel((Double) -> Vis.getX(),DS::setDirty,panel,"X = ",30,400,120,20,String.valueOf(Vis.getX()),80,400,100,20);
                 textFieldWLabel visY = new textFieldWLabel((Double) -> Vis.getY(),DS::setDirty,panel,"Y = ",210,400,120,20,String.valueOf(Vis.getY()),260,400,100,20);
                 textFieldWLabel visZ = new textFieldWLabel((Double) -> Vis.getZ(),DS::setDirty,panel,"Z = ",390,400,120,20,String.valueOf(Vis.getZ()),440,400,100,20);
-                JComboBox<LengthUnit> visUnit = new JComboBox<>(LengthUnit.values());
-                visUnit.setSelectedItem(Vis.getUnit());
-                visUnit.setBounds(590, 400, 100, 20);
-                panel.add(visUnit);
-                visUnit.addActionListener(e -> {
-                    Vis.setUnit((LengthUnit) visUnit.getSelectedItem());
-                    DS.setDirty();
-                });
-                panel.add(new JLabel("-", SwingConstants.CENTER), BorderLayout.CENTER);
+
+                panel.add(new JLabel("", SwingConstants.CENTER), BorderLayout.CENTER);
                 
-		System.out.println("Locations:");
-		for (Metrics.Location  l : DS.cfg.getMetrics().getLocation() ) {
-                     System.out.println(l.getX());
-                     System.out.println(l.getY());
-                     System.out.println(l.getZ());
-		     System.out.println(l.getUnit());
-		}
-		System.out.println("End Locations:");
+		// System.out.println("Locations:");
+		// for (Metrics.Location  l : DS.cfg.getMetrics().getLocation() ) {
+                //      System.out.println(l.getX());
+                //      System.out.println(l.getY());
+                //      System.out.println(l.getZ());
+		//      System.out.println(l.getUnit());
+		// }
+		// System.out.println("End Locations:");
         }
 }
