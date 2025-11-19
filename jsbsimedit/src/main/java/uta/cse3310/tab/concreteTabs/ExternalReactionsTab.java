@@ -177,7 +177,15 @@ public class ExternalReactionsTab extends simpleTab {
                 
                 // Convert string to Frame enum
                 String frameStr = tableModel.getValueAt(i, 1).toString();
-                force.setFrame(Frame.fromValue(frameStr));
+                Frame frameEnum;
+
+                try {
+                    frameEnum = Frame.fromValue(frameStr);
+                } catch (IllegalArgumentException ex) {
+                    System.out.println("[ExternalReactionsTab] Invalid frame:" + frameStr + ". Defaulting to BODY.");
+                    frameEnum = Frame.BODY;
+                }
+                force.setFrame(frameEnum);
 
                 // Location
                 Location location = new Location();
