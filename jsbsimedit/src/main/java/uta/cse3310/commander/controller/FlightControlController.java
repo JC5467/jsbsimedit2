@@ -164,11 +164,25 @@ public final class FlightControlController {
 
     // ---------------- Canvas mouse/controller logic ----------------
     private static void attachMouseControllers(FlightControlView view, FlightControlModel model) {
+        final int RESIZE_MARGIN = 10;
+        final int MIN_SIZE = 40;
+
         MouseAdapter ma = new MouseAdapter() {
             private FlightControlModel.Node draggingNode = null;
             private Point dragOffset = null;
 
             private FlightControlModel.Node connectFrom = null; // node whose OUTPUT we grabbed
+
+            private FlightControlModel.Node resizingNode = null;
+            private Point resizeAnchor = null;
+
+            private boolean isInResizeZone(FlightControlModel.Node n, Point p) {
+                Rectangle b = n.bounds;
+                return p.x >= b.x + b.width - RESIZE_MARGIN &&
+                       p.x <= b.x + b.width &&
+                       p.y >= b.y + b.height - RESIZE_MARGIN &&
+                       p.y <= b.y + b.height;
+            }
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -188,6 +202,16 @@ public final class FlightControlController {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point p = e.getPoint();
+
+                FlightControlModel.Node nForResize = view.nodeAt(p);
+                if (nForResize != null && isInResizeZone(nForResize, p)) {
+                    resizingNode = nForResize;
+                    resizeAnchor = new Point(nForResize.bounds.x, nForResize.bounds.y);
+                    model.nodes.remove(nForResize);
+                    model.nodes.add(nForResize);
+                    view.repaint();
+                    return;
+                }
 
                 // Start connection if press on an output port
                 FlightControlModel.Node onOut = view.nodeWithOutputAt(p);
@@ -212,6 +236,12 @@ public final class FlightControlController {
             @Override
             public void mouseReleased(MouseEvent e) {
                 Point p = e.getPoint();
+
+                if (resizingNode != null) {
+                    resizingNode = null;
+                    resizeAnchor = null;
+                    return;
+                }
 
                 if (connectFrom != null) {
                     // Can we connect to an INPUT port?
@@ -264,9 +294,13 @@ public final class FlightControlController {
             @Override
             public void mouseMoved(MouseEvent e) {
                 // Allows the cursor to update when hovering over a node's output port or the node itself
-                if (view.nodeWithOutputAt(e.getPoint()) != null) {
+                Point p = e.getPoint();
+                FlightControlModel.Node n = view.nodeAt(p);
+                if (n != null && isInResizeZone(n, p)) {
+                    view.setCursor(Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR));
+                } else if (view.nodeWithOutputAt(e.getPoint()) != null) {
                     view.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                } else if (view.nodeAt(e.getPoint()) != null) {
+                } else if (n != null) {
                     view.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 } else {
                     view.setCursor(Cursor.getDefaultCursor());
@@ -276,6 +310,22 @@ public final class FlightControlController {
             @Override
             public void mouseDragged(MouseEvent e) {
                 Point p = e.getPoint();
+
+                if (resizingNode != null && resizeAnchor != null) {
+                    int newW = Math.max(MIN_SIZE, p.x - resizeAnchor.x);
+                    int newH = Math.max(MIN_SIZE, p.y - resizeAnchor.y);
+                    resizingNode.bounds.width = newW;
+                    resizingNode.bounds.height = newH;
+
+                    for (FlightControlModel.Edge edge : model.edges) {
+                        if (edge.from == resizingNode || edge.to == resizingNode) {
+                            edge.updatePoints();
+                        }
+                    }
+
+                    view.repaint();
+                    return;
+                }
 
                 if (connectFrom != null) {
                     // Update the preview of a potential connection
@@ -413,7 +463,7 @@ public final class FlightControlController {
     public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model, uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(view);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
         javax.swing.JPanel palette = buildPalette(view);
 
