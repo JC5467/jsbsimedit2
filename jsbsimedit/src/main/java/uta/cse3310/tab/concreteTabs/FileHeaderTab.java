@@ -8,6 +8,12 @@ import uta.cse3310.tab.simpleTab;
 import uta.cse3310.dataStore;
 import uta.cse3310.tabFrame;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import java.io.File;
+
 public class FileHeaderTab extends simpleTab {
 
     private JTextField dateField;
@@ -61,7 +67,23 @@ public class FileHeaderTab extends simpleTab {
         copyrightLbl.setBounds(20, 140, 200, 20);
         panel.add(copyrightLbl);
 
-        copyrightField = new JTextField(fh.getCopyright() != null ? fh.getCopyright() : "");
+        String copyrightText = fh.getCopyright();
+        if (copyrightText == null || copyrightText.trim().isEmpty()) {
+            try {
+                File xmlFile = new File(DS.fileName);
+                DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                Document doc = db.parse(xmlFile);
+                NodeList n = doc.getElementsByTagName("author");
+                if (n != null && n.getLength() > 0 && n.item(0).getFirstChild() != null) {
+                    copyrightText = n.item(0).getTextContent().trim();
+                }
+            } catch (Exception e) {
+                copyrightText = "";
+            }
+        }
+
+        copyrightField = new JTextField(copyrightText);
         copyrightField.setBounds(230, 140, 380, 22);
         panel.add(copyrightField);
 
