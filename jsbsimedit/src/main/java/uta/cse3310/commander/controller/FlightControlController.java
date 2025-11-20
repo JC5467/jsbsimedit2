@@ -13,6 +13,8 @@ import java.awt.event.MouseEvent;
 import java.awt.Rectangle;
 import java.io.IOException; // New import for I/O Exception handling
 import java.net.URL; // Required for getResource
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -35,6 +37,8 @@ import uta.cse3310.commander.model.FlightControlModel.NodeType;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 
 public final class FlightControlController {
+    public static final Map<FlightControlModel.NodeType, ImageIcon> ICONS = new HashMap<>();
+
     public static void start(JPanel host) {
         FlightControlModel model = new FlightControlModel();
         FlightControlView view = new FlightControlView(model);
@@ -83,22 +87,23 @@ public final class FlightControlController {
         p.setBorder(new EmptyBorder(6, 8, 6, 8));
 
         // Map names to icon files
-        String[][] items = {
-            {"Source", "source.bmp"},
-            {"Destination", "destination.bmp"},
-            {"Summer", "summer.bmp"},
-            {"PID", "pid.bmp"},
-            {"Gain", "gain.bmp"},
-            {"Filter", "filter.bmp"},
-            {"Dead Band", "deadband.bmp"},
-            {"Switch", "switch.bmp"},
-            {"Kinemat", "kinemat.bmp"},
-            {"FCSFunction", "func.bmp"}
+        Object[][] items = {
+            {FlightControlModel.NodeType.SOURCE, "source.bmp"},
+            {FlightControlModel.NodeType.DESTINATION, "destination.bmp"},
+            {FlightControlModel.NodeType.SUMMER, "summer.bmp"},
+            {FlightControlModel.NodeType.PID, "pid.bmp"},
+            {FlightControlModel.NodeType.GAIN, "gain.bmp"},
+            {FlightControlModel.NodeType.FILTER, "filter.bmp"},
+            {FlightControlModel.NodeType.DEAD_BAND, "deadband.bmp"},
+            {FlightControlModel.NodeType.SWITCH, "switch.bmp"},
+            {FlightControlModel.NodeType.KINEMAT, "kinemat.bmp"},
+            {FlightControlModel.NodeType.FCSFUNCTION, "func.bmp"}
         };
 
-        for (String[] pair : items) {
-            String labelName = pair[0];
-            String iconFile = pair[1];
+        for (Object[] pair : items) {
+            FlightControlModel.NodeType type = (FlightControlModel.NodeType) pair[0];
+            String iconFile = (String) pair[1];
+            String labelName = type.name();
 
             ImageIcon icon = null;
 
@@ -107,6 +112,9 @@ public final class FlightControlController {
 
             // 2. Try to load the icon reliably using ImageIO if the resource is found
             icon = loadReliableImageIcon(resourceUrl, iconFile);
+
+            // Store in map so dropped nodes can access it
+            ICONS.put(type, icon);
 
             // If icon is still null at this point, we will gracefully fall back to text-only
             JLabel tag;
@@ -130,7 +138,7 @@ public final class FlightControlController {
                 new TransferHandler("text") {
                     @Override
                     protected Transferable createTransferable(JComponent c) {
-                        return new StringSelection(((JLabel) c).getText());
+                        return new StringSelection(type.label);
                     }
 
                     @Override

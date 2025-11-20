@@ -14,8 +14,10 @@ import java.awt.Stroke;
 import java.awt.geom.Path2D;
 import java.util.Objects;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
+import uta.cse3310.commander.controller.FlightControlController;
 import uta.cse3310.commander.model.FlightControlModel;
 
 public class FlightControlView extends JComponent {
@@ -71,19 +73,36 @@ public class FlightControlView extends JComponent {
 
     private void paintNodes(Graphics2D g2) {
         for (FlightControlModel.Node n : model.nodes) {
-            // Body
-            g2.setColor(new Color(255, 255, 255));
-            g2.fillRoundRect(n.bounds.x, n.bounds.y, n.bounds.width, n.bounds.height, 0, 0);
-            g2.setColor(new Color(0, 0, 0));
-            g2.drawRoundRect(n.bounds.x, n.bounds.y, n.bounds.width, n.bounds.height, 0, 0);
+            // Get the icon for this node type
+            ImageIcon icon = FlightControlController.ICONS.get(n.type);
 
-            // Title
-            g2.setFont(getFont().deriveFont(Font.BOLD, 13f));
-            FontMetrics fm = g2.getFontMetrics();
-            String title = n.type.label;
-            int tx = n.bounds.x + 10;
-            int ty = n.bounds.y + fm.getAscent() + 8;
-            g2.drawString(title, tx, ty);
+            if(icon != null) {
+                // Draw icon
+                g2.drawImage(
+                    icon.getImage(),
+                    n.bounds.x,
+                    n.bounds.y,
+                    n.bounds.width,
+                    n.bounds.height,
+                    null
+                );
+            }
+            else{
+                // Fallback if no icon is found
+                // Body
+                g2.setColor(new Color(255, 255, 255));
+                g2.fillRoundRect(n.bounds.x, n.bounds.y, n.bounds.width, n.bounds.height, 0, 0);
+                g2.setColor(new Color(0, 0, 0));
+                g2.drawRoundRect(n.bounds.x, n.bounds.y, n.bounds.width, n.bounds.height, 0, 0);
+
+                // Title
+                g2.setFont(getFont().deriveFont(Font.BOLD, 13f));
+                FontMetrics fm = g2.getFontMetrics();
+                String title = n.type.label;
+                int tx = n.bounds.x + 10;
+                int ty = n.bounds.y + fm.getAscent() + 8;
+                g2.drawString(title, tx, ty);
+            }
 
             // Ports
             Rectangle inR = n.inputPortRect(PORT_SIZE);

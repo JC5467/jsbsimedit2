@@ -52,7 +52,7 @@ public class FlightControlModel {
         public Node(int id, NodeType type, int x, int y) {
             this.id = id;
             this.type = type;
-            this.bounds = new Rectangle(x, y, 140, 70);
+            this.bounds = new Rectangle(x, y, 80, 80);
         }
 
         // Single input on left-center; single output on right-center (prototype simplicity)
