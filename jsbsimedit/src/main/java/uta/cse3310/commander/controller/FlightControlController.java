@@ -400,4 +400,24 @@ public final class FlightControlController {
         return true;
     }
 
+
+
+    public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model, uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
+        javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(view);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
+
+        javax.swing.JPanel palette = buildPalette(view);
+
+        host.setLayout(new java.awt.BorderLayout());
+        host.add(palette, java.awt.BorderLayout.NORTH);
+        host.add(scrollPane, java.awt.BorderLayout.CENTER);
+
+        attachMouseControllers(view, model);
+        view.setTransferHandler(new CanvasDropHandler(model, view));
+    }
+
+
+
+
 }

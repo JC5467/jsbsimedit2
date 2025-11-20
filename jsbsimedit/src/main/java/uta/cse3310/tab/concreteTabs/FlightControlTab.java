@@ -3,10 +3,8 @@ package uta.cse3310.tab.concreteTabs;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 
-import generated.FdmConfig;
 
 import uta.cse3310.dataStore;
-import uta.cse3310.tab.baseTab;
 import uta.cse3310.tab.simpleTab;
 import uta.cse3310.tabFrame;
 
@@ -17,7 +15,7 @@ import uta.cse3310.tab.concreteTabs.flightcontrol.*;
 public class FlightControlTab extends simpleTab {
 
     private tabFrame TF;
-    private dataStore DS;
+    private dataStore DS; //XML Data
 
     private JTabbedPane subTabs;
 
@@ -31,6 +29,7 @@ public class FlightControlTab extends simpleTab {
     private SpeedbrakeSubTab speedbrake;
     private LandingGearSubTab landingGear;
     
+
     public FlightControlTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
 
@@ -42,14 +41,16 @@ public class FlightControlTab extends simpleTab {
         subTabs = new JTabbedPane();
 
 
-        pitch = new PitchSubTab(TF, DS, "Pitch");
-        roll = new RollSubTab(TF, DS, "Roll");
-        yaw = new YawSubTab(TF, DS, "Yaw");
-        lef = new LEFSubTab(TF, DS, "Leading Edge Flap");
-        throttle = new ThrottleSubTab(TF, DS, "Throttle");
-        flaps = new FlapsSubTab(TF, DS, "Flaps");
-        speedbrake = new SpeedbrakeSubTab(TF, DS, "Speedbrake");
-        landingGear = new LandingGearSubTab(TF, DS, "Landing Gear");
+        pitch = new PitchSubTab(tf, ds, "Pitch");
+        roll = new RollSubTab(tf, ds, "Roll");
+        yaw = new YawSubTab(tf, ds, "Yaw");
+        lef = new LEFSubTab(tf, ds, "Leading Edge Flap");
+        throttle = new ThrottleSubTab(tf, ds, "Throttle");
+        flaps = new FlapsSubTab(tf, ds, "Flaps");
+        speedbrake = new SpeedbrakeSubTab(tf, ds, "Speedbrake");
+        landingGear = new LandingGearSubTab(tf, ds, "Landing Gear");
+
+        subTabs = new JTabbedPane();
 
         subTabs.addTab("Pitch", pitch.buildPanel());
         subTabs.addTab("Roll", roll.buildPanel());
