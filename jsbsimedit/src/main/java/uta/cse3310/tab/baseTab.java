@@ -15,12 +15,11 @@ public class baseTab {
     public Integer version;
 
     public void loadData() {
-        System.out.println("i am in basetab loadData");
+        
     }
 
     public baseTab(dataStore ds, String LABEL) {
 
-        System.out.println("in base Tab constructor");
         // this is common to all tabs
         DS = ds; // save off a pointer to the data store
         version = DS.version;

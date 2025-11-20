@@ -27,9 +27,7 @@ public class tabFrame {
     private JFrame mainFrame; 
 
     public void dataLoaded() {
-        System.out.println("in dataLoaded");
         for (baseTab t : frameTabs) {
-            System.out.println("the label is " + t.label);
             t.loadData();
         }
     }
@@ -54,7 +52,6 @@ public class tabFrame {
     }
 
     public tabFrame() {
-        System.out.println("in tabFrame constructor");
 
         dataStore DS = new dataStore(this);
         new JSBSimCommanderApp(DS);

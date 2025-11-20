@@ -11,7 +11,6 @@ public class simpleTab extends baseTab {
     public simpleTab(dataStore ds, String label) {
 
         super(ds, label);
-        System.out.println("in simpleTab constructor");
         // i expect some code will accumulate here.
         // a 'peer' of this class would be "dragAndDropTab" which would be inherited by
         // a few concrete implementations.

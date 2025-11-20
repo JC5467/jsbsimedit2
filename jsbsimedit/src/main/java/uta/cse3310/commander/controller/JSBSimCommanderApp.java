@@ -47,7 +47,6 @@ public class JSBSimCommanderApp implements ActionListener {
 		if (e.getSource() == Open_XML) {
 			FileBrowser fb = new FileBrowser();
 			if (fb.File_Found == true) {
-				System.out.println("opening xml file");
 				// build up the data store
 				DS.openFile(fb.Chosen_file);
 				// open the Aircraft Commander with the dataStore

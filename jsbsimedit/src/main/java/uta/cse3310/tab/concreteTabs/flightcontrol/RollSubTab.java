@@ -40,7 +40,6 @@ public class RollSubTab {
 
     //later add a load from XML method
     public void loadData() {
-        System.out.println("RollSubTab: loadData called");
 
         model.nodes.clear();
         model.edges.clear();

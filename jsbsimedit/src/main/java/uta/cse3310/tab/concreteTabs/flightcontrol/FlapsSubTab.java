@@ -42,7 +42,6 @@ public class FlapsSubTab {
 
     //later add a load from XML method
     public void loadData() {
-        System.out.println("FlapsSubTab: loadData called");
 
         model.nodes.clear();
         model.edges.clear();

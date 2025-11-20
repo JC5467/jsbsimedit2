@@ -35,7 +35,6 @@ public class FileBrowser {
 		File_Found = false;
 		if (fc.showOpenDialog(Open) == JFileChooser.APPROVE_OPTION) {
 			Chosen_file = fc.getSelectedFile();
-			System.out.println("Chosen file: " + Chosen_file.getName());
 			File_Found = true;
 		}
 	}

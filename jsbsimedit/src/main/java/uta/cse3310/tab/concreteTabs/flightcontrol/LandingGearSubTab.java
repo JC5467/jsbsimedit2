@@ -41,7 +41,6 @@ public class LandingGearSubTab {
 
     //later add a load from XML method
     public void loadData() {
-        System.out.println("LandingGearSubTab: loadData called");
 
         model.nodes.clear();
         model.edges.clear();

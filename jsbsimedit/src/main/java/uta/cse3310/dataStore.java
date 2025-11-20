@@ -31,7 +31,6 @@ public class dataStore {
     public boolean dirty;
 
     public void setDirty() {
-        System.out.println("setDirty");
         dirty = true;
     }
 
@@ -50,12 +49,10 @@ public class dataStore {
     }
 
     public void clearDirty() {
-        System.out.println("setUndirty");
         dirty = false;
     }
 
     public dataStore(tabFrame TF) {
-        System.out.println("in the constructor for dataStore");
         valid = false;
         fileName = "";
         version = 0;
@@ -67,8 +64,6 @@ public class dataStore {
         // right now, there is a defect in that the fileBrowser only
         // processes one event. so you can only open one file, you cannot open another
         // one. i am leaving that defect to someone else.
-        System.out.println("in openFile");
-        System.out.println("the file name is " + f);
         fileName = f.getPath();
 
         FdmConfig tempCfg = null;

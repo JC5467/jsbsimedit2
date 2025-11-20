@@ -25,7 +25,6 @@ public class PropulsionTab extends simpleTab
     {
         super(ds, label);
         TF = tf;
-        System.out.println("in Propulsion constructor");
         
 
         panel.setLayout(new BorderLayout());
@@ -232,7 +231,6 @@ public void loadData()
         {
             String pair = eName + " + " + tName;
             subscribedModel.addElement(pair);
-            System.out.println("New pair added: " + pair);
         }
         else 
         {
@@ -246,7 +244,6 @@ public void loadData()
         if (selected != null)
         {
             subscribedModel.removeElement(selected);
-            System.out.println("Pair deleted: " + selected);
         }
     });
 

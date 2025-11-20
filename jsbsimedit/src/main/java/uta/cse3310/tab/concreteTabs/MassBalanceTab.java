@@ -12,7 +12,6 @@ public class MassBalanceTab extends simpleTab {
 
     public MassBalanceTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
-        System.out.println("in MassBalance constructor");
 
         // what is unique about this tab....
         TF = tf;

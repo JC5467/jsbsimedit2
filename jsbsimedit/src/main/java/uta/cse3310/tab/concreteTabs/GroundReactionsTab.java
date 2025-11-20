@@ -34,7 +34,6 @@ public class GroundReactionsTab extends simpleTab {
     
     public GroundReactionsTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
-        System.out.println("in GroundReactions constructor");
 
         TF = tf;
         panel.setLayout(new BorderLayout());

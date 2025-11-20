@@ -36,9 +36,6 @@ public class AerodynamicsTab extends simpleTab {
     @Override
     public void loadData() {
 
-        System.out.println("in loadData() for Aerodynamics");
-        System.out.println("data structure is " + DS.valid + " and the version is " + DS.version);
-
         panel.removeAll();
 
         Aerodynamics aero = DS.cfg.getAerodynamics();

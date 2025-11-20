@@ -23,7 +23,6 @@ public class ExternalReactionsTab extends simpleTab {
     public ExternalReactionsTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
         TF = tf;
-        System.out.println("in ExternalReactions constructor");
         
         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
     }
@@ -31,8 +30,6 @@ public class ExternalReactionsTab extends simpleTab {
 
      
     public void loadData() {
-        System.out.println("this is in loadData() for ExternalReactions");
-        System.out.println("data structure is " + DS.valid + " and the version is " + DS.version);
 
         // Remove all existing widgets
         panel.removeAll();
@@ -129,18 +126,10 @@ public class ExternalReactionsTab extends simpleTab {
 
                     // Add to table 
                     tableModel.addRow(new Object[]{name, frameStr, unit, locX, locY, locZ, dirX, dirY, dirZ});
-                    
-                    // Identify special forces
-                    if ("pushback".equals(name)) {
-                        System.out.println("Loaded pushback force for ground operations");
-                    } else if ("hook".equals(name)) {
-                        System.out.println("Loaded hook force for arrested landings");
-                    }
                 }
             }
         }
 
-        System.out.println("Loaded external reactions from dataStore");
 
         panel.revalidate();
         panel.repaint();
@@ -209,7 +198,6 @@ public class ExternalReactionsTab extends simpleTab {
             DS.setDirty();
             
             JOptionPane.showMessageDialog(panel, "Saved " + tableModel.getRowCount() + " forces to dataStore");
-            System.out.println("Saved " + tableModel.getRowCount() + " forces to dataStore");
 
         } catch (Exception e) {
             e.printStackTrace();

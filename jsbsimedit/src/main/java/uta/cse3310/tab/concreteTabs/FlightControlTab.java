@@ -69,7 +69,6 @@ public class FlightControlTab extends simpleTab {
     public void loadData() {
 	    // a new file has been loaded.
 	    // it is in the dataStore at this point.
-	    System.out.println("FlightControlTab: loadData() triggered - XML is loaded");
 	    // probably need to call a function in all of the subTabs that
 	    // says "hey dude, the data in dataStore has changed"
 

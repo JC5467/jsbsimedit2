@@ -40,7 +40,6 @@ public class SpeedbrakeSubTab {
 
     //later add a load from XML method
     public void loadData() {
-        System.out.println("SpeedbrakeSubTab: loadData called");
 
         model.nodes.clear();
         model.edges.clear();

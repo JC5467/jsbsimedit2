@@ -40,7 +40,6 @@ public class ThrottleSubTab {
 
     //later add a load from XML method
     public void loadData() {
-        System.out.println("ThrottleSubTab: loadData called");
 
         model.nodes.clear();
         model.edges.clear();

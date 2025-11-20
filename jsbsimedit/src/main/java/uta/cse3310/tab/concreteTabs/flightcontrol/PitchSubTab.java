@@ -44,7 +44,6 @@ public class PitchSubTab {
 
     //later add a load from XML method
     public void loadData() {
-        System.out.println("PitchSubTab: loadData called");
 
         model.nodes.clear();
         model.edges.clear();
