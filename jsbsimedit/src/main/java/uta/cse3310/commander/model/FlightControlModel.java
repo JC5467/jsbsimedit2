@@ -1,9 +1,12 @@
 package uta.cse3310.commander.model;
 
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.ImageIcon;
 
 public class FlightControlModel {
 
@@ -44,6 +47,7 @@ public class FlightControlModel {
         public final int id;
         public NodeType type;
         public Rectangle bounds; // x,y,width,height
+        public ImageIcon icon;
 
         public Node(int id, NodeType type, int x, int y) {
             this.id = id;
