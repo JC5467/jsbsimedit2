@@ -18,9 +18,6 @@ public class textFieldWUnit {
     		Integer labelW, Integer labelH,String unitS,Integer unitX, Integer unitY, Integer unitW,
                 Integer unitH, String unit, Integer boxX, Integer boxY, Integer boxW,
                 Integer boxH){
-        
-                System.out.println("in textFieldWUnit widget constructor");
-                        
                 JComboBox unitBoxLen = new JComboBox<>(LengthUnit.values());
                 JComboBox unitBoxArea = new JComboBox<>(AreaUnit.values());
                 String search = "area";

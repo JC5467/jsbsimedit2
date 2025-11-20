@@ -3,11 +3,17 @@ package uta.cse3310.tab.widgets;
 import uta.cse3310.tab.widgets.dirtyFunction;
 import uta.cse3310.tab.widgets.setValFunction;
 
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import generated.AreaUnit;
+import generated.LengthUnit;
+import generated.Metrics;
+
 import java.awt.event.FocusListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusAdapter;
@@ -18,24 +24,47 @@ public class textFieldWLabel {
         private JLabel label;
         private JTextField tf;
         private JLabel jl;
-	// if you want a label, use this one...
+	// if you want a label + unit, use this one...
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
                         Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
-                        Integer textH , String unit, Integer unitX, Integer unitY, Integer unitW, Integer unitH) {
+                        Integer textH, String unit, Integer boxX, Integer boxY, Integer boxW,
+                        Integer boxH){
 
                 this(SF,DF,panel,labelText,labelX,labelY,labelW,labelH,text,textX,textY,textW,textH);
-                System.out.println("in textFieldWLabel widget (with units) constructor");
-                jl = new JLabel(unit);
-                jl.setBounds(unitX,unitY,unitW,unitH);
-                panel.add(jl);
+                String search = "area";
+                
+                label = new JLabel(labelText);
+                label.setBounds(labelX, labelY, labelW, labelH);
+                panel.add(label);
+                
+                if(labelText.toLowerCase().indexOf(search.toLowerCase()) != -1){
+                        JComboBox unitBoxArea = new JComboBox<>(AreaUnit.values());
+                        AreaUnit AU = AreaUnit.valueOf(unit);
+                        unitBoxArea.setSelectedItem(AU);
+                        unitBoxArea.setBounds(boxX,boxY,boxW,boxH);
+                        panel.add(unitBoxArea);
+                        // unitBoxArea.addActionListener(e -> {
+                        // loc.setUnit((LengthUnit) unitBoxArea.getSelectedItem());
+                        // DF.set();
+                        // });
+                        }
+                        else{
+                        JComboBox unitBoxLen = new JComboBox<>(LengthUnit.values());
+                        LengthUnit LU = LengthUnit.valueOf(unit);
+                        unitBoxLen.setSelectedItem(LU);
+                        unitBoxLen.setBounds(boxX,boxY,boxW,boxH);
+                        panel.add(unitBoxLen);
+                        // unitBoxLen.addActionListener(e -> {
+                         // loc.setUnit((LengthUnit) unitBoxLen.getSelectedItem());
+                        // DF.set();
+                        // });
+                }
 	}
 
 	// the original
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
                         Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
                         Integer textH ) {
-                System.out.println("in textFieldWLabel widget constructor");
-
                 label = new JLabel(labelText);
                 label.setBounds(labelX, labelY, labelW, labelH);
                 panel.add(label);
