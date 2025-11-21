@@ -28,6 +28,7 @@ public class FlightControlTab extends simpleTab {
     private FlapsSubTab flaps;
     private SpeedbrakeSubTab speedbrake;
     private LandingGearSubTab landingGear;
+    private CanopySubTab canopy;
     
 
     public FlightControlTab(tabFrame tf, dataStore ds, String label) {
@@ -49,6 +50,7 @@ public class FlightControlTab extends simpleTab {
         flaps = new FlapsSubTab(tf, ds, "Flaps");
         speedbrake = new SpeedbrakeSubTab(tf, ds, "Speedbrake");
         landingGear = new LandingGearSubTab(tf, ds, "Landing Gear");
+        canopy = new CanopySubTab(tf, ds, "Canopy");
 
         subTabs = new JTabbedPane();
 
@@ -60,6 +62,7 @@ public class FlightControlTab extends simpleTab {
         subTabs.addTab("Flaps", flaps.buildPanel());
         subTabs.addTab("Speedbrake", speedbrake.buildPanel());
         subTabs.addTab("Landing Gear", landingGear.buildPanel());
+        subTabs.addTab("Canopy", canopy.buildPanel());
   
 
         panel.add(subTabs, BorderLayout.CENTER);
@@ -80,6 +83,7 @@ public class FlightControlTab extends simpleTab {
         flaps.loadData();
         speedbrake.loadData();
         landingGear.loadData();
+        canopy.loadData();
 
     }
 }

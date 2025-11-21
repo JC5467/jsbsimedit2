@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.event.*;
 import uta.cse3310.dataStore;
+import uta.cse3310.commander.controller.FileBrowser;
+import uta.cse3310.commander.controller.AirCraftModel;
 
 public class JSBSimCommanderApp implements ActionListener {
 	JButton Open_XML;
