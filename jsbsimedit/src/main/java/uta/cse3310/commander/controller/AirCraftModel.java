@@ -30,8 +30,8 @@ public class AirCraftModel implements ActionListener {
 			e.printStackTrace();
 		}
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
-		frame.setLocationRelativeTo(null);
+		frame.setSize(300, 150);
+		// Location will be set by caller to preserve position
 		// Buttons
 		Save_XML = new JButton("Save");
 		SaveAs_XML = new JButton("Save As...");
@@ -83,8 +83,9 @@ public class AirCraftModel implements ActionListener {
 			if (fb.File_Found == true) {
 				// load new file into data store
 				DS.openFile(fb.Chosen_file);
-				// reopen Aircraft Commander to refresh state
-				new AirCraftModel(DS);
+				// reopen Aircraft Commander to refresh state, preserving location
+				AirCraftModel acm = new AirCraftModel(DS);
+				acm.frame.setLocation(frame.getLocation());
 				frame.dispose(); // Close current Aircraft Commander
 			}
 		}
@@ -106,7 +107,8 @@ public class AirCraftModel implements ActionListener {
 				DS.fileName = "";
 				DS.setDirty();
 
-				new AirCraftModel(DS);
+				AirCraftModel acm = new AirCraftModel(DS);
+				acm.frame.setLocation(frame.getLocation());
 				frame.dispose();
 
 				JOptionPane.showMessageDialog(null,

@@ -49,8 +49,9 @@ public class JSBSimCommanderApp implements ActionListener {
 			if (fb.File_Found == true) {
 				// build up the data store
 				DS.openFile(fb.Chosen_file);
-				// open the Aircraft Commander with the dataStore
-				new AirCraftModel(DS); 
+				// open the Aircraft Commander with the dataStore, preserving location
+				AirCraftModel acm = new AirCraftModel(DS);
+				acm.frame.setLocation(frame.getLocation());
 				frame.dispose();
 			}
 		}
