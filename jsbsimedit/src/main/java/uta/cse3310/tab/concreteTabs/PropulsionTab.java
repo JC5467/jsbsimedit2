@@ -299,12 +299,37 @@ public void loadData()
 
     btnDetailTank.addActionListener(e -> 
     {
-        String selected = tanksList.getSelectedValue();
-        if (selected != null)
+        int selectedIndex = tanksList.getSelectedIndex();
+        if (selectedIndex == -1)
         {
-            // Show full info including location and capacity
-            JOptionPane.showMessageDialog(panel, "Details for tank:\n" + selected);
+            JOptionPane.showMessageDialog(panel, "Please select a tank to edit.", "No Selection", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        // Find the Tank object in the XML
+        Tank tank = null;
+        int index = 0;
+        for (Object obj : DS.cfg.getPropulsion().getDocumentationOrPropertyOrFunction()) 
+        {
+            if (obj instanceof Tank) 
+            {
+                if (index == selectedIndex)
+                {
+                    tank = (Tank) obj;
+                    break;
+                }
+                index++;
+            }
+        }
+
+        if (tank == null)
+        {
+            JOptionPane.showMessageDialog(panel, "Tank not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Create editable dialog for tank properties
+        showTankEditDialog(tank, selectedIndex);
     });
 
     panel.revalidate();
@@ -312,11 +337,162 @@ public void loadData()
 }
 
 
+private void showTankEditDialog(Tank tank, int tankIndex)
+{
+    // Create dialog
+    JDialog dialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(panel), "Edit Tank", true);
+    dialog.setSize(500, 400);
+    dialog.setLocationRelativeTo(panel);
 
+    // Form panel
+    JPanel formPanel = new JPanel(new GridLayout(0, 2, 10, 10));
+    formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+    // Tank Type
+    JTextField typeField = new JTextField(tank.getType() != null ? tank.getType() : "");
+    formPanel.add(new JLabel("Tank Type:"));
+    formPanel.add(typeField);
+
+    // Location fields
+    double locX = 0, locY = 0, locZ = 0;
+    String locUnit = "IN";
+    if (tank.getLocation() != null)
+    {
+        locX = tank.getLocation().getX();
+        locY = tank.getLocation().getY();
+        locZ = tank.getLocation().getZ();
+        locUnit = tank.getLocation().getUnit() != null ? tank.getLocation().getUnit().value() : "IN";
+    }
+
+    JTextField xField = new JTextField(String.valueOf(locX));
+    JTextField yField = new JTextField(String.valueOf(locY));
+    JTextField zField = new JTextField(String.valueOf(locZ));
+    
+    String[] locationUnits = {"IN", "FT", "M"};
+    JComboBox<String> locUnitCombo = new JComboBox<>(locationUnits);
+    locUnitCombo.setSelectedItem(locUnit);
+
+    formPanel.add(new JLabel("Location X:"));
+    formPanel.add(xField);
+    formPanel.add(new JLabel("Location Y:"));
+    formPanel.add(yField);
+    formPanel.add(new JLabel("Location Z:"));
+    formPanel.add(zField);
+    formPanel.add(new JLabel("Location Unit:"));
+    formPanel.add(locUnitCombo);
+
+    // Capacity fields
+    double capValue = 0;
+    String capUnit = "LBS";
+    if (tank.getCapacity() != null)
+    {
+        capValue = tank.getCapacity().getValue();
+        capUnit = tank.getCapacity().getUnit() != null ? tank.getCapacity().getUnit().value() : "LBS";
+    }
+
+    JTextField capField = new JTextField(String.valueOf(capValue));
+    String[] capacityUnits = {"LBS", "KG", "GAL"};
+    JComboBox<String> capUnitCombo = new JComboBox<>(capacityUnits);
+    capUnitCombo.setSelectedItem(capUnit);
+
+    formPanel.add(new JLabel("Capacity:"));
+    formPanel.add(capField);
+    formPanel.add(new JLabel("Capacity Unit:"));
+    formPanel.add(capUnitCombo);
+
+    // Contents field (Mass object)
+    double contentsValue = 0;
+    String contentsUnit = "LBS";
+    if (tank.getContents() != null)
+    {
+        contentsValue = tank.getContents().getValue();
+        contentsUnit = tank.getContents().getUnit() != null ? tank.getContents().getUnit().value() : "LBS";
+    }
+    JTextField contentsField = new JTextField(String.valueOf(contentsValue));
+    JComboBox<String> contentsUnitCombo = new JComboBox<>(capacityUnits);
+    contentsUnitCombo.setSelectedItem(contentsUnit);
+    
+    formPanel.add(new JLabel("Contents:"));
+    formPanel.add(contentsField);
+    formPanel.add(new JLabel("Contents Unit:"));
+    formPanel.add(contentsUnitCombo);
+
+    // Priority field (optional)
+    if (tank.getPriority() != null)
+    {
+        JTextField priorityField = new JTextField(String.valueOf(tank.getPriority()));
+        formPanel.add(new JLabel("Priority:"));
+        formPanel.add(priorityField);
+    }
+
+    // Button panel
+    JPanel buttonPanel = new JPanel();
+    JButton okButton = new JButton("OK");
+    JButton cancelButton = new JButton("Cancel");
+
+    okButton.addActionListener(ev -> 
+    {
+        try
+        {
+            // Update tank properties
+            tank.setType(typeField.getText());
+
+            // Update location
+            if (tank.getLocation() == null)
+            {
+                tank.setLocation(new generated.Location());
+            }
+            tank.getLocation().setX(Double.parseDouble(xField.getText()));
+            tank.getLocation().setY(Double.parseDouble(yField.getText()));
+            tank.getLocation().setZ(Double.parseDouble(zField.getText()));
+            tank.getLocation().setUnit(generated.LengthUnit.fromValue((String) locUnitCombo.getSelectedItem()));
+
+            // Update capacity
+            if (tank.getCapacity() == null)
+            {
+                tank.setCapacity(new Mass());
+            }
+            tank.getCapacity().setValue(Double.parseDouble(capField.getText()));
+            tank.getCapacity().setUnit(generated.MassUnit.fromValue((String) capUnitCombo.getSelectedItem()));
+
+            // Update contents
+            if (tank.getContents() == null)
+            {
+                tank.setContents(new Mass());
+            }
+            tank.getContents().setValue(Double.parseDouble(contentsField.getText()));
+            tank.getContents().setUnit(generated.MassUnit.fromValue((String) contentsUnitCombo.getSelectedItem()));
+
+            // Refresh the display
+            loadData();
+
+            dialog.dispose();
+        }
+        catch (NumberFormatException ex)
+        {
+            JOptionPane.showMessageDialog(dialog, "Invalid number format. Please check your inputs.", "Input Error", JOptionPane.ERROR_MESSAGE);
+        }
+    });
+
+    cancelButton.addActionListener(ev -> dialog.dispose());
+
+    buttonPanel.add(okButton);
+    buttonPanel.add(cancelButton);
+
+    // Layout
+    dialog.setLayout(new BorderLayout());
+    dialog.add(formPanel, BorderLayout.CENTER);
+    dialog.add(buttonPanel, BorderLayout.SOUTH);
+
+    dialog.setVisible(true);
+}
 
 
 }
+
+
+
+
 
 
 
