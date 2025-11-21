@@ -267,12 +267,7 @@ public final class FlightControlController {
                             return;
                         }
 
-                        Rectangle dstInputRect = dst.inputPortRect(FlightControlView.PORT_SIZE);
-                        if (!dstInputRect.contains(p)) {
-                            JOptionPane.showMessageDialog(null,
-                            "Connections must be made to the input port of the destination node.",
-                            "Connection Error",
-                            JOptionPane.ERROR_MESSAGE);
+                        if (!dst.bounds.contains(p)) {
                             connectFrom = null;
                             view.clearConnectionPreview();
                             return;
@@ -463,7 +458,7 @@ public final class FlightControlController {
     public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model, uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(view);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
 
         javax.swing.JPanel palette = buildPalette(view);
 

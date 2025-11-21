@@ -11,7 +11,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.geom.Path2D;
 import java.util.Objects;
 
 import javax.swing.ImageIcon;
@@ -76,7 +75,7 @@ public class FlightControlView extends JComponent {
             // Get the icon for this node type
             ImageIcon icon = FlightControlController.ICONS.get(n.type);
 
-            if(icon != null) {
+            if (icon != null) {
                 // Draw icon
                 g2.drawImage(
                     icon.getImage(),
@@ -86,8 +85,7 @@ public class FlightControlView extends JComponent {
                     n.bounds.height,
                     null
                 );
-            }
-            else{
+            } else {
                 // Fallback if no icon is found
                 // Body
                 g2.setColor(new Color(255, 255, 255));
@@ -107,15 +105,6 @@ public class FlightControlView extends JComponent {
             // Ports
             Rectangle inR = n.inputPortRect(PORT_SIZE);
             Rectangle outR = n.outputPortRect(PORT_SIZE);
-
-            g2.setColor(new Color(90, 180, 255));
-            g2.fillRect(inR.x, inR.y, inR.width, inR.height);
-            g2.setColor(new Color(255, 120, 120));
-            g2.fillRect(outR.x, outR.y, outR.width, outR.height);
-
-            g2.setColor(new Color(255, 255, 255, 160));
-            g2.drawRect(inR.x, inR.y, inR.width, inR.height);
-            g2.drawRect(outR.x, outR.y, outR.width, outR.height);
         }
     }
 
