@@ -113,8 +113,9 @@ public class BuoyantForcesTab extends baseTab {
         detailsArea.setText("");
 
         BuoyantForces bf = DS.cfg.getBuoyantForces();
-        if (bf == null || bf.getGasCell().isEmpty()) {
-            gasCellModel.addElement("No gas cells in XML");
+        if (bf == null || bf.getGasCell() == null || bf.getGasCell().isEmpty()) {
+            gasCellModel.addElement("No Buoyant Forces defined in this XML file.");
+            detailsArea.setText("This aircraft configuration does not include any buoyant forces.");
             return;
         }
 
@@ -128,9 +129,13 @@ public class BuoyantForcesTab extends baseTab {
 
 
     private GasCell getSelectedGas() {
+        BuoyantForces bf = DS.cfg.getBuoyantForces();
+        if (bf == null || bf.getGasCell() == null || bf.getGasCell().isEmpty()) {
+            return null;  //avoids NullPointerException
+        }
         int i = gasCellList.getSelectedIndex();
-        if (i < 0) return null;
-        return DS.cfg.getBuoyantForces().getGasCell().get(i);
+        if (i < 0 || i >= bf.getGasCell().size()) return null;
+        return bf.getGasCell().get(i);
     }
 
     private Ballonet getSelectedBal() {
