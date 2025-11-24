@@ -487,7 +487,31 @@ private void showTankEditDialog(Tank tank, int tankIndex)
     dialog.setVisible(true);
 }
 
+private void showPairEditDialog(String pair) {
+    // Example pair format: {F100-PW-229} + {F100-PW-229}
+    String[] parts = pair.split("\\+");  // Split at "+"
+    String engine = parts.length > 0 ? parts[0].trim().replace("{","").replace("}","") : "";
+    String thruster = parts.length > 1 ? parts[1].trim().replace("{","").replace("}","") : "";
 
+    JTextField engineField = new JTextField(engine);
+    JTextField thrusterField = new JTextField(thruster);
+
+    JPanel panel = new JPanel(new GridLayout(2, 2, 5, 5));
+    panel.add(new JLabel("Engine:"));
+    panel.add(engineField);
+    panel.add(new JLabel("Thruster:"));
+    panel.add(thrusterField);
+
+    int result = JOptionPane.showConfirmDialog(panel, panel, "Edit Pair", JOptionPane.OK_CANCEL_OPTION);
+
+    if (result == JOptionPane.OK_OPTION) {
+        String newPair = "{" + engineField.getText() + "} + {" + thrusterField.getText() + "}";
+        int idx = subscribedModel.indexOf(pair);
+        if (idx >= 0) {
+            subscribedModel.set(idx, newPair);
+        }
+    }
+}
 }
 
 
