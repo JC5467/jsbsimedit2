@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
+import java.awt.geom.Path2D;
 import java.util.Objects;
 
 import javax.swing.ImageIcon;
@@ -128,10 +129,54 @@ public class FlightControlView extends JComponent {
 
     // Orthogonal polyline using midpoint rule
     private void drawOrth(Graphics2D g2, Point a, Point b) {
-        g2.drawLine(a.x, a.y, b.x, b.y);
+        double xmid = a.x + (b.x - a.x) / 2;
+        double ymid = a.y + (b.y - a.y) / 2;
+        int  buffer = 20;
+        double x1, x2, y1;
+        x1 = a.x + buffer;
+        
+        // Edge routing logic - units are in pixels
+        if ((a.x < b.x + 80) && (a.x > b.x - 20)) {
+            x2 = a.x - 100;
+        } else {
+            x2 = b.x - buffer;
+        }
+        if (a.y > b.y) {
+            y1 = a.y + (buffer * 3);
+            if (a.y > b.y + 100) {
+                y1 = ymid;
+                if (a.x > b.x - 20) {
+                    x2 = b.x - buffer;
+                }
+            }
+        } else {
+            y1 = a.y - (buffer * 3);
+            if (a.y < b.y - 100) {
+                y1 = ymid;
+                if (a.x > b.x - 20) {
+                    x2 = b.x - buffer;
+                }
+            }
+        }
+
+        // Draw the path behind the nodes if they are too close
+        Path2D path = new Path2D.Double();
+        path.moveTo(a.x, a.y);
+        if (a.x > b.x - 20) {
+            path.lineTo(x1, a.y);
+            path.lineTo(x1, y1);
+            path.lineTo(x2, y1);
+            path.lineTo(x2, b.y);
+            path.lineTo(b.x, b.y); 
+        } else {
+            path.lineTo(xmid, a.y);
+            path.lineTo(xmid, b.y);
+            path.lineTo(b.x, b.y); 
+        }
+        g2.draw(path);
     }
 
-    // ---- Small helpers used by the controller ----
+    // Small helpers used by the controller 
     public FlightControlModel.Node nodeAt(Point p) {
         for (int i = model.nodes.size() - 1; i >= 0; --i) { // top-most first
             FlightControlModel.Node n = model.nodes.get(i);
@@ -154,25 +199,26 @@ public class FlightControlView extends JComponent {
         return null;
     }
 
+    // edges between nodes are only cardinal dir now, so arrow angle calc. no longer needed
     private void drawArrowHead(Graphics2D g2, Point from, Point to){
-        double phi = Math.toRadians(20);
-        int barb = 10;
+        //double phi = Math.toRadians(20);
+        //int barb = 10;
 
-        double dy = to.y - from.y;
-        double dx = to.x - from.x;
-        double theta = Math.atan2(dy, dx);
+        //double dy = to.y - from.y;
+        //double dx = to.x - from.x;
+        //double theta = Math.atan2(dy, dx);
 
-        double x, y, rho;
+        double x, y; 
+        //double rho;
 
-        rho = theta + phi;
-        x = to.x - barb * Math.cos(rho);
-        y = to.y - barb * Math.sin(rho);
+        //rho = theta + phi;
+        x = to.x - 10;
+        y = to.y - 6;
         g2.drawLine(to.x, to.y, (int)x, (int)y);
 
-        rho = theta - phi;
-        x = to.x - barb * Math.cos(rho);
-        y = to.y - barb * Math.sin(rho);
+        //rho = theta - phi;
+        x = to.x - 10;
+        y = to.y + 6;
         g2.drawLine(to.x, to.y, (int)x, (int)y);
-
     }
 }
