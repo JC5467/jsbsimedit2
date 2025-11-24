@@ -70,7 +70,6 @@ public class AerodynamicsTab extends simpleTab {
         panel.repaint();
     }
 
-    /** Build UI for one <axis> section */
     private JPanel createAxisPanel(Axis axis) {
 
         JPanel container = new JPanel(new BorderLayout());
@@ -89,13 +88,15 @@ public class AerodynamicsTab extends simpleTab {
 
         for (Object obj : axis.getDocumentationOrFunction()) {
 
-            if (obj instanceof String s) {
+            if (obj instanceof String) {
+                String s = (String) obj;
                 JLabel doc = new JLabel("Note: " + s);
                 doc.setFont(new Font("Arial", Font.ITALIC, 11));
                 doc.setAlignmentX(Component.LEFT_ALIGNMENT);
                 content.add(doc);
                 content.add(Box.createVerticalStrut(5));
-            } else if (obj instanceof Axis.Function f) {
+            } else if (obj instanceof Axis.Function) {
+                Axis.Function f = (Axis.Function) obj;
                 content.add(createFunctionPanel(f));
                 content.add(Box.createVerticalStrut(12));
             }
@@ -105,7 +106,6 @@ public class AerodynamicsTab extends simpleTab {
         return container;
     }
 
-    /** Build UI for a <function> block */
     private JPanel createFunctionPanel(Axis.Function f) {
 
         JPanel p = new JPanel();
@@ -114,7 +114,6 @@ public class AerodynamicsTab extends simpleTab {
                 f.getName() == null ? "Function" : f.getName()));
         p.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // DESCRIPTION 
         if (f.getDescription() != null) {
             JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
             row.add(new JLabel("Description: "));
@@ -132,16 +131,13 @@ public class AerodynamicsTab extends simpleTab {
             p.add(row);
         }
 
-        // DIRECT VALUE 
         if (f.getValue() != null) {
             JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
             row.add(new JLabel("Value: "));
             JTextField txt = new JTextField(f.getValue().toString(), 8);
 
-            // update on ENTER
             txt.addActionListener(e -> updateFunctionValue(f, txt));
 
-            // also update on focus lost
             txt.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusLost(FocusEvent e) {
@@ -153,7 +149,6 @@ public class AerodynamicsTab extends simpleTab {
             p.add(row);
         }
 
-        // TABLE (top level)
         if (f.getTable() != null) {
             p.add(new JLabel("Table Data:"));
 
@@ -163,7 +158,6 @@ public class AerodynamicsTab extends simpleTab {
             p.add(sp);
         }
 
-        // PRODUCT (properties, constants, nested tables)
         if (f.getProduct() != null) {
             JLabel prodLabel = new JLabel("Product terms:");
             prodLabel.setFont(new Font("Arial", Font.BOLD, 11));
@@ -176,8 +170,8 @@ public class AerodynamicsTab extends simpleTab {
 
                 Object obj = elem.getValue();
 
-                // PROPERTY term
-                if (obj instanceof Property prop) {
+                if (obj instanceof Property) {
+                    Property prop = (Property) obj;
                     JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
                     row.add(new JLabel("Property: "));
                     JTextField propField = new JTextField(prop.getValue(), 25);
@@ -192,10 +186,8 @@ public class AerodynamicsTab extends simpleTab {
 
                     row.add(propField);
                     p.add(row);
-                }
-
-                // CONSTANT DOUBLE term
-                else if (obj instanceof Double d) {
+                } else if (obj instanceof Double) {
+                    Double d = (Double) obj;
                     JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
                     row.add(new JLabel("Constant: "));
                     JTextField constField = new JTextField(d.toString(), 10);
@@ -222,10 +214,8 @@ public class AerodynamicsTab extends simpleTab {
 
                     row.add(constField);
                     p.add(row);
-                }
-
-                // NESTED TABLE
-                else if (obj instanceof Table t) {
+                } else if (obj instanceof Table) {
+                    Table t = (Table) obj;
                     JLabel nested = new JLabel("Nested Table:");
                     nested.setFont(new Font("Arial", Font.ITALIC, 11));
                     p.add(nested);
@@ -234,10 +224,7 @@ public class AerodynamicsTab extends simpleTab {
                     JScrollPane sp = new JScrollPane(table);
                     sp.setPreferredSize(new Dimension(450, 100));
                     p.add(sp);
-                }
-
-                // Nested product 
-                else if (obj instanceof MultipleArguments m) {
+                } else if (obj instanceof MultipleArguments) {
                     JLabel nested = new JLabel("Nested Product (not expanded)");
                     nested.setFont(new Font("Arial", Font.ITALIC, 11));
                     p.add(nested);
@@ -247,20 +234,9 @@ public class AerodynamicsTab extends simpleTab {
             }
         }
 
-        // APPLY_AT_CG
-        if (f.isApplyAtCg() != null) {
-            JCheckBox cg = new JCheckBox("Apply at CG", f.isApplyAtCg());
-            cg.addActionListener(e -> {
-                f.setApplyAtCg(cg.isSelected());
-                DS.setDirty();
-            });
-            p.add(cg);
-        }
-
         return p;
     }
 
-    //update function <value> safely
     private void updateFunctionValue(Function f, JTextField txt) {
         if (f.getValue() == null) return;
 
@@ -274,16 +250,13 @@ public class AerodynamicsTab extends simpleTab {
         }
     }
 
-    
-     //Editable JTable for a Table
-     
     private JTable createEditableTable(Table table) {
 
         List<UnnamedTable.TableData> rows = table.getTableData();
 
         int maxCols = 0;
         for (UnnamedTable.TableData td : rows) {
-            int size = td.getValue().size();   // getValue() never null
+            int size = td.getValue().size();
             if (size > maxCols) {
                 maxCols = size;
             }
@@ -337,7 +310,6 @@ public class AerodynamicsTab extends simpleTab {
                 try {
                     double v = Double.parseDouble(text);
 
-                    // Expand list if needed
                     while (vals.size() <= colIndex) {
                         vals.add(0.0);
                     }
@@ -356,11 +328,10 @@ public class AerodynamicsTab extends simpleTab {
 
         JTable jt = new JTable(model);
         jt.setFillsViewportHeight(true);
-        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // allow horizontal scroll for many columns
+        jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         return jt;
     }
 
-    /** Simple document-listener adapter */
     private abstract static class SimpleDocListener implements DocumentListener {
         public abstract void changedUpdate(DocumentEvent e);
 
