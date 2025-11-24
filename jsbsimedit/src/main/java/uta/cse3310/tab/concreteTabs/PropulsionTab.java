@@ -252,7 +252,7 @@ public void loadData()
         String selected = subList.getSelectedValue();
         if (selected != null)
         {
-            JOptionPane.showMessageDialog(panel, "Details for: " + selected);
+            showPairEditDialog(selected);
         }
     });
 
