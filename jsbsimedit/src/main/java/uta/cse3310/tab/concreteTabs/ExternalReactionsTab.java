@@ -27,8 +27,6 @@ public class ExternalReactionsTab extends simpleTab {
         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
     }
 
-
-     
     public void loadData() {
 
         // Remove all existing widgets
@@ -37,12 +35,10 @@ public class ExternalReactionsTab extends simpleTab {
         // Get external_reactions section from DS.cfg
         ExternalReactions externalReactions = DS.cfg.getExternalReactions();
         
+        // if xml doesn't have external_reactions, start with an empty one so this tab still works
         if (externalReactions == null) {
-            panel.add(new JLabel("No <external_reactions> section found in this aircraft file.", 
-                                SwingConstants.CENTER), BorderLayout.CENTER);
-            panel.revalidate();
-            panel.repaint();
-            return;
+            externalReactions = new ExternalReactions();
+            DS.cfg.setExternalReactions(externalReactions);
         }
 
         //  UI setup
@@ -62,7 +58,6 @@ public class ExternalReactionsTab extends simpleTab {
         panel.add(scrollPane, BorderLayout.CENTER);
 
         // Buttons
-
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10)); // center alignment + spacing
 
         JButton addButton = new JButton("Add Force");
@@ -75,7 +70,6 @@ public class ExternalReactionsTab extends simpleTab {
 
         // add the centered panel to the bottom
         panel.add(buttonPanel, BorderLayout.SOUTH);
-
 
         // Button actions
         addButton.addActionListener(e -> {
@@ -129,7 +123,6 @@ public class ExternalReactionsTab extends simpleTab {
                 }
             }
         }
-
 
         panel.revalidate();
         panel.repaint();
