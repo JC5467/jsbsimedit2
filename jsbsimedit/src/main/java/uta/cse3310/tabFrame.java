@@ -19,6 +19,7 @@ import uta.cse3310.tab.concreteTabs.MassBalanceTab;
 import uta.cse3310.tab.concreteTabs.MetricsTab;
 import uta.cse3310.tab.concreteTabs.PropulsionTab; //imported for aerodynamics tab
 import uta.cse3310.tab.concreteTabs.BuoyantForcesTab;
+import uta.cse3310.tab.concreteTabs.OutputTab;
 
 public class tabFrame {
     Vector<baseTab> frameTabs; // Changed from array to Vector
@@ -102,6 +103,10 @@ tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
 frameTabs.add(new BuoyantForcesTab(DS, "Buoyant Forces Tab"));
 tabbedPane.addTab("Buoyant Forces", null, frameTabs.lastElement().panel, "This is the Buoyant Forces tab.");
 tabbedPane.setMnemonicAt(8, KeyEvent.VK_B);
+
+frameTabs.add(new OutputTab(this, DS, "Output Tab"));
+tabbedPane.addTab("Output", null, frameTabs.lastElement().panel, "This is the Output tab.");
+tabbedPane.setMnemonicAt(9, KeyEvent.VK_O);
 
         
         frame.add(tabbedPane, BorderLayout.CENTER);
