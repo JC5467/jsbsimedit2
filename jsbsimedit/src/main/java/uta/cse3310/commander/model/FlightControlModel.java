@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import uta.cse3310.commander.controller.FlightControlController;
+
 public class FlightControlModel {
 
     // ---- Node types shown in the palette ----
@@ -99,8 +101,8 @@ public class FlightControlModel {
         }
 
         public void updatePoints() {
-            fromPoint.setLocation(from.bounds.x + fromRelX, from.bounds.y + fromRelY);
-            toPoint.setLocation(to.bounds.x + toRelX, to.bounds.y + toRelY);
+            fromPoint = FlightControlController.getAttachedPoint(from, to, true);
+            toPoint = FlightControlController.getAttachedPoint(to, from, false);
     }   
     }
 

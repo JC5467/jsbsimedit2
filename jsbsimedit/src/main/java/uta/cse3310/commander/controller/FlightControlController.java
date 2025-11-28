@@ -355,7 +355,7 @@ public final class FlightControlController {
         view.repaint();
     }
 
-    private static Point getAttachedPoint(FlightControlModel.Node a, FlightControlModel.Node b, boolean isFrom) {
+    public static Point getAttachedPoint(FlightControlModel.Node a, FlightControlModel.Node b, boolean isFrom) {
         Rectangle portRect;
         if (isFrom) {
             portRect = a.outputPortRect(FlightControlView.PORT_SIZE);
