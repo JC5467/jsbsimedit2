@@ -23,59 +23,50 @@ public class MetricsTab extends simpleTab {
                 TF = tf;
                 panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
         }
-
         public void loadData() {
                 panel.removeAll();
 		String V,L,U;
                 // Wingarea
 		V = String.valueOf(DS.cfg.getMetrics().getWingarea().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getWingarea().getUnit());
-                L = "wingarea(*) = ";		 // just to make the next line simpler U,220,40,80,20
-                textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,L,10,40,200,20,V,100,40,100,20,U,220, 40, 80, 20);
-                // JComboBox<AreaUnit> wingareaUnit = new JComboBox<>(AreaUnit.values());
-                // wingareaUnit.setSelectedItem(DS.cfg.getMetrics().getWingarea().getUnit());
-                // wingareaUnit.setBounds(220, 40, 80, 20);
-                // panel.add(wingareaUnit);
-                // wingareaUnit.addActionListener(e -> {
-                //     DS.cfg.getMetrics().getWingarea().setUnit((AreaUnit) wingareaUnit.getSelectedItem());
-                //     DS.setDirty();
-                // });
+                L = "wingarea(*) = ";		 
+                textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),DS::setDirty,panel,L,10,40,200,20,V,100,40,100,20,U,220, 40, 80, 20,unit -> DS.cfg.getMetrics().getWingarea().setUnit((AreaUnit) unit));
 
                 // wingspan
                 V = String.valueOf(DS.cfg.getMetrics().getWingspan().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getWingspan().getUnit());
 		L = "wingspan(*) = ";
-                textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),DS::setDirty,panel,L,10,80,200,20,V,100,80,100,20,U,220, 80, 80, 20);
+                textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),DS::setDirty,panel,L,10,80,200,20,V,100,80,100,20,U,220, 80, 80, 20,unit -> DS.cfg.getMetrics().getWingspan().setUnit((LengthUnit) unit));
 
                 // text and fields for chord
                 V = String.valueOf(DS.cfg.getMetrics().getChord().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getChord().getUnit());;
                 L = "chord(*) = ";
-                textFieldWLabel L3 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getChord().setValue(Double),DS::setDirty,panel,L,10,120,200,20,V,100,120,100,20,U,220, 120, 80, 20);
+                textFieldWLabel L3 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getChord().setValue(Double),DS::setDirty,panel,L,10,120,200,20,V,100,120,100,20,U,220, 120, 80, 20,unit -> DS.cfg.getMetrics().getChord().setUnit((LengthUnit) unit));
 
                 // text and fields for htailarea
                 V = String.valueOf(DS.cfg.getMetrics().getHtailarea().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getHtailarea().getUnit());;
                 L = "htailarea = ";
-                textFieldWLabel L4 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarea().setValue(Double),DS::setDirty,panel,L,340,40,200,20,V,430,40,100,20,U,550, 40, 80, 20);
+                textFieldWLabel L4 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarea().setValue(Double),DS::setDirty,panel,L,340,40,200,20,V,430,40,100,20,U,550, 40, 80, 20,unit -> DS.cfg.getMetrics().getHtailarea().setUnit((AreaUnit) unit));
 
                 //tail arm text and field
                 V = String.valueOf(DS.cfg.getMetrics().getHtailarm().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getHtailarm().getUnit());;
                 L = "htailarm = ";
-                textFieldWLabel L5 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarm().setValue(Double),DS::setDirty,panel,L,340,80,200,20,V,430,80,100,20,U,550, 80, 80, 20);
+                textFieldWLabel L5 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarm().setValue(Double),DS::setDirty,panel,L,340,80,200,20,V,430,80,100,20,U,550, 80, 80, 20,unit -> DS.cfg.getMetrics().getHtailarm().setUnit((LengthUnit) unit));
 
                 // text and fields for vtailarea
                 V = String.valueOf(DS.cfg.getMetrics().getVtailarea().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getVtailarea().getUnit());;
                 L = "vtailarea = ";
-                textFieldWLabel L6 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarea().setValue(Double),DS::setDirty,panel,L,340,120,200,20,V,430,120,100,20,U,550, 120, 80, 20);
+                textFieldWLabel L6 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarea().setValue(Double),DS::setDirty,panel,L,340,120,200,20,V,430,120,100,20,U,550, 120, 80, 20,unit -> DS.cfg.getMetrics().getVtailarea().setUnit((AreaUnit) unit));
 
                 // text and fields for vtailarm
                 V = String.valueOf(DS.cfg.getMetrics().getVtailarm().getValue());
                 U = String.valueOf(DS.cfg.getMetrics().getVtailarm().getUnit());;
                 L = "vtailarm = ";
-                textFieldWLabel L7 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,L,340,160,200,20,V,430,160,100,20,U,550, 160, 80, 20);
+                textFieldWLabel L7 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),DS::setDirty,panel,L,340,160,200,20,V,430,160,100,20,U,550, 160, 80, 20,unit -> DS.cfg.getMetrics().getVtailarm().setUnit((LengthUnit) unit));
 
                 // x y and z values for aero ref point
                 Metrics.Location Aero = DS.cfg.getMetrics().getLocation().get(0);//plan to simplify this to account for out bounds cases and reduce line count

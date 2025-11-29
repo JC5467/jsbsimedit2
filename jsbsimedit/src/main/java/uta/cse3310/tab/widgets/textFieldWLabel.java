@@ -28,7 +28,7 @@ public class textFieldWLabel {
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX, Integer labelY,
                         Integer labelW, Integer labelH, String text, Integer textX, Integer textY, Integer textW,
                         Integer textH, String unit, Integer boxX, Integer boxY, Integer boxW,
-                        Integer boxH){
+                        Integer boxH,setUnitFunction SU){
 
                 this(SF,DF,panel,labelText,labelX,labelY,labelW,labelH,text,textX,textY,textW,textH);
                 String search = "area";
@@ -43,10 +43,10 @@ public class textFieldWLabel {
                         unitBoxArea.setSelectedItem(AU);
                         unitBoxArea.setBounds(boxX,boxY,boxW,boxH);
                         panel.add(unitBoxArea);
-                        // unitBoxArea.addActionListener(e -> {
-                        // loc.setUnit((LengthUnit) unitBoxArea.getSelectedItem());
-                        // DF.set();
-                        // });
+                        unitBoxArea.addActionListener(e -> {
+                        DF.set();
+                        SU.setUnit((AreaUnit) unitBoxArea.getSelectedItem());
+                        });
                         }
                         else{
                         JComboBox unitBoxLen = new JComboBox<>(LengthUnit.values());
@@ -54,10 +54,10 @@ public class textFieldWLabel {
                         unitBoxLen.setSelectedItem(LU);
                         unitBoxLen.setBounds(boxX,boxY,boxW,boxH);
                         panel.add(unitBoxLen);
-                        // unitBoxLen.addActionListener(e -> {
-                         // loc.setUnit((LengthUnit) unitBoxLen.getSelectedItem());
-                        // DF.set();
-                        // });
+                        unitBoxLen.addActionListener(e -> {
+                        DF.set();
+                        SU.setUnit((LengthUnit) unitBoxLen.getSelectedItem());
+                        });
                 }
 	}
 

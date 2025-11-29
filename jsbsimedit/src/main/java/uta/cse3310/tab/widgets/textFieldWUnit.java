@@ -15,11 +15,9 @@ public class textFieldWUnit {
 	private JLabel jl;
 
         public textFieldWUnit(JPanel panel, dirtyFunction DF, Metrics.Location loc, String labelText, Integer labelX, Integer labelY,
-    		Integer labelW, Integer labelH,String unitS,Integer unitX, Integer unitY, Integer unitW,
-                Integer unitH, String unit, Integer boxX, Integer boxY, Integer boxW,
-                Integer boxH){
-                JComboBox unitBoxLen = new JComboBox<>(LengthUnit.values());
-                JComboBox unitBoxArea = new JComboBox<>(AreaUnit.values());
+    		        Integer labelW, Integer labelH,String unitS,Integer unitX, Integer unitY, Integer unitW,
+                        Integer unitH, String unit, Integer boxX, Integer boxY, Integer boxW,
+                        Integer boxH){
                 String search = "area";
                         
                 label = new JLabel(labelText);
@@ -28,28 +26,29 @@ public class textFieldWUnit {
                         
                 jl = new JLabel(unitS);
                 jl.setBounds(unitX,unitY,unitW,unitH);
-                        panel.add(jl);
+                panel.add(jl);
                         
                 if(labelText.toLowerCase().indexOf(search.toLowerCase()) != -1){
+                        JComboBox unitBoxArea = new JComboBox<>(AreaUnit.values());
                         AreaUnit AU = AreaUnit.valueOf(unit);
                         unitBoxArea.setSelectedItem(AU);
                         unitBoxArea.setBounds(boxX,boxY,boxW,boxH);
                         panel.add(unitBoxArea);
                         unitBoxArea.addActionListener(e -> {
-                        loc.setUnit((LengthUnit) unitBoxArea.getSelectedItem());
-                        DF.set();
+                                DF.set();
+                                loc.setUnit((LengthUnit) unitBoxArea.getSelectedItem());
                         });
                 }
                 else{
+                        JComboBox unitBoxLen = new JComboBox<>(LengthUnit.values());
                         LengthUnit LU = LengthUnit.valueOf(unit);
                         unitBoxLen.setSelectedItem(LU);
                         unitBoxLen.setBounds(boxX,boxY,boxW,boxH);
                         panel.add(unitBoxLen);
                         unitBoxLen.addActionListener(e -> {
-                        loc.setUnit((LengthUnit) unitBoxLen.getSelectedItem());
-                        DF.set();
+                                DF.set();
+                                loc.setUnit((LengthUnit) unitBoxLen.getSelectedItem());
                         });
                 }       
-		
     }
 }
