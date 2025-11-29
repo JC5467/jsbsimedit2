@@ -111,12 +111,32 @@ public void loadData()
         if (obj instanceof Engine) 
         {
             Engine eng = (Engine) obj;
-            String name = eng.getName() != null ? eng.getName() : ""; // fix leading "null"
-            String file = eng.getFile() != null ? eng.getFile() : "";
-            String display = name + " (" + file + ")";
-            enginesModel.addElement(display);
-            thrustersModel.addElement(display);
-        } 
+
+            String name = eng.getName();
+            String file = eng.getFile();
+
+            boolean ok = true;
+            StringBuilder err = new StringBuilder("Engine import error: ");
+
+            if (name == null || name.trim().isEmpty()) {
+                ok = false;
+                err.append("[missing name] ");
+            }
+            if (file == null || file.trim().isEmpty()) {
+                ok = false;
+                err.append("[missing file] ");
+            }
+
+            if (!ok) {
+                // Record error and skip adding this engine to the lists
+                engineErrors.add(err.toString());
+                continue;
+            }
+        }
+        String display = name + "  (" + file + ")";
+        enginesModel.addElement(display);
+        thrustersModel.addElement(display);
+            
         else if (obj instanceof Tank) 
         {
             Tank t = (Tank) obj;
@@ -126,6 +146,21 @@ public void loadData()
             tanksModel.addElement(text);
         }
     }
+
+    if (!engineErrors.isEmpty()) {
+        StringBuilder msg = new StringBuilder();
+        msg.append("Some engine definitions in the XML are invalid:\n\n");
+        for (String s : engineErrors) {
+            msg.append("• ").append(s).append("\n");
+        }
+        JOptionPane.showMessageDialog(
+            panel,
+            msg.toString(),
+            "Engine Import Warnings",
+            JOptionPane.WARNING_MESSAGE
+        );
+    }
+
 
     // Engines Tab
     JLabel lblEng = new JLabel("Available Engines:");
