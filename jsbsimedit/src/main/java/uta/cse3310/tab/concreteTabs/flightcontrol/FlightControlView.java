@@ -72,6 +72,9 @@ public class FlightControlView extends JComponent {
     }
 
     private void paintNodes(Graphics2D g2) {
+        // Only show port rectangles while the user is dragging a new connection.
+        boolean showPorts = (previewFrom != null);
+
         for (FlightControlModel.Node n : model.nodes) {
             // Get the icon for this node type
             ImageIcon icon = FlightControlController.ICONS.get(n.type);
@@ -103,9 +106,25 @@ public class FlightControlView extends JComponent {
                 g2.drawString(title, tx, ty);
             }
 
-            // Ports
-            Rectangle inR = n.inputPortRect(PORT_SIZE);
-            Rectangle outR = n.outputPortRect(PORT_SIZE);
+            if (showPorts) {
+                // Draw ALL input ports for this node, based on NodeType.inPorts
+                int inCount = n.type.inPorts;
+                for (int i = 0; i < inCount; i++) {
+                    Rectangle inR = n.inputPortRect(i, PORT_SIZE);
+                    g2.setColor(new Color(90, 180, 255)); // blue inputs
+                    g2.fillRect(inR.x, inR.y, inR.width, inR.height);
+                    g2.setColor(Color.BLACK);
+                    g2.drawRect(inR.x, inR.y, inR.width, inR.height);
+                }
+
+                if (n.type.outPorts > 0) {
+                    Rectangle outR = n.outputPortRect(PORT_SIZE);
+                    g2.setColor(new Color(255, 120, 120)); // red outputs
+                    g2.fillRect(outR.x, outR.y, outR.width, outR.height);
+                    g2.setColor(Color.BLACK);
+                    g2.drawRect(outR.x, outR.y, outR.width, outR.height);
+                }
+            }
         }
     }
 
@@ -114,16 +133,16 @@ public class FlightControlView extends JComponent {
         g2.setStroke(EDGE_STROKE);
         for (FlightControlModel.Edge e : model.edges) {
             drawOrth(g2, e.fromPoint, e.toPoint);
-            drawArrowHead(g2, e.fromPoint, e.toPoint);
+            drawArrowHead(g2, e.toPoint);
         }
     }
 
     private void paintPreview(Graphics2D g2) {
         if (previewFrom != null && previewTo != null) {
-            g2.setColor(new Color(255, 220, 120));
+            g2.setColor(new Color(255, 180, 0));
             g2.setStroke(PREVIEW_STROKE);
             drawOrth(g2, previewFrom.outputPort(), previewTo);
-            drawArrowHead(g2, previewFrom.outputPort(), previewTo);
+            drawArrowHead(g2, previewTo);
         }
     }
 
@@ -162,7 +181,8 @@ public class FlightControlView extends JComponent {
         // Draw the path behind the nodes if they are too close
         Path2D path = new Path2D.Double();
         path.moveTo(a.x, a.y);
-        if (a.x > b.x - 20) {
+        // Only reroute for area around and behind fromPoint node
+        if ((a.x > b.x - 20) && !((a.x < b.x + 85) && ((a.y < (b.y + 42)) && (a.y > (b.y - 42))))) {
             path.lineTo(x1, a.y);
             path.lineTo(x1, y1);
             path.lineTo(x2, y1);
@@ -184,39 +204,54 @@ public class FlightControlView extends JComponent {
         }
         return null;
     }
+
     public FlightControlModel.Node nodeWithOutputAt(Point p) {
         for (int i = model.nodes.size() - 1; i >= 0; --i) {
             FlightControlModel.Node n = model.nodes.get(i);
-            if (n.outputPortRect(PORT_SIZE).contains(p)) return n;
-        }
-        return null;
-    }
-    public FlightControlModel.Node nodeWithInputAt(Point p) {
-        for (int i = model.nodes.size() - 1; i >= 0; --i) {
-            FlightControlModel.Node n = model.nodes.get(i);
-            if (n.inputPortRect(PORT_SIZE).contains(p)) return n;
+            if (n.type.outPorts <= 0) continue;
+            if (n.outputPortRect(PORT_SIZE * 2).contains(p)) return n; // *2 to PORT_SIZE for easier selecting
         }
         return null;
     }
 
-    // edges between nodes are only cardinal dir now, so arrow angle calc. no longer needed
-    private void drawArrowHead(Graphics2D g2, Point from, Point to){
-        //double phi = Math.toRadians(20);
-        //int barb = 10;
+    // Hit-test for a specific input port, not just the node.
+    public static final class InputHit {
+        public final FlightControlModel.Node node;
+        public final int portIndex;
 
-        //double dy = to.y - from.y;
-        //double dx = to.x - from.x;
-        //double theta = Math.atan2(dy, dx);
+        public InputHit(FlightControlModel.Node node, int portIndex) {
+            this.node = node;
+            this.portIndex = portIndex;
+        }
+    }
 
+    public InputHit inputPortAt(Point p) {
+        // Iterate front-to-back so we hit the visually top-most node first
+        for (int ni = model.nodes.size() - 1; ni >= 0; --ni) {
+            FlightControlModel.Node n = model.nodes.get(ni);
+            int inCount = n.type.inPorts;
+            for (int pi = 0; pi < inCount; ++pi) {
+                if (n.inputPortRect(pi, PORT_SIZE).contains(p)) {
+                    return new InputHit(n, pi);
+                }
+            }
+        }
+        return null;
+    }
+
+    // // (old method)
+    // public FlightControlModel.Node nodeWithInputAt(Point p) {
+    //     InputHit hit = inputPortAt(p);
+    //     return (hit == null) ? null : hit.node;
+    // }
+
+    private void drawArrowHead(Graphics2D g2, Point to){
         double x, y; 
-        //double rho;
 
-        //rho = theta + phi;
         x = to.x - 10;
         y = to.y - 6;
         g2.drawLine(to.x, to.y, (int)x, (int)y);
 
-        //rho = theta - phi;
         x = to.x - 10;
         y = to.y + 6;
         g2.drawLine(to.x, to.y, (int)x, (int)y);

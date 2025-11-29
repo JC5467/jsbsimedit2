@@ -5,35 +5,32 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.FlowLayout;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.Rectangle;
-import java.io.IOException; // New import for I/O Exception handling
-import java.net.URL; // Required for getResource
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
-import javax.imageio.ImageIO; // NEW: For reliable image loading
-import java.awt.image.BufferedImage; // NEW: To hold the image data
-
-import javax.swing.JTable;
-import javax.swing.JDialog;
-import javax.swing.JScrollPane;
-import javax.swing.JOptionPane;
-
 
 import uta.cse3310.commander.model.FlightControlModel;
-import uta.cse3310.commander.model.FlightControlModel.NodeType;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
 
 public final class FlightControlController {
@@ -244,39 +241,46 @@ public final class FlightControlController {
                 }
 
                 if (connectFrom != null) {
-                    // Can we connect to an INPUT port?
-                    FlightControlModel.Node releaseNode = view.nodeAt(p);
-                    if (releaseNode != null && releaseNode != connectFrom) {
+                    // Check if we can connect to a specific INPUT port
+                    FlightControlView.InputHit hit = view.inputPortAt(p);
+
+                    if (hit != null && hit.node != connectFrom) {
                         FlightControlModel.Node src = connectFrom;
-                        FlightControlModel.Node dst = releaseNode;
+                        FlightControlModel.Node dst = hit.node;
+                        int inputIndex = hit.portIndex;
 
-                        if (src.type == FlightControlModel.NodeType.DESTINATION &&
-                            dst.type == FlightControlModel.NodeType.SOURCE) {
-                            FlightControlModel.Node tmp = src;
-                            src = dst;
-                            dst = tmp;
-                        }
-                        // Add checks before edges are created
+                        // Node type validation first
                         if (!isValidConnection(src.type, dst.type)) {
-                            JOptionPane.showMessageDialog(null,
-                            "Invalid connection: " +
-                            src.type.label + " -> " + dst.type.label,
-                            "Connection Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(
+                                null,
+                                "Invalid connection: " + src.type.label + " -> " + dst.type.label,
+                                "Connection Error",
+                                JOptionPane.ERROR_MESSAGE
+                            );
                             connectFrom = null;
                             view.clearConnectionPreview();
                             return;
                         }
 
-                        if (!dst.bounds.contains(p)) {
-                            connectFrom = null;
-                            view.clearConnectionPreview();
-                            return;
+                        // Allow at most one edge per input port
+                        for (FlightControlModel.Edge d : model.edges) {
+                            if (d.to == dst && d.toInputIndex == inputIndex) {
+                                JOptionPane.showMessageDialog(
+                                    null,
+                                    "That input port is already connected.",
+                                    "Connection Error",
+                                    JOptionPane.ERROR_MESSAGE
+                                );
+                                connectFrom = null;
+                                view.clearConnectionPreview();
+                                return;
+                            }
                         }
 
-                        Point fromAttach = getAttachedPoint(src, dst, true);
-                        Point toAttach = getAttachedPoint(dst, src, false);
-                        model.edges.add(new FlightControlModel.Edge(src, dst, fromAttach, toAttach));
+                        // Create the edge
+                        model.edges.add(new FlightControlModel.Edge(src, dst, inputIndex));
                     }
+
                     connectFrom = null;
                     view.clearConnectionPreview();
                     return;
@@ -446,9 +450,10 @@ public final class FlightControlController {
         if (dst == FlightControlModel.NodeType.SOURCE) return false;
 
         // Example: Prevent Filter connecting directly to Destination
-        if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION)
+        if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION) {
             return false;
-
+        }
+            
         // Default: allow connection
         return true;
     }
@@ -469,8 +474,4 @@ public final class FlightControlController {
         attachMouseControllers(view, model);
         view.setTransferHandler(new CanvasDropHandler(model, view));
     }
-
-
-
-
 }

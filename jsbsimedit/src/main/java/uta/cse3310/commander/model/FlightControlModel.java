@@ -1,14 +1,11 @@
 package uta.cse3310.commander.model;
 
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-
-import uta.cse3310.commander.controller.FlightControlController;
 
 public class FlightControlModel {
 
@@ -57,53 +54,80 @@ public class FlightControlModel {
             this.bounds = new Rectangle(x, y, 80, 80);
         }
 
-        // Single input on left-center; single output on right-center (prototype simplicity)
-        public Point inputPort() {
-            return new Point(bounds.x, bounds.y + bounds.height / 2);
+        // Multiple inputs on the left edge, single output on right edge
+        public Point inputPort(int index) {
+            int n = Math.max(1, type.inPorts); // always at least 1
+            if (index < 0) {
+                index = 0;
+            } else if (index >= n) {
+                index = n - 1;
+            }
+
+            // Distribute ports vertically along the node height
+            double slot = (index + 1) / (double) (n + 1); // normalize inputs from 0 to 1 to calc % of node height
+            int cy = (int) Math.round(bounds.y + slot * bounds.height);
+            int cx = bounds.x;
+            return new Point(cx, cy);
         }
+
+        // // For single-input cases (old method)
+        // public Point inputPort() {
+        //     return inputPort(0);
+        // }
+
         public Point outputPort() {
             return new Point(bounds.x + bounds.width, bounds.y + bounds.height / 2);
         }
 
         // Hit rectangles for ports
-        public Rectangle inputPortRect(int size) {
-            Point p = inputPort();
-            return new Rectangle(p.x - size/2, p.y - size/2, size, size);
+        public Rectangle inputPortRect(int index, int size) {
+            Point p = inputPort(index);
+            return new Rectangle(p.x - size / 2, p.y - size / 2, size, size);
         }
+
+        // For single-input cases (old method)
+        public Rectangle inputPortRect(int size) {
+            return inputPortRect(0, size);
+        }
+
         public Rectangle outputPortRect(int size) {
             Point p = outputPort();
-            return new Rectangle(p.x - size/2, p.y - size/2, size, size);
+            return new Rectangle(p.x - size / 2, p.y - size / 2, size, size);
         }
     }
 
     public static final class Edge {
-        public final Node from; // uses output port
-        public final Node to;   // uses input port
-
-        private final int fromRelX, fromRelY;
-        private final int toRelX, toRelY;
+        public final Node from;
+        public final Node to;
+        public final int toInputIndex; // which input port on Node "to" this edge feeds
 
         public Point fromPoint;
         public Point toPoint;
 
-        public Edge(Node from, Node to, Point fromAttach, Point toAttach) {
+        public Edge(Node from, Node to, int toInputIndex) {
             this.from = from;
             this.to = to;
-            
-            this.fromRelX = fromAttach.x - from.bounds.x;
-            this.fromRelY = fromAttach.y - from.bounds.y;
-            this.toRelX = toAttach.x - to.bounds.x;
-            this.toRelY = toAttach.y - to.bounds.y;
-
-            this.fromPoint = new Point(fromAttach);
-            this.toPoint = new Point(toAttach);
-
+            this.toInputIndex = toInputIndex;
+            updatePoints();
         }
 
+        // Recalculate attachment points if nodes move
         public void updatePoints() {
-            fromPoint = FlightControlController.getAttachedPoint(from, to, true);
-            toPoint = FlightControlController.getAttachedPoint(to, from, false);
-    }   
+            Point fromAttach = from.outputPort();
+            Point toAttach   = to.inputPort(toInputIndex);
+
+            if (fromPoint == null) {
+                fromPoint = new Point(fromAttach);
+            } else {
+                fromPoint.setLocation(fromAttach);
+            }
+
+            if (toPoint == null) {
+                toPoint = new Point(toAttach);
+            } else {
+                toPoint.setLocation(toAttach);
+            }
+        }
     }
 
     // ---- The graph model ----
@@ -116,13 +140,15 @@ public class FlightControlModel {
         nodes.add(n);
         return n;
     }
+    
+    // Default to the first input port on the destination node
     public void addEdge(Node from, Node to) {
-        if (from != null && to != null && from != to) {
-            Point fromAttach = from.outputPort();
-            Point toAttach = to.inputPort();
-            edges.add(new Edge(from, to, fromAttach, toAttach));
-        }
+        addEdge(from, to, 0);
     }
 
-    
+    public void addEdge(Node from, Node to, int toInputIndex) {
+        if (from != null && to != null && from != to) {
+            edges.add(new Edge(from, to, toInputIndex));
+        }
+    }   
 }
