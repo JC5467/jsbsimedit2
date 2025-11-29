@@ -2,6 +2,8 @@ package uta.cse3310.tab.concreteTabs;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
 import uta.cse3310.tab.simpleTab;
 import uta.cse3310.dataStore;
 import uta.cse3310.tabFrame;
