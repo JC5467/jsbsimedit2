@@ -119,10 +119,6 @@ public void loadData()
             boolean ok = true;
             StringBuilder err = new StringBuilder("Engine import error: ");
 
-            if (name == null || name.trim().isEmpty()) {
-                ok = false;
-                err.append("[missing name] ");
-            }
             if (file == null || file.trim().isEmpty()) {
                 ok = false;
                 err.append("[missing file] ");
@@ -133,6 +129,10 @@ public void loadData()
                 engineErrors.add(err.toString());
                 continue;
             }
+            if (name == null || name.trim().isEmpty()) {
+                name = file;
+            }
+            
         String display = name + "  (" + file + ")";
         enginesModel.addElement(display);
         thrustersModel.addElement(display);
