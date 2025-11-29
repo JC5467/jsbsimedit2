@@ -132,10 +132,10 @@ public void loadData()
                 engineErrors.add(err.toString());
                 continue;
             }
-        }
         String display = name + "  (" + file + ")";
         enginesModel.addElement(display);
         thrustersModel.addElement(display);
+        }
             
         else if (obj instanceof Tank) 
         {
