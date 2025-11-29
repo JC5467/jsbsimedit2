@@ -105,6 +105,7 @@ public void loadData()
     subscribedModel.clear();
     tanksModel.clear();
 
+    List<String> engineErrors = new ArrayList<>();
     // Load engines and tanks from XML
     for (Object obj : DS.cfg.getPropulsion().getDocumentationOrPropertyOrFunction()) 
     {
