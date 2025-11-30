@@ -352,6 +352,18 @@ public void loadData()
                 );
                 return; // do not create the tank
             }
+            
+            // validate capacity unit
+            java.util.Set<String> allowedCapUnits = java.util.Set.of("LBS", "KG", "GAL");
+            if (!allowedCapUnits.contains(capUnit)) {
+                JOptionPane.showMessageDialog(
+                        panel,
+                        "Unsupported capacity unit: \"" + capUnit + "\".\nAllowed units: LBS, KG, GAL.",
+                        "Invalid Capacity Unit",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
         
             String locStr = xField.getText().trim() + ", " +
                             yField.getText().trim() + ", " +
