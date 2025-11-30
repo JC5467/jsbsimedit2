@@ -319,8 +319,29 @@ public void loadData()
             String type = typeField.getText().trim();
             String locUnit = locUnitField.getText().trim().toUpperCase();
             String capUnit = capUnitField.getText().trim().toUpperCase();
-        
-            // Step 2a: validate location unit
+
+         // Basic empty type check
+        if (type.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    panel,
+                    "Tank type cannot be empty.",
+                    "Invalid Tank Name",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        // duplicate tank name check
+        if (tankTypeExists(type)) {
+            JOptionPane.showMessageDialog(
+                    panel,
+                    "A tank named \"" + type + "\" already exists.\nPlease choose a different name.",
+                    "Duplicate Tank Name",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return; // do not add duplicate
+        }
+            //validate location unit
             java.util.Set<String> allowedLocUnits = java.util.Set.of("IN", "FT", "M");
             if (!allowedLocUnits.contains(locUnit)) {
                 JOptionPane.showMessageDialog(
