@@ -567,6 +567,29 @@ private void showPairEditDialog(String pair) {
         }
     }
 }
+// Returns true if a tank with the given type already exists in the list model
+private boolean tankTypeExists(String type) {
+    if (type == null) {
+        return false;
+    }
+    String target = type.trim().toLowerCase();
+    for (int i = 0; i < tanksModel.size(); i++) {
+        String item = tanksModel.get(i);
+        // Each entry looks like: "Tank: <type> location: ... capacity: ..."
+        if (item.startsWith("Tank:")) {
+            // Extract the type between "Tank: " and " location:"
+            int start = "Tank: ".length();
+            int locIndex = item.indexOf(" location:");
+            if (locIndex > start) {
+                String existingType = item.substring(start, locIndex).trim().toLowerCase();
+                if (existingType.equals(target)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
 }
 
 
