@@ -315,15 +315,32 @@ public void loadData()
         inputPanel.add(new JLabel("Capacity Unit:")); inputPanel.add(capUnitField);
 
         int result = JOptionPane.showConfirmDialog(panel, inputPanel, "New Tank", JOptionPane.OK_CANCEL_OPTION);
-        if (result == JOptionPane.OK_OPTION)
-        {
-            String type = typeField.getText();
-            String locStr = "(" + xField.getText() + "," + yField.getText() + "," + zField.getText() + ") " + locUnitField.getText();
-            String capStr = capField.getText() + " " + capUnitField.getText();
-            String newTankStr = "Tank (" + type + ") location=" + locStr + " capacity=" + capStr;
+        if (result == JOptionPane.OK_OPTION) {
+            String type = typeField.getText().trim();
+            String locUnit = locUnitField.getText().trim().toUpperCase();
+            String capUnit = capUnitField.getText().trim().toUpperCase();
+        
+            // Step 2a: validate location unit
+            java.util.Set<String> allowedLocUnits = java.util.Set.of("IN", "FT", "M");
+            if (!allowedLocUnits.contains(locUnit)) {
+                JOptionPane.showMessageDialog(
+                        panel,
+                        "Unsupported location unit: \"" + locUnit + "\".\nAllowed units: IN, FT, M.",
+                        "Invalid Location Unit",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return; // do not create the tank
+            }
+        
+            String locStr = xField.getText().trim() + ", " +
+                            yField.getText().trim() + ", " +
+                            zField.getText().trim() + " " + locUnit;
+            String capStr = capField.getText().trim() + " " + capUnit;
 
+            String newTankStr = "Tank: " + type + " location: " + locStr + " capacity: " + capStr;
             tanksModel.addElement(newTankStr);
         }
+
     });
 
     btnDelTank.addActionListener(e -> 
