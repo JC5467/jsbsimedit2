@@ -66,6 +66,7 @@ public class dataStore {
         // one. i am leaving that defect to someone else.
         fileName = f.getPath();
 
+        valid = false;
         FdmConfig tempCfg = null;
         String errorMessage = null;
 
