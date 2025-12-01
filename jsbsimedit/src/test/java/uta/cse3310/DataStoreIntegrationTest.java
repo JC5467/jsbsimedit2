@@ -29,12 +29,12 @@ public class DataStoreIntegrationTest {
     public static void setupTestFiles() throws IOException {
         // --- 1. SETUP FOR SUCCESS TEST (Well-formed XML) ---
         String xmlContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                            "<fdm_config name=\"test_aircraft\">\n" +
-                            " <fileheader version=\"1.0\"/>\n" +
-                            " <aerodynamics>\n" +
-                            " <axis name=\"ROLL\"/>\n" +
-                            " </aerodynamics>\n" +
-                            "</fdm_config>";
+                "<fdm_config name=\"test_aircraft\">\n" +
+                " <fileheader version=\"1.0\"/>\n" +
+                " <aerodynamics>\n" +
+                " <axis name=\"ROLL\"/>\n" +
+                " </aerodynamics>\n" +
+                "</fdm_config>";
 
         // Create the file in the system temp directory
         testXmlFile = File.createTempFile("jsbsim_test", ".xml");
@@ -45,9 +45,9 @@ public class DataStoreIntegrationTest {
 
         // --- 2. SETUP FOR FAILURE TEST (Malformed XML: missing closing tag) ---
         String invalidContent = "<fdm_config name=\"malformed\">" +
-                                // Missing the closing tag for fdm_config or fileheader
-                                "<fileheader version=\"1.0\">" + 
-                                "<aerodynamics/>"; 
+        // Missing the closing tag for fdm_config or fileheader
+                "<fileheader version=\"1.0\">" +
+                "<aerodynamics/>";
 
         malformedXmlFile = File.createTempFile("jsbsim_invalid", ".xml");
         try (FileWriter writer = new FileWriter(malformedXmlFile)) {
@@ -74,27 +74,30 @@ public class DataStoreIntegrationTest {
         assertFalse("SYS-MEN-001: DataStore should not be dirty after load", ds.dirty);
         assertTrue("SYS-MEN-001: Version should be incremented to 1", ds.version == 1);
         assertNotNull("SYS-MEN-001: FdmConfig object (ds.cfg) should not be null", ds.cfg);
-        
+
         // VERIFY INTERACTION (ensures UI was notified)
         Mockito.verify(mockTabFrame, Mockito.times(1)).dataLoaded();
     }
 
     /**
-     * Test case SYS-MEN-002: Verifies failure when trying to load a malformed XML file.
-     * Checks that the data store state remains clean and valid data isn't overwritten.
+     * Test case SYS-MEN-002: Verifies failure when trying to load a malformed XML
+     * file.
+     * Checks that the data store state remains clean and valid data isn't
+     * overwritten.
      */
     @Test
     public void testOpenFile_FailureOnMalformedXML() {
         tabFrame mockTabFrame = Mockito.mock(tabFrame.class);
         dataStore ds = new dataStore(mockTabFrame);
-        
+
         // Ensure initial state is clean
         assertFalse(ds.valid);
         assertTrue(ds.version == 0);
 
-        // EXECUTE: Attempt to load the malformed file. This should trigger the JAXBException
+        // EXECUTE: Attempt to load the malformed file. This should trigger the
+        // JAXBException
         ds.openFile(malformedXmlFile);
-        
+
         // VERIFY STATE CHANGES (should be unchanged from initial state)
         assertFalse("SYS-MEN-002: DataStore should NOT be valid after failed load", ds.valid);
         assertTrue("SYS-MEN-002: Version should remain 0 after failed load", ds.version == 0);

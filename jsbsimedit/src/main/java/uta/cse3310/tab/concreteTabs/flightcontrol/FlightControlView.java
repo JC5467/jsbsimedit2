@@ -26,8 +26,8 @@ public class FlightControlView extends JComponent {
     // Visual constants
     public static final int PORT_SIZE = 12;
     public static final Stroke EDGE_STROKE = new BasicStroke(1f);
-    public static final Stroke PREVIEW_STROKE =
-        new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f, new float[]{8f, 8f}, 0f);
+    public static final Stroke PREVIEW_STROKE = new BasicStroke(1f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10f,
+            new float[] { 8f, 8f }, 0f);
 
     // Connection preview (set by controller)
     private FlightControlModel.Node previewFrom;
@@ -47,6 +47,7 @@ public class FlightControlView extends JComponent {
         this.previewTo = to;
         repaint();
     }
+
     public void clearConnectionPreview() {
         this.previewFrom = null;
         this.previewTo = null;
@@ -82,13 +83,12 @@ public class FlightControlView extends JComponent {
             if (icon != null) {
                 // Draw icon
                 g2.drawImage(
-                    icon.getImage(),
-                    n.bounds.x,
-                    n.bounds.y,
-                    n.bounds.width,
-                    n.bounds.height,
-                    null
-                );
+                        icon.getImage(),
+                        n.bounds.x,
+                        n.bounds.y,
+                        n.bounds.width,
+                        n.bounds.height,
+                        null);
             } else {
                 // Fallback if no icon is found
                 // Body
@@ -150,10 +150,10 @@ public class FlightControlView extends JComponent {
     private void drawOrth(Graphics2D g2, Point a, Point b) {
         double xmid = a.x + (b.x - a.x) / 2;
         double ymid = a.y + (b.y - a.y) / 2;
-        int  buffer = 20;
+        int buffer = 20;
         double x1, x2, y1;
         x1 = a.x + buffer;
-        
+
         // Edge routing logic - units are in pixels
         if ((a.x < b.x + 80) && (a.x > b.x - 20)) {
             x2 = a.x - 100;
@@ -187,20 +187,21 @@ public class FlightControlView extends JComponent {
             path.lineTo(x1, y1);
             path.lineTo(x2, y1);
             path.lineTo(x2, b.y);
-            path.lineTo(b.x, b.y); 
+            path.lineTo(b.x, b.y);
         } else {
             path.lineTo(xmid, a.y);
             path.lineTo(xmid, b.y);
-            path.lineTo(b.x, b.y); 
+            path.lineTo(b.x, b.y);
         }
         g2.draw(path);
     }
 
-    // Small helpers used by the controller 
+    // Small helpers used by the controller
     public FlightControlModel.Node nodeAt(Point p) {
         for (int i = model.nodes.size() - 1; i >= 0; --i) { // top-most first
             FlightControlModel.Node n = model.nodes.get(i);
-            if (n.bounds.contains(p)) return n;
+            if (n.bounds.contains(p))
+                return n;
         }
         return null;
     }
@@ -208,8 +209,10 @@ public class FlightControlView extends JComponent {
     public FlightControlModel.Node nodeWithOutputAt(Point p) {
         for (int i = model.nodes.size() - 1; i >= 0; --i) {
             FlightControlModel.Node n = model.nodes.get(i);
-            if (n.type.outPorts <= 0) continue;
-            if (n.outputPortRect(PORT_SIZE * 2).contains(p)) return n; // *2 to PORT_SIZE for easier selecting
+            if (n.type.outPorts <= 0)
+                continue;
+            if (n.outputPortRect(PORT_SIZE * 2).contains(p))
+                return n; // *2 to PORT_SIZE for easier selecting
         }
         return null;
     }
@@ -241,19 +244,19 @@ public class FlightControlView extends JComponent {
 
     // // (old method)
     // public FlightControlModel.Node nodeWithInputAt(Point p) {
-    //     InputHit hit = inputPortAt(p);
-    //     return (hit == null) ? null : hit.node;
+    // InputHit hit = inputPortAt(p);
+    // return (hit == null) ? null : hit.node;
     // }
 
-    private void drawArrowHead(Graphics2D g2, Point to){
-        double x, y; 
+    private void drawArrowHead(Graphics2D g2, Point to) {
+        double x, y;
 
         x = to.x - 10;
         y = to.y - 6;
-        g2.drawLine(to.x, to.y, (int)x, (int)y);
+        g2.drawLine(to.x, to.y, (int) x, (int) y);
 
         x = to.x - 10;
         y = to.y + 6;
-        g2.drawLine(to.x, to.y, (int)x, (int)y);
+        g2.drawLine(to.x, to.y, (int) x, (int) y);
     }
 }

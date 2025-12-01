@@ -31,11 +31,16 @@ public class FlightControlModel {
             this.inPorts = inPorts;
             this.outPorts = outPorts;
         }
-        @Override public String toString() { return label; }
+
+        @Override
+        public String toString() {
+            return label;
+        }
 
         public static NodeType fromLabel(String s) {
             for (NodeType t : values()) {
-                if (t.label.equalsIgnoreCase(s)) return t;
+                if (t.label.equalsIgnoreCase(s))
+                    return t;
             }
             return GAIN;
         }
@@ -72,7 +77,7 @@ public class FlightControlModel {
 
         // // For single-input cases (old method)
         // public Point inputPort() {
-        //     return inputPort(0);
+        // return inputPort(0);
         // }
 
         public Point outputPort() {
@@ -114,7 +119,7 @@ public class FlightControlModel {
         // Recalculate attachment points if nodes move
         public void updatePoints() {
             Point fromAttach = from.outputPort();
-            Point toAttach   = to.inputPort(toInputIndex);
+            Point toAttach = to.inputPort(toInputIndex);
 
             if (fromPoint == null) {
                 fromPoint = new Point(fromAttach);
@@ -140,7 +145,7 @@ public class FlightControlModel {
         nodes.add(n);
         return n;
     }
-    
+
     // Default to the first input port on the destination node
     public void addEdge(Node from, Node to) {
         addEdge(from, to, 0);
@@ -150,5 +155,5 @@ public class FlightControlModel {
         if (from != null && to != null && from != to) {
             edges.add(new Edge(from, to, toInputIndex));
         }
-    }   
+    }
 }

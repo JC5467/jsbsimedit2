@@ -14,53 +14,59 @@ import generated.Channel;
 
 import uta.cse3310.commander.model.FlightControlModel;
 
-
 public class FlightControlXMLLoader {
 
-   
     public static void loadChannel(FdmConfig cfg, FlightControlModel model, String channelName) {
-        if (cfg == null) return;
+        if (cfg == null)
+            return;
         List<JAXBElement<FcsModel>> list = cfg.getSystemOrAutopilotOrFlightControl();
-        if (list == null) return;
+        if (list == null)
+            return;
 
         for (JAXBElement<FcsModel> element : list) {
             // Find the flight_control JAXB element among system/autopilot/flight_control
-            if (!"flight_control".equalsIgnoreCase(element.getName().getLocalPart())) continue;
+            if (!"flight_control".equalsIgnoreCase(element.getName().getLocalPart()))
+                continue;
             FcsModel fc = element.getValue();
-            if (fc == null) continue;
+            if (fc == null)
+                continue;
 
             for (Object obj : fc.getDocumentationOrLimitationOrProperty()) {
-                if (!(obj instanceof Channel)) continue; 
+                if (!(obj instanceof Channel))
+                    continue;
                 Channel ch = (Channel) obj;
-                if (ch.getName() == null) continue;
+                if (ch.getName() == null)
+                    continue;
 
-                if (!ch.getName().equalsIgnoreCase(channelName)) continue; // not our channel
+                if (!ch.getName().equalsIgnoreCase(channelName))
+                    continue; // not our channel
 
-                // We found the requested channel. Now iterate its child elements.Channel has a property which contains elements like Summer, PureGain, Pid, Integrator, etc.
-                
+                // We found the requested channel. Now iterate its child elements.Channel has a
+                // property which contains elements like Summer, PureGain, Pid, Integrator, etc.
+
                 List<Object> blocks = ch.getAccelerometerOrActuatorOrAerosurfaceScale();
-                if (blocks == null) return;
-                
+                if (blocks == null)
+                    return;
+
                 int x = 100;
                 int yStart = 80;
                 int gapY = 120;
 
                 Map<String, FlightControlModel.Node> tokenToNode = new HashMap<>();
 
-
                 for (int i = 0; i < blocks.size(); i++) {
                     Object block = blocks.get(i);
-                    if (block == null) continue;
+                    if (block == null)
+                        continue;
 
                     String typeName = block.getClass().getSimpleName(); // e.g., Summer, PureGain, Pid
                     FlightControlModel.NodeType nodeType = mapClassNameToNodeType(typeName);
 
-                    FlightControlModel.Node node =
-                        model.addNode(nodeType, x, yStart + model.nodes.size() * gapY);
+                    FlightControlModel.Node node = model.addNode(nodeType, x, yStart + model.nodes.size() * gapY);
 
                     String blockName = reflectiveGetName(block);
-                    
-                    if (blockName == null){
+
+                    if (blockName == null) {
                         blockName = typeName;
 
                     }
@@ -83,16 +89,17 @@ public class FlightControlXMLLoader {
                         blockName = block.getClass().getSimpleName();
 
                     FlightControlModel.Node target = tokenToNode.get(blockName.toLowerCase());
-                    if (target == null) continue;
+                    if (target == null)
+                        continue;
 
                     // list of input tokens from reflection
                     List<String> inputs = reflectiveGetInputs(block);
 
                     for (String inputTok : inputs) {
-                        if (inputTok == null) continue;
+                        if (inputTok == null)
+                            continue;
                         String tok = inputTok.toLowerCase().trim();
 
-                        
                         if (tok.startsWith("-"))
                             tok = tok.substring(1);
 
@@ -127,11 +134,13 @@ public class FlightControlXMLLoader {
 
                 for (Object block : blocks) {
                     FlightControlModel.Node targetNode = nodeMap.get(block);
-                    if (targetNode == null) continue;
+                    if (targetNode == null)
+                        continue;
 
                     List<String> inputs = reflectiveGetInputs(block);
                     for (String input : inputs) {
-                        if (input == null) continue;
+                        if (input == null)
+                            continue;
                         input = input.trim();
 
                         FlightControlModel.Node sourceNode = outputMap.get(input);
@@ -145,10 +154,6 @@ public class FlightControlXMLLoader {
                         }
                     }
                 }
-                
-                
-
-                
 
                 return;
             }
@@ -156,7 +161,8 @@ public class FlightControlXMLLoader {
     }
 
     private static FlightControlModel.NodeType mapClassNameToNodeType(String className) {
-        if (className == null) return FlightControlModel.NodeType.GAIN;
+        if (className == null)
+            return FlightControlModel.NodeType.GAIN;
 
         return switch (className.toLowerCase()) {
             case "summer" -> FlightControlModel.NodeType.SUMMER;
@@ -181,26 +187,29 @@ public class FlightControlXMLLoader {
         }
     }
 
-    //Get <input> tokens
+    // Get <input> tokens
     private static List<String> reflectiveGetInputs(Object o) {
         List<String> out = new ArrayList<>();
         try {
             Method m = o.getClass().getMethod("getInput");
             Object v = m.invoke(o);
             if (v instanceof List) {
-                for (Object item : (List<?>) v) out.add(item.toString());
-            } else if (v != null) out.add(v.toString());
+                for (Object item : (List<?>) v)
+                    out.add(item.toString());
+            } else if (v != null)
+                out.add(v.toString());
+        } catch (Exception ignore) {
         }
-        catch (Exception ignore) {}
 
         try {
             Method m2 = o.getClass().getMethod("getInputs");
             Object v2 = m2.invoke(o);
             if (v2 instanceof List) {
-                for (Object item : (List<?>) v2) out.add(item.toString());
+                for (Object item : (List<?>) v2)
+                    out.add(item.toString());
             }
+        } catch (Exception ignore) {
         }
-        catch (Exception ignore) {}
         return out;
     }
 

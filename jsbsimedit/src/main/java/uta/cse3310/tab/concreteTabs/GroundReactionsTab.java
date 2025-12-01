@@ -28,10 +28,10 @@ import uta.cse3310.tab.widgets.textFieldWLabel;
 public class GroundReactionsTab extends simpleTab {
     // attributes that only pertain to the 'concrete' tab called oneTab
     // Following UIID094 - UIID098
-        // TODO: allow the user to edit the XML in the GUI
-        // TODO: FIX SAVE DETAIL
-        // TODO: LET USER SAVE TO XML
-    
+    // TODO: allow the user to edit the XML in the GUI
+    // TODO: FIX SAVE DETAIL
+    // TODO: LET USER SAVE TO XML
+
     public GroundReactionsTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
 
@@ -40,16 +40,17 @@ public class GroundReactionsTab extends simpleTab {
         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
     }
 
-    //data fields to be included:
-    //C.name, C.type, Location.coords, Stat-fcoef, dyam-fcoef, rolling, spring, damping, steer, brake group, retractable
+    // data fields to be included:
+    // C.name, C.type, Location.coords, Stat-fcoef, dyam-fcoef, rolling, spring,
+    // damping, steer, brake group, retractable
 
     private void loadUI() {
-        //JList
+        // JList
         listModel = new DefaultListModel<>();
         list = new JList<>(listModel);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        /*Implementation of SYS-FLC-074 Double click to edit landing gear*/
+        /* Implementation of SYS-FLC-074 Double click to edit landing gear */
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -66,7 +67,7 @@ public class GroundReactionsTab extends simpleTab {
         scrollPane = new JScrollPane(list);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        //Buttons
+        // Buttons
         JPanel buttonPanel = new JPanel();
         JButton addButton = new JButton("Add");
         JButton deleteButton = new JButton("Delete");
@@ -76,273 +77,276 @@ public class GroundReactionsTab extends simpleTab {
         buttonPanel.add(detailButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
 
-        //Button actions
-            //add button logic
+        // Button actions
+        // add button logic
         addButton.addActionListener(e -> {
             Contact newContact = new Contact();
             newContact.setName("New Contact");
             newContact.setType("BOGEY");
-            
+
             Location location = new Location();
             location.setX(0.0);
             location.setY(0.0);
             location.setZ(0.0);
             location.setUnit(LengthUnit.IN);
             newContact.setLocation(location);
-            
+
             SpringForce spring = new SpringForce();
             spring.setValue(0.0);
             spring.setUnit(SpringForceUnit.LBS_FT);
             newContact.setSpringCoeff(spring);
-            
+
             DampForce damp = new DampForce();
             damp.setValue(0.0);
             damp.setUnit(DampForceUnit.LBS_FT_SEC);
             newContact.setDampingCoeff(damp);
-            
+
             newContact.setStaticFriction(0.0);
             newContact.setDynamicFriction(0.0);
             newContact.setRollingFriction(0.0);
-            
+
             Angle steer = new Angle();
             steer.setValue(0.0);
             steer.setUnit(AngleUnit.DEG);
             newContact.setMaxSteer(steer);
-            
+
             newContact.setBrakeGroup("NONE");
             newContact.setRetractable(BigInteger.ZERO);
             DS.cfg.getGroundReactions().getContent().add(newContact);
             listModel.addElement(newContact);
             detailWindow(newContact);
         });
-            //delete button logic
+        // delete button logic
         deleteButton.addActionListener(e -> {
-        selected = list.getSelectedIndex();
-        Object index = listModel.getElementAt(selected);
-        if (selected != -1){
-            Contact member = (Contact) index; 
-            listModel.remove(selected);
-            DS.cfg.getGroundReactions().getContent().remove(member);
-            panel.repaint();
-        }
+            selected = list.getSelectedIndex();
+            Object index = listModel.getElementAt(selected);
+            if (selected != -1) {
+                Contact member = (Contact) index;
+                listModel.remove(selected);
+                DS.cfg.getGroundReactions().getContent().remove(member);
+                panel.repaint();
+            }
         });
-            //detail button logic
+        // detail button logic
         detailButton.addActionListener(e -> {
             selected = list.getSelectedIndex();
             if (selected != -1) {
                 Contact contact = (Contact) list.getSelectedValue();
                 detailWindow(contact);
             } else {
-                JOptionPane.showMessageDialog(panel, "Please select a contact first.", "No Selection", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(panel, "Please select a contact first.", "No Selection",
+                        JOptionPane.WARNING_MESSAGE);
             }
         });
     }
 
     private void detailWindow(Contact contact) {
-                Location location = contact.getLocation();
-                SpringForce spring = contact.getSpringCoeff();
-                DampForce damp = contact.getDampingCoeff();
-                Angle steer = contact.getMaxSteer();
-                
-                //Track if XML has attribute or not
-                boolean hasSteer = (steer != null); //If steer is null then initialize default values to show
-                if (steer == null) {
-                    steer = new Angle();
-                    steer.setValue(0.0);
-                    steer.setUnit(AngleUnit.DEG);
-                }
-                boolean hasBrakeGroup = (contact.getBrakeGroup() != null);
-                String origBrakeGroup = contact.getBrakeGroup() != null ? contact.getBrakeGroup() : "NONE";
-                boolean hasRetractable = (contact.getRetractable() != null);
-                int origRetractable = contact.getRetractable() != null ? contact.getRetractable().intValue() : 0;
-                
-                // Store original steer values; used for conditonal saving
-                final Angle finalSteer = steer;
-                double origSteerValue = finalSteer.getValue();
-                AngleUnit origSteerUnit = finalSteer.getUnit();
+        Location location = contact.getLocation();
+        SpringForce spring = contact.getSpringCoeff();
+        DampForce damp = contact.getDampingCoeff();
+        Angle steer = contact.getMaxSteer();
 
-                //Create detail dialog with this data
-                detail = new JDialog((JFrame) SwingUtilities.getWindowAncestor(panel), "Landing Gear Setup");
-                detail.setSize(500, 600);
-                detail.setLocationRelativeTo(scrollPane);
-                detail.setModal(true);
-                
-                //Form panel
-                JPanel formPanel = new JPanel(new GridLayout(17, 2, 3, 5));
-                //Detail button panel
-                JPanel detailButtonPanel = new JPanel();
-                JButton detailOkButton = new JButton("Ok");
-                JButton detailCancelButton = new JButton("Cancel");
+        // Track if XML has attribute or not
+        boolean hasSteer = (steer != null); // If steer is null then initialize default values to show
+        if (steer == null) {
+            steer = new Angle();
+            steer.setValue(0.0);
+            steer.setUnit(AngleUnit.DEG);
+        }
+        boolean hasBrakeGroup = (contact.getBrakeGroup() != null);
+        String origBrakeGroup = contact.getBrakeGroup() != null ? contact.getBrakeGroup() : "NONE";
+        boolean hasRetractable = (contact.getRetractable() != null);
+        int origRetractable = contact.getRetractable() != null ? contact.getRetractable().intValue() : 0;
 
-                //detail cancel Button logic
-                detailCancelButton.addActionListener(e2 -> {
-                    detail.dispose();
-                });
+        // Store original steer values; used for conditonal saving
+        final Angle finalSteer = steer;
+        double origSteerValue = finalSteer.getValue();
+        AngleUnit origSteerUnit = finalSteer.getUnit();
 
-                //Fields to contact data
-                nameField = new JTextField(contact.getName());
-                typeField = new JTextField(contact.getType());
-                formPanel.add(new JLabel("Name:"));
-                formPanel.add(nameField);
+        // Create detail dialog with this data
+        detail = new JDialog((JFrame) SwingUtilities.getWindowAncestor(panel), "Landing Gear Setup");
+        detail.setSize(500, 600);
+        detail.setLocationRelativeTo(scrollPane);
+        detail.setModal(true);
 
-                formPanel.add(new JLabel("Type:"));
-                formPanel.add(typeField);
+        // Form panel
+        JPanel formPanel = new JPanel(new GridLayout(17, 2, 3, 5));
+        // Detail button panel
+        JPanel detailButtonPanel = new JPanel();
+        JButton detailOkButton = new JButton("Ok");
+        JButton detailCancelButton = new JButton("Cancel");
 
-                //Location
-                if (location != null) {
-                    xField = new JTextField(String.valueOf(location.getX()));
-                    yField = new JTextField(String.valueOf(location.getY()));
-                    zField = new JTextField(String.valueOf(location.getZ()));
-                    locUnitField = new JComboBox<>(LengthUnit.values());
-                    if (location.getUnit() != null) {
-                        locUnitField.setSelectedItem(location.getUnit());
-                    }
-                    formPanel.add(new JLabel("X ="));
-                    formPanel.add(xField);
+        // detail cancel Button logic
+        detailCancelButton.addActionListener(e2 -> {
+            detail.dispose();
+        });
 
-                    formPanel.add(new JLabel("Y ="));
-                    formPanel.add(yField);
+        // Fields to contact data
+        nameField = new JTextField(contact.getName());
+        typeField = new JTextField(contact.getType());
+        formPanel.add(new JLabel("Name:"));
+        formPanel.add(nameField);
 
-                    formPanel.add(new JLabel("Z ="));
-                    formPanel.add(zField);
+        formPanel.add(new JLabel("Type:"));
+        formPanel.add(typeField);
 
-                    formPanel.add(new JLabel("Unit ="));
-                    formPanel.add(locUnitField);
-                }
-                
-                //Spring_force
-                if (spring != null) {
-                    springCoeffField = new JTextField(String.valueOf(spring.getValue()));
-                    springUnitField = new JComboBox<>(SpringForceUnit.values());
-                    if (spring.getUnit() != null) {
-                        springUnitField.setSelectedItem(spring.getUnit());
-                    }
-                    formPanel.add(new JLabel("Spring Coefficient ="));
-                    formPanel.add(springCoeffField);
+        // Location
+        if (location != null) {
+            xField = new JTextField(String.valueOf(location.getX()));
+            yField = new JTextField(String.valueOf(location.getY()));
+            zField = new JTextField(String.valueOf(location.getZ()));
+            locUnitField = new JComboBox<>(LengthUnit.values());
+            if (location.getUnit() != null) {
+                locUnitField.setSelectedItem(location.getUnit());
+            }
+            formPanel.add(new JLabel("X ="));
+            formPanel.add(xField);
 
-                    formPanel.add(new JLabel("Unit ="));
-                    formPanel.add(springUnitField);
-                }
-                
-                //Damp_force
-                if (damp != null) {
-                    dampCoeffField = new JTextField(String.valueOf(damp.getValue()));
-                    dampUnitField = new JComboBox<>(DampForceUnit.values());
-                    if (damp.getUnit() != null) {
-                        dampUnitField.setSelectedItem(damp.getUnit());
-                    }
-                    formPanel.add(new JLabel("Damping Coefficient ="));
-                    formPanel.add(dampCoeffField);
+            formPanel.add(new JLabel("Y ="));
+            formPanel.add(yField);
 
-                    formPanel.add(new JLabel("Unit ="));
-                    formPanel.add(dampUnitField);
-                }
+            formPanel.add(new JLabel("Z ="));
+            formPanel.add(zField);
 
-                //Frictions
-                staticField = new JTextField(String.valueOf(contact.getStaticFriction()));
-                dyanmicField = new JTextField(String.valueOf(contact.getDynamicFriction()));
-                rollField = new JTextField(String.valueOf(contact.getRollingFriction()));
-                formPanel.add(new JLabel("Static Friction ="));
-                formPanel.add(staticField);
+            formPanel.add(new JLabel("Unit ="));
+            formPanel.add(locUnitField);
+        }
 
-                formPanel.add(new JLabel("Dynamic Friction ="));
-                formPanel.add(dyanmicField);
+        // Spring_force
+        if (spring != null) {
+            springCoeffField = new JTextField(String.valueOf(spring.getValue()));
+            springUnitField = new JComboBox<>(SpringForceUnit.values());
+            if (spring.getUnit() != null) {
+                springUnitField.setSelectedItem(spring.getUnit());
+            }
+            formPanel.add(new JLabel("Spring Coefficient ="));
+            formPanel.add(springCoeffField);
 
-                formPanel.add(new JLabel("Rolling Friction ="));
-                formPanel.add(rollField);
+            formPanel.add(new JLabel("Unit ="));
+            formPanel.add(springUnitField);
+        }
 
-                //Steer
-                steerField = new JTextField(String.valueOf(finalSteer.getValue()));
-                steerUnitField = new JComboBox<>(AngleUnit.values());
-                if (finalSteer.getUnit() != null) {
-                    steerUnitField.setSelectedItem(finalSteer.getUnit());
-                }
-                formPanel.add(new JLabel("Max Steer ="));
-                formPanel.add(steerField);
+        // Damp_force
+        if (damp != null) {
+            dampCoeffField = new JTextField(String.valueOf(damp.getValue()));
+            dampUnitField = new JComboBox<>(DampForceUnit.values());
+            if (damp.getUnit() != null) {
+                dampUnitField.setSelectedItem(damp.getUnit());
+            }
+            formPanel.add(new JLabel("Damping Coefficient ="));
+            formPanel.add(dampCoeffField);
 
-                formPanel.add(new JLabel("Unit ="));
-                formPanel.add(steerUnitField);
+            formPanel.add(new JLabel("Unit ="));
+            formPanel.add(dampUnitField);
+        }
 
-                //Brake_group
-                String[] presetBrakeField = {"LEFT", "RIGHT", "CENTER", "NOSE", "TAIL", "NONE"};
-                brakeField = new JComboBox<>(presetBrakeField);
-                brakeField.setSelectedItem(origBrakeGroup);
-                formPanel.add(new JLabel("Brake Group ="));
-                formPanel.add(brakeField);
+        // Frictions
+        staticField = new JTextField(String.valueOf(contact.getStaticFriction()));
+        dyanmicField = new JTextField(String.valueOf(contact.getDynamicFriction()));
+        rollField = new JTextField(String.valueOf(contact.getRollingFriction()));
+        formPanel.add(new JLabel("Static Friction ="));
+        formPanel.add(staticField);
 
-                //Retractable
-                retractField = new JCheckBox("Retractable");
-                retractField.setSelected(origRetractable != 0);
-                formPanel.add(new JLabel(""));
-                formPanel.add(retractField);
+        formPanel.add(new JLabel("Dynamic Friction ="));
+        formPanel.add(dyanmicField);
 
-                //detail save button logic
-                detailOkButton.addActionListener(e2 -> {
-                    //update fields in contact
-                    contact.setName(nameField.getText());
-                    contact.setType(typeField.getText());
+        formPanel.add(new JLabel("Rolling Friction ="));
+        formPanel.add(rollField);
 
-                    //Location
-                    if (location != null) {
-                    location.setX(Double.parseDouble(xField.getText()));
-                    location.setY(Double.parseDouble(yField.getText()));
-                    location.setZ(Double.parseDouble(zField.getText()));
-                    location.setUnit((LengthUnit) locUnitField.getSelectedItem());
-                    }
+        // Steer
+        steerField = new JTextField(String.valueOf(finalSteer.getValue()));
+        steerUnitField = new JComboBox<>(AngleUnit.values());
+        if (finalSteer.getUnit() != null) {
+            steerUnitField.setSelectedItem(finalSteer.getUnit());
+        }
+        formPanel.add(new JLabel("Max Steer ="));
+        formPanel.add(steerField);
 
-                    //Spring
-                    if (spring != null) {
-                        spring.setValue(Double.parseDouble(springCoeffField.getText()));
-                        spring.setUnit((SpringForceUnit) springUnitField.getSelectedItem());
-                    }
+        formPanel.add(new JLabel("Unit ="));
+        formPanel.add(steerUnitField);
 
-                    //Damp
-                    if (damp != null) {
-                        damp.setValue(Double.parseDouble(dampCoeffField.getText()));
-                        damp.setUnit((DampForceUnit) dampUnitField.getSelectedItem());
-                    }
+        // Brake_group
+        String[] presetBrakeField = { "LEFT", "RIGHT", "CENTER", "NOSE", "TAIL", "NONE" };
+        brakeField = new JComboBox<>(presetBrakeField);
+        brakeField.setSelectedItem(origBrakeGroup);
+        formPanel.add(new JLabel("Brake Group ="));
+        formPanel.add(brakeField);
 
-                    //Frictions
-                    contact.setStaticFriction(Double.parseDouble(staticField.getText()));
-                    contact.setDynamicFriction(Double.parseDouble(dyanmicField.getText()));
-                    contact.setRollingFriction(Double.parseDouble(rollField.getText()));
+        // Retractable
+        retractField = new JCheckBox("Retractable");
+        retractField.setSelected(origRetractable != 0);
+        formPanel.add(new JLabel(""));
+        formPanel.add(retractField);
 
-                    //For next 3 fields: the field will have a default value if NOT in XML. Editing the newly created values is the ONLY time it will save to XML.
-                    //Opening detail to show default values then saving will NOT write the default values to XML
+        // detail save button logic
+        detailOkButton.addActionListener(e2 -> {
+            // update fields in contact
+            contact.setName(nameField.getText());
+            contact.setType(typeField.getText());
 
-                    //Steer conditional save
-                    double newSteerValue = Double.parseDouble(steerField.getText());
-                    AngleUnit newSteerUnit = (AngleUnit) steerUnitField.getSelectedItem();
-                    boolean steerChanged = (newSteerValue != origSteerValue) || (!newSteerUnit.equals(origSteerUnit));
-                    if (hasSteer || steerChanged) {
-                        finalSteer.setValue(newSteerValue);
-                        finalSteer.setUnit(newSteerUnit);
-                        contact.setMaxSteer(finalSteer);
-                    }
+            // Location
+            if (location != null) {
+                location.setX(Double.parseDouble(xField.getText()));
+                location.setY(Double.parseDouble(yField.getText()));
+                location.setZ(Double.parseDouble(zField.getText()));
+                location.setUnit((LengthUnit) locUnitField.getSelectedItem());
+            }
 
-                    //Brake group conditional save
-                    String newBrakeGroup = (String) brakeField.getSelectedItem();
-                    boolean brakeChanged = !newBrakeGroup.equals(origBrakeGroup);
-                    if (hasBrakeGroup || brakeChanged) {
-                        contact.setBrakeGroup(newBrakeGroup);
-                    }
+            // Spring
+            if (spring != null) {
+                spring.setValue(Double.parseDouble(springCoeffField.getText()));
+                spring.setUnit((SpringForceUnit) springUnitField.getSelectedItem());
+            }
 
-                    //Retractable conditonal save
-                    int newRetractable = retractField.isSelected() ? 1 : 0;
-                    boolean retractChanged = (newRetractable != origRetractable);
-                    if (hasRetractable || retractChanged) {
-                        contact.setRetractable(retractField.isSelected() ? BigInteger.ONE : BigInteger.ZERO);
-                    }
-                
-                    detail.dispose();
-                    panel.repaint();
-                });
+            // Damp
+            if (damp != null) {
+                damp.setValue(Double.parseDouble(dampCoeffField.getText()));
+                damp.setUnit((DampForceUnit) dampUnitField.getSelectedItem());
+            }
 
-                detailButtonPanel.add(detailOkButton);
-                detailButtonPanel.add(detailCancelButton);
-                detail.add(formPanel, BorderLayout.CENTER);
-                detail.add(detailButtonPanel, BorderLayout.SOUTH);
-                detail.setVisible(true);
+            // Frictions
+            contact.setStaticFriction(Double.parseDouble(staticField.getText()));
+            contact.setDynamicFriction(Double.parseDouble(dyanmicField.getText()));
+            contact.setRollingFriction(Double.parseDouble(rollField.getText()));
+
+            // For next 3 fields: the field will have a default value if NOT in XML. Editing
+            // the newly created values is the ONLY time it will save to XML.
+            // Opening detail to show default values then saving will NOT write the default
+            // values to XML
+
+            // Steer conditional save
+            double newSteerValue = Double.parseDouble(steerField.getText());
+            AngleUnit newSteerUnit = (AngleUnit) steerUnitField.getSelectedItem();
+            boolean steerChanged = (newSteerValue != origSteerValue) || (!newSteerUnit.equals(origSteerUnit));
+            if (hasSteer || steerChanged) {
+                finalSteer.setValue(newSteerValue);
+                finalSteer.setUnit(newSteerUnit);
+                contact.setMaxSteer(finalSteer);
+            }
+
+            // Brake group conditional save
+            String newBrakeGroup = (String) brakeField.getSelectedItem();
+            boolean brakeChanged = !newBrakeGroup.equals(origBrakeGroup);
+            if (hasBrakeGroup || brakeChanged) {
+                contact.setBrakeGroup(newBrakeGroup);
+            }
+
+            // Retractable conditonal save
+            int newRetractable = retractField.isSelected() ? 1 : 0;
+            boolean retractChanged = (newRetractable != origRetractable);
+            if (hasRetractable || retractChanged) {
+                contact.setRetractable(retractField.isSelected() ? BigInteger.ONE : BigInteger.ZERO);
+            }
+
+            detail.dispose();
+            panel.repaint();
+        });
+
+        detailButtonPanel.add(detailOkButton);
+        detailButtonPanel.add(detailCancelButton);
+        detail.add(formPanel, BorderLayout.CENTER);
+        detail.add(detailButtonPanel, BorderLayout.SOUTH);
+        detail.setVisible(true);
     }
 
     public void loadData() {
@@ -356,27 +360,29 @@ public class GroundReactionsTab extends simpleTab {
             }
         }
     }
+
     private void cellRender() {
         list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
-            public Component getListCellRendererComponent(JList<?> jlist, Object value, 
-                                                        int index, boolean isSelected, boolean cellHasFocus) {
+            public Component getListCellRendererComponent(JList<?> jlist, Object value,
+                    int index, boolean isSelected, boolean cellHasFocus) {
                 if (value instanceof Contact) {
                     Contact contact = (Contact) value;
                     Location loc = contact.getLocation();
-                    String display = String.format("%s at point [%s, %s, %s] in %s (in %s brake group)", 
-                    contact.getName(), 
-                    loc != null ? loc.getX() : 0,
-                    loc != null ? loc.getY() : 0,
-                    loc != null ? loc.getZ() : 0,
-                    loc != null && loc.getUnit() != null ? loc.getUnit().value() : "IN",
-                    contact.getBrakeGroup() != null ? contact.getBrakeGroup() : "NONE");
+                    String display = String.format("%s at point [%s, %s, %s] in %s (in %s brake group)",
+                            contact.getName(),
+                            loc != null ? loc.getX() : 0,
+                            loc != null ? loc.getY() : 0,
+                            loc != null ? loc.getZ() : 0,
+                            loc != null && loc.getUnit() != null ? loc.getUnit().value() : "IN",
+                            contact.getBrakeGroup() != null ? contact.getBrakeGroup() : "NONE");
                     return super.getListCellRendererComponent(jlist, display, index, isSelected, cellHasFocus);
                 }
                 return super.getListCellRendererComponent(jlist, value, index, isSelected, cellHasFocus);
             }
         });
-    }   
+    }
+
     private JList<Contact> list;
     private DefaultListModel<Contact> listModel;
     private JScrollPane scrollPane;

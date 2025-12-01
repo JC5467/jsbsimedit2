@@ -96,16 +96,16 @@ public final class FlightControlController {
 
         // Map names to icon files
         Object[][] items = {
-            {FlightControlModel.NodeType.SOURCE, "source.bmp"},
-            {FlightControlModel.NodeType.DESTINATION, "destination.bmp"},
-            {FlightControlModel.NodeType.SUMMER, "summer.bmp"},
-            {FlightControlModel.NodeType.PID, "pid.bmp"},
-            {FlightControlModel.NodeType.GAIN, "gain.bmp"},
-            {FlightControlModel.NodeType.FILTER, "filter.bmp"},
-            {FlightControlModel.NodeType.DEAD_BAND, "deadband.bmp"},
-            {FlightControlModel.NodeType.SWITCH, "switch.bmp"},
-            {FlightControlModel.NodeType.KINEMAT, "kinemat.bmp"},
-            {FlightControlModel.NodeType.FCSFUNCTION, "func.bmp"}
+                { FlightControlModel.NodeType.SOURCE, "source.bmp" },
+                { FlightControlModel.NodeType.DESTINATION, "destination.bmp" },
+                { FlightControlModel.NodeType.SUMMER, "summer.bmp" },
+                { FlightControlModel.NodeType.PID, "pid.bmp" },
+                { FlightControlModel.NodeType.GAIN, "gain.bmp" },
+                { FlightControlModel.NodeType.FILTER, "filter.bmp" },
+                { FlightControlModel.NodeType.DEAD_BAND, "deadband.bmp" },
+                { FlightControlModel.NodeType.SWITCH, "switch.bmp" },
+                { FlightControlModel.NodeType.KINEMAT, "kinemat.bmp" },
+                { FlightControlModel.NodeType.FCSFUNCTION, "func.bmp" }
         };
 
         for (Object[] pair : items) {
@@ -124,7 +124,8 @@ public final class FlightControlController {
             // Store in map so dropped nodes can access it
             ICONS.put(type, icon);
 
-            // If icon is still null at this point, we will gracefully fall back to text-only
+            // If icon is still null at this point, we will gracefully fall back to
+            // text-only
             JLabel tag;
             if (icon != null) {
                 tag = new JLabel(labelName, icon, JLabel.CENTER);
@@ -136,25 +137,23 @@ public final class FlightControlController {
             tag.setOpaque(true);
             tag.setBackground(new Color(250, 250, 250));
             tag.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-                new EmptyBorder(4, 6, 4, 6)
-            ));
+                    BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+                    new EmptyBorder(4, 6, 4, 6)));
             tag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
             // TransferHandler for drag-and-drop
             tag.setTransferHandler(
-                new TransferHandler("text") {
-                    @Override
-                    protected Transferable createTransferable(JComponent c) {
-                        return new StringSelection(type.label);
-                    }
+                    new TransferHandler("text") {
+                        @Override
+                        protected Transferable createTransferable(JComponent c) {
+                            return new StringSelection(type.label);
+                        }
 
-                    @Override
-                    public int getSourceActions(JComponent c) {
-                        return COPY;
-                    }
-                }
-            );
+                        @Override
+                        public int getSourceActions(JComponent c) {
+                            return COPY;
+                        }
+                    });
 
             tag.addMouseListener(new MouseAdapter() {
                 @Override
@@ -187,9 +186,9 @@ public final class FlightControlController {
             private boolean isInResizeZone(FlightControlModel.Node n, Point p) {
                 Rectangle b = n.bounds;
                 return p.x >= b.x + b.width - RESIZE_MARGIN &&
-                       p.x <= b.x + b.width &&
-                       p.y >= b.y + b.height - RESIZE_MARGIN &&
-                       p.y <= b.y + b.height;
+                        p.x <= b.x + b.width &&
+                        p.y >= b.y + b.height - RESIZE_MARGIN &&
+                        p.y <= b.y + b.height;
             }
 
             @Override
@@ -201,11 +200,10 @@ public final class FlightControlController {
                         if (node.type == FlightControlModel.NodeType.SUMMER) {
                             createDestinationForSummer(node, model, view);
                             return;
-                        }
-                        else if(node.type == FlightControlModel.NodeType.GAIN) {
+                        } else if (node.type == FlightControlModel.NodeType.GAIN) {
                             openGainPopup(node);
-                        }
-                        else openNodePopup(node);
+                        } else
+                            openNodePopup(node);
                     }
                 }
             }
@@ -266,11 +264,10 @@ public final class FlightControlController {
                         // Node type validation first
                         if (!isValidConnection(src.type, dst.type)) {
                             JOptionPane.showMessageDialog(
-                                null,
-                                "Invalid connection: " + src.type.label + " -> " + dst.type.label,
-                                "Connection Error",
-                                JOptionPane.ERROR_MESSAGE
-                            );
+                                    null,
+                                    "Invalid connection: " + src.type.label + " -> " + dst.type.label,
+                                    "Connection Error",
+                                    JOptionPane.ERROR_MESSAGE);
                             connectFrom = null;
                             view.clearConnectionPreview();
                             return;
@@ -280,11 +277,10 @@ public final class FlightControlController {
                         for (FlightControlModel.Edge d : model.edges) {
                             if (d.to == dst && d.toInputIndex == inputIndex) {
                                 JOptionPane.showMessageDialog(
-                                    null,
-                                    "That input port is already connected.",
-                                    "Connection Error",
-                                    JOptionPane.ERROR_MESSAGE
-                                );
+                                        null,
+                                        "That input port is already connected.",
+                                        "Connection Error",
+                                        JOptionPane.ERROR_MESSAGE);
                                 connectFrom = null;
                                 view.clearConnectionPreview();
                                 return;
@@ -306,7 +302,8 @@ public final class FlightControlController {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                // Allows the cursor to update when hovering over a node's output port or the node itself
+                // Allows the cursor to update when hovering over a node's output port or the
+                // node itself
                 Point p = e.getPoint();
                 FlightControlModel.Node n = view.nodeAt(p);
                 if (n != null && isInResizeZone(n, p)) {
@@ -351,7 +348,7 @@ public final class FlightControlController {
                     draggingNode.bounds.y = p.y - dragOffset.y;
 
                     for (FlightControlModel.Edge edge : model.edges) {
-                        if(edge.from == draggingNode || edge.to == draggingNode) {
+                        if (edge.from == draggingNode || edge.to == draggingNode) {
                             edge.updatePoints();
                         }
                     }
@@ -365,7 +362,8 @@ public final class FlightControlController {
         view.addMouseMotionListener(ma);
     }
 
-    private static void createDestinationForSummer(FlightControlModel.Node summerNode, FlightControlModel model, FlightControlView view) {
+    private static void createDestinationForSummer(FlightControlModel.Node summerNode, FlightControlModel model,
+            FlightControlView view) {
         int destX = summerNode.bounds.x + summerNode.bounds.width + 40;
         int destY = summerNode.bounds.y;
         FlightControlModel.Node dest = model.addNode(FlightControlModel.NodeType.DESTINATION, destX, destY);
@@ -403,7 +401,8 @@ public final class FlightControlController {
 
         @Override
         public boolean importData(TransferSupport s) {
-            if (!canImport(s)) return false;
+            if (!canImport(s))
+                return false;
 
             try {
                 Transferable t = s.getTransferable();
@@ -435,11 +434,11 @@ public final class FlightControlController {
 
     private static void openNodePopup(FlightControlModel.Node node) {
         String[][] data = {
-            {"Block ID", String.valueOf(node.id)},
-            {"Block Type", node.type.label}
+                { "Block ID", String.valueOf(node.id) },
+                { "Block Type", node.type.label }
         };
 
-        String[] cols = {"Field", "Value"};
+        String[] cols = { "Field", "Value" };
 
         JTable table = new JTable(data, cols);
         JScrollPane sp = new JScrollPane(table);
@@ -453,7 +452,7 @@ public final class FlightControlController {
     }
 
     // Row creation helper
-     private static JPanel makeRow(String label, JComponent input) {
+    private static JPanel makeRow(String label, JComponent input) {
         JPanel row = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -472,7 +471,7 @@ public final class FlightControlController {
     }
 
     private static void openGainPopup(FlightControlModel.Node node) {
-        
+
         JDialog d = new JDialog();
         d.setTitle("Gain Component");
         d.setSize(400, 500);
@@ -485,13 +484,12 @@ public final class FlightControlController {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
 
-
         JTextField nameField = new JTextField("g load norm");
         panel.add(makeRow("Name:", nameField));
         panel.add(Box.createVerticalStrut(8));
 
         // Type
-        JComboBox<String> typeBox = new JComboBox<>(new String[]{"pure_gain"});
+        JComboBox<String> typeBox = new JComboBox<>(new String[] { "pure_gain" });
         panel.add(makeRow("Type:", typeBox));
         panel.add(Box.createVerticalStrut(8));
 
@@ -526,7 +524,7 @@ public final class FlightControlController {
         panel.add(clipperPanel);
 
         // Gain
-         panel.add(Box.createVerticalStrut(10));
+        panel.add(Box.createVerticalStrut(10));
         JTextField gainField = new JTextField("0.125");
         panel.add(makeRow("Gain:", gainField));
 
@@ -575,26 +573,28 @@ public final class FlightControlController {
     // Connection validation logic
     public static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
         // Prevent connecting a block to itself
-        if (src == dst) return false;
+        if (src == dst)
+            return false;
 
         // Destination cannot output to anything
-        if (src == FlightControlModel.NodeType.DESTINATION) return false;
+        if (src == FlightControlModel.NodeType.DESTINATION)
+            return false;
 
         // Source should not receive inputs
-        if (dst == FlightControlModel.NodeType.SOURCE) return false;
+        if (dst == FlightControlModel.NodeType.SOURCE)
+            return false;
 
         // Example: Prevent Filter connecting directly to Destination
         if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION) {
             return false;
         }
-            
+
         // Default: allow connection
         return true;
     }
 
-
-
-    public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model, uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
+    public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model,
+            uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(view);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(20);

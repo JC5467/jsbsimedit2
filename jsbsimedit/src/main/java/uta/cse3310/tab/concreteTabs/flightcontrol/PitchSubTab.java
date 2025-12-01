@@ -1,6 +1,5 @@
 package uta.cse3310.tab.concreteTabs.flightcontrol;
 
-
 import javax.swing.*;
 import java.awt.BorderLayout;
 
@@ -21,7 +20,7 @@ public class PitchSubTab {
     private FlightControlView view;
     private FlightControlModel model;
 
-    public PitchSubTab(tabFrame tf, dataStore ds, String label){
+    public PitchSubTab(tabFrame tf, dataStore ds, String label) {
         this.TF = tf;
         this.DS = ds;
         panel = new JPanel(new BorderLayout());
@@ -30,30 +29,28 @@ public class PitchSubTab {
         view = new FlightControlView(model);
     }
 
-
-
     public JComponent buildPanel() {
-        /** 
-        panel = new JPanel(new BorderLayout());
-        
-        DragAndDropCanvas canvas = new DragAndDropCanvas();
-        panel.add(canvas.getPanel(), BorderLayout.CENTER);
-        **/
+        /**
+         * panel = new JPanel(new BorderLayout());
+         * 
+         * DragAndDropCanvas canvas = new DragAndDropCanvas();
+         * panel.add(canvas.getPanel(), BorderLayout.CENTER);
+         **/
         return panel;
     }
 
-    //later add a load from XML method
+    // later add a load from XML method
     public void loadData() {
 
         model.nodes.clear();
         model.edges.clear();
 
-        if( DS == null || DS.cfg == null) {
+        if (DS == null || DS.cfg == null) {
             panel.removeAll();
             panel.add(new JLabel("No XML loaded yet", SwingConstants.CENTER), BorderLayout.CENTER);
             panel.revalidate();
             panel.repaint();
-            
+
         }
 
         FlightControlXMLLoader.loadChannel(DS.cfg, model, "Pitch");
@@ -62,7 +59,6 @@ public class PitchSubTab {
 
         panel.revalidate();
         panel.repaint();
-
 
     }
 }
