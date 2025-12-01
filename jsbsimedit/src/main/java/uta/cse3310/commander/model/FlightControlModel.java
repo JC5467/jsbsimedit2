@@ -31,16 +31,11 @@ public class FlightControlModel {
             this.inPorts = inPorts;
             this.outPorts = outPorts;
         }
-
-        @Override
-        public String toString() {
-            return label;
-        }
+        @Override public String toString() { return label; }
 
         public static NodeType fromLabel(String s) {
             for (NodeType t : values()) {
-                if (t.label.equalsIgnoreCase(s))
-                    return t;
+                if (t.label.equalsIgnoreCase(s)) return t;
             }
             return GAIN;
         }
@@ -53,32 +48,30 @@ public class FlightControlModel {
         public Rectangle bounds; // x,y,width,height
         public ImageIcon icon;
 
+        public String displayName;
+
+        // How many distinct input ports this node currently uses.
+        public int inputPortCount = 0;
+
         public Node(int id, NodeType type, int x, int y) {
             this.id = id;
             this.type = type;
             this.bounds = new Rectangle(x, y, 80, 80);
+            this.displayName = type.label;
         }
 
-        // Multiple inputs on the left edge, single output on right edge
+        // Input port at a specific index (0-based).
+        // Ports are evenly distributed along the left edge.
         public Point inputPort(int index) {
-            int n = Math.max(1, type.inPorts); // always at least 1
-            if (index < 0) {
-                index = 0;
-            } else if (index >= n) {
-                index = n - 1;
-            }
+            int n = Math.max(1, inputPortCount);
+            if (index < 0) index = 0;
+            if (index >= n) index = n - 1;
 
-            // Distribute ports vertically along the node height
-            double slot = (index + 1) / (double) (n + 1); // normalize inputs from 0 to 1 to calc % of node height
-            int cy = (int) Math.round(bounds.y + slot * bounds.height);
-            int cx = bounds.x;
-            return new Point(cx, cy);
+            double slot = (index + 1) / (double) (n + 1); // 1/(n+1), 2/(n+1), ...
+            int y = (int) Math.round(bounds.y + slot * bounds.height);
+            int x = bounds.x;
+            return new Point(x, y);
         }
-
-        // // For single-input cases (old method)
-        // public Point inputPort() {
-        // return inputPort(0);
-        // }
 
         public Point outputPort() {
             return new Point(bounds.x + bounds.width, bounds.y + bounds.height / 2);
@@ -90,7 +83,6 @@ public class FlightControlModel {
             return new Rectangle(p.x - size / 2, p.y - size / 2, size, size);
         }
 
-        // For single-input cases (old method)
         public Rectangle inputPortRect(int size) {
             return inputPortRect(0, size);
         }
@@ -102,9 +94,11 @@ public class FlightControlModel {
     }
 
     public static final class Edge {
-        public final Node from;
-        public final Node to;
-        public final int toInputIndex; // which input port on Node "to" this edge feeds
+        public final Node from; // uses output port
+        public final Node to;   // uses one of the input ports
+
+        // Which input index of 'to' this edge is attached to (0-based)
+        public final int toInputIndex;
 
         public Point fromPoint;
         public Point toPoint;
@@ -112,26 +106,20 @@ public class FlightControlModel {
         public Edge(Node from, Node to, int toInputIndex) {
             this.from = from;
             this.to = to;
-            this.toInputIndex = toInputIndex;
+            this.toInputIndex = Math.max(0, toInputIndex);
             updatePoints();
         }
 
-        // Recalculate attachment points if nodes move
         public void updatePoints() {
-            Point fromAttach = from.outputPort();
-            Point toAttach = to.inputPort(toInputIndex);
+            // Always recompute based on current node bounds & input count
+            fromPoint = from.outputPort();
 
-            if (fromPoint == null) {
-                fromPoint = new Point(fromAttach);
-            } else {
-                fromPoint.setLocation(fromAttach);
-            }
+            int n = Math.max(1, to.inputPortCount);
+            int idx = toInputIndex;
+            if (idx < 0) idx = 0;
+            if (idx >= n) idx = n - 1;
 
-            if (toPoint == null) {
-                toPoint = new Point(toAttach);
-            } else {
-                toPoint.setLocation(toAttach);
-            }
+            toPoint = to.inputPort(idx);
         }
     }
 
@@ -146,14 +134,29 @@ public class FlightControlModel {
         return n;
     }
 
-    // Default to the first input port on the destination node
+    // Default edge - attach to the next free input index on the target
     public void addEdge(Node from, Node to) {
-        addEdge(from, to, 0);
+        if (from != null && to != null && from != to) {
+            int inputIndex = 0;
+            for (Edge e : edges) {
+                if (e.to == to) {
+                    inputIndex++;  // how many edges already go into this node
+                }
+            }
+            addEdge(from, to, inputIndex);
+        }
     }
 
+    // Overload that lets callers choose the target input index
     public void addEdge(Node from, Node to, int toInputIndex) {
         if (from != null && to != null && from != to) {
-            edges.add(new Edge(from, to, toInputIndex));
+            Edge e = new Edge(from, to, toInputIndex);
+            edges.add(e);
+
+            int needed = toInputIndex + 1;
+            if (needed > to.inputPortCount) {
+                to.inputPortCount = needed; // node updated with how many inputs it has
+            }
         }
     }
 }
