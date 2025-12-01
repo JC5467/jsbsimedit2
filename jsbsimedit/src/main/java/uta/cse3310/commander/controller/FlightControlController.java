@@ -19,16 +19,27 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Dimension;
 
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
@@ -191,7 +202,10 @@ public final class FlightControlController {
                             createDestinationForSummer(node, model, view);
                             return;
                         }
-                        openNodePopup(node);
+                        else if(node.type == FlightControlModel.NodeType.GAIN) {
+                            openGainPopup(node);
+                        }
+                        else openNodePopup(node);
                     }
                 }
             }
@@ -435,6 +449,126 @@ public final class FlightControlController {
         d.setSize(400, 200);
         d.setLocationRelativeTo(null);
         d.add(sp);
+        d.setVisible(true);
+    }
+
+    // Row creation helper
+     private static JPanel makeRow(String label, JComponent input) {
+        JPanel row = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        row.add(new JLabel(label), c);
+
+        c.gridx = 1;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        row.add(input, c);
+
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        return row;
+    }
+
+    private static void openGainPopup(FlightControlModel.Node node) {
+        
+        JDialog d = new JDialog();
+        d.setTitle("Gain Component");
+        d.setSize(400, 500);
+        d.setLocationRelativeTo(null);
+        d.setModal(true);
+        d.setLayout(new BorderLayout());
+
+        // Main panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+
+
+        JTextField nameField = new JTextField("g load norm");
+        panel.add(makeRow("Name:", nameField));
+        panel.add(Box.createVerticalStrut(8));
+
+        // Type
+        JComboBox<String> typeBox = new JComboBox<>(new String[]{"pure_gain"});
+        panel.add(makeRow("Type:", typeBox));
+        panel.add(Box.createVerticalStrut(8));
+
+        // Order
+        JTextField orderField = new JTextField("110");
+        panel.add(makeRow("Order:", orderField));
+        panel.add(Box.createVerticalStrut(10));
+
+        // Cliper
+        panel.add(Box.createVerticalStrut(10));
+        JPanel clipperPanel = new JPanel();
+        clipperPanel.setBorder(BorderFactory.createTitledBorder("cliper"));
+        clipperPanel.setLayout(new BoxLayout(clipperPanel, BoxLayout.Y_AXIS));
+
+        JCheckBox clippable = new JCheckBox("clippable");
+        JTextField maxField = new JTextField();
+        JTextField minField = new JTextField();
+
+        maxField.setEnabled(false);
+        minField.setEnabled(false);
+
+        clippable.addActionListener(e -> {
+            boolean enabled = clippable.isSelected();
+            maxField.setEnabled(enabled);
+            minField.setEnabled(enabled);
+        });
+
+        clipperPanel.add(clippable);
+        clipperPanel.add(makeRow("Max:", maxField));
+        clipperPanel.add(makeRow("Min:", minField));
+
+        panel.add(clipperPanel);
+
+        // Gain
+         panel.add(Box.createVerticalStrut(10));
+        JTextField gainField = new JTextField("0.125");
+        panel.add(makeRow("Gain:", gainField));
+
+        // Inputs
+        panel.add(Box.createVerticalStrut(10));
+        JPanel inputPanel = new JPanel();
+        inputPanel.setBorder(BorderFactory.createTitledBorder("inputs"));
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+        JLabel inputLabel = new JLabel("input1");
+        JRadioButton positive = new JRadioButton("positive");
+        JRadioButton negative = new JRadioButton("negative", true);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(positive);
+        group.add(negative);
+
+        negative.setSelected(true);
+
+        JPanel inputRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        inputRow.add(positive);
+        inputRow.add(negative);
+
+        inputPanel.add(inputLabel);
+        inputPanel.add(inputRow);
+
+        panel.add(inputPanel);
+
+        d.add(panel, BorderLayout.CENTER);
+
+        // Ok/Cancel buttons
+        JPanel buttonPanel = new JPanel();
+        JButton okBtn = new JButton("OK");
+        JButton cancelBtn = new JButton("Cancel");
+
+        cancelBtn.addActionListener(e -> d.dispose());
+
+        buttonPanel.add(okBtn);
+        buttonPanel.add(cancelBtn);
+
+        d.add(buttonPanel, BorderLayout.SOUTH);
+
         d.setVisible(true);
     }
 
