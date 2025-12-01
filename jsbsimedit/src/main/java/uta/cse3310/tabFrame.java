@@ -102,7 +102,7 @@ public class tabFrame {
         tabbedPane.addTab("Aerodynamics", null, frameTabs.lastElement().panel, "This is the Aerodynamics tab.");
         tabbedPane.setMnemonicAt(7, KeyEvent.VK_9);
 
-        frameTabs.add(new BuoyantForcesTab(DS, "Buoyant Forces Tab"));
+        frameTabs.add(new BuoyantForcesTab(this, DS, "Buoyant Forces Tab"));
         tabbedPane.addTab("Buoyant Forces", null, frameTabs.lastElement().panel, "This is the Buoyant Forces tab.");
         tabbedPane.setMnemonicAt(8, KeyEvent.VK_B);
 
