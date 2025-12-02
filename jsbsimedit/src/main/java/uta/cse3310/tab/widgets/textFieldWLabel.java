@@ -2,6 +2,7 @@ package uta.cse3310.tab.widgets;
 
 import uta.cse3310.tab.widgets.dirtyFunction;
 import uta.cse3310.tab.widgets.setValFunction;
+import uta.cse3310.tab.widgets.NumericDocumentFilter;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
