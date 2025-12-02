@@ -29,6 +29,95 @@ public class MetricsTab extends simpleTab {
         public void loadData() {
                 panel.removeAll();
                 String V, L, U;
+                // Guard: if no configuration is loaded, show message and return
+                if (DS == null || DS.cfg == null) {
+                        panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
+                        return;
+                }
+
+                // Ensure metrics section exists and has required sub-elements
+                Metrics m = DS.cfg.getMetrics();
+                if (m == null) {
+                        m = new Metrics();
+                        // create required children with sensible defaults
+                        Area wingarea = new Area();
+                        wingarea.setValue(0.0);
+                        wingarea.setUnit(AreaUnit.FT_2);
+                        m.setWingarea(wingarea);
+
+                        Length wingspan = new Length();
+                        wingspan.setValue(0.0);
+                        wingspan.setUnit(LengthUnit.FT);
+                        m.setWingspan(wingspan);
+
+                        Length chord = new Length();
+                        chord.setValue(0.0);
+                        chord.setUnit(LengthUnit.FT);
+                        m.setChord(chord);
+
+                        // ensure three default locations (AERORP, EYEPOINT, VRP)
+                        Metrics.Location aero = new Metrics.Location();
+                        aero.setX(0.0);
+                        aero.setY(0.0);
+                        aero.setZ(0.0);
+                        aero.setUnit(LengthUnit.FT);
+                        aero.setName(generated.ReferencePoint.AERORP);
+
+                        Metrics.Location eye = new Metrics.Location();
+                        eye.setX(0.0);
+                        eye.setY(0.0);
+                        eye.setZ(0.0);
+                        eye.setUnit(LengthUnit.FT);
+                        eye.setName(generated.ReferencePoint.EYEPOINT);
+
+                        Metrics.Location vis = new Metrics.Location();
+                        vis.setX(0.0);
+                        vis.setY(0.0);
+                        vis.setZ(0.0);
+                        vis.setUnit(LengthUnit.FT);
+                        vis.setName(generated.ReferencePoint.VRP);
+
+                        m.getLocation().add(aero);
+                        m.getLocation().add(eye);
+                        m.getLocation().add(vis);
+
+                        DS.cfg.setMetrics(m);
+                }
+
+                // Ensure required simple children are present
+                if (m.getWingarea() == null) {
+                        Area wingarea = new Area();
+                        wingarea.setValue(0.0);
+                        wingarea.setUnit(AreaUnit.FT_2);
+                        m.setWingarea(wingarea);
+                }
+                if (m.getWingspan() == null) {
+                        Length wingspan = new Length();
+                        wingspan.setValue(0.0);
+                        wingspan.setUnit(LengthUnit.FT);
+                        m.setWingspan(wingspan);
+                }
+                if (m.getChord() == null) {
+                        Length chord = new Length();
+                        chord.setValue(0.0);
+                        chord.setUnit(LengthUnit.FT);
+                        m.setChord(chord);
+                }
+
+                // Ensure at least three location entries exist
+                while (m.getLocation().size() < 3) {
+                        Metrics.Location loc = new Metrics.Location();
+                        loc.setX(0.0);
+                        loc.setY(0.0);
+                        loc.setZ(0.0);
+                        loc.setUnit(LengthUnit.FT);
+                        // set a name for the first three entries if possible
+                        int idx = m.getLocation().size();
+                        if (idx == 0) loc.setName(generated.ReferencePoint.AERORP);
+                        else if (idx == 1) loc.setName(generated.ReferencePoint.EYEPOINT);
+                        else if (idx == 2) loc.setName(generated.ReferencePoint.VRP);
+                        m.getLocation().add(loc);
+                }
                 //not finished will fix formating later
                 //required
                         //wingarea
@@ -43,24 +132,24 @@ public class MetricsTab extends simpleTab {
                         //locations
 
                 // text and fields for Wingarea
-                V = String.valueOf(DS.cfg.getMetrics().getWingarea().getValue());
-                U = String.valueOf(DS.cfg.getMetrics().getWingarea().getUnit());
+                V = String.valueOf(m.getWingarea().getValue());
+                U = String.valueOf(m.getWingarea().getUnit());
                 L = "wingarea(*) = ";
                 textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),
                                 DS::setDirty, panel, L, 10, 40, 200, 20, V, 100, 40, 100, 20, U, 220, 40, 80, 20,
                                 unit -> DS.cfg.getMetrics().getWingarea().setUnit((AreaUnit) unit));
 
                 // text and fields for wingspan
-                V = String.valueOf(DS.cfg.getMetrics().getWingspan().getValue());
-                U = String.valueOf(DS.cfg.getMetrics().getWingspan().getUnit());
+                V = String.valueOf(m.getWingspan().getValue());
+                U = String.valueOf(m.getWingspan().getUnit());
                 L = "wingspan(*) = ";
                 textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),
                                 DS::setDirty, panel, L, 10, 80, 200, 20, V, 100, 80, 100, 20, U, 220, 80, 80, 20,
                                 unit -> DS.cfg.getMetrics().getWingspan().setUnit((LengthUnit) unit));
 
                 // text and fields for chord
-                V = String.valueOf(DS.cfg.getMetrics().getChord().getValue());
-                U = String.valueOf(DS.cfg.getMetrics().getChord().getUnit());
+                V = String.valueOf(m.getChord().getValue());
+                U = String.valueOf(m.getChord().getUnit());
                 L = "chord(*) = ";
                 textFieldWLabel L3 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getChord().setValue(Double),
                                 DS::setDirty, panel, L, 10, 120, 200, 20, V, 100, 120, 100, 20, U, 220, 120, 80, 20,

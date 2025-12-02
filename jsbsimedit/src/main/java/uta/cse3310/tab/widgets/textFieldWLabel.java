@@ -23,6 +23,17 @@ public class textFieldWLabel {
         private JTextField tf;
         private JLabel jl;
 
+        private double safeParse(String text) {
+                if (text == null || text.trim().isEmpty()) {
+                        return 0.0;
+                }
+                try {
+                        return Double.parseDouble(text);
+                } catch (NumberFormatException e) {
+                        return 0.0;
+                }
+        }
+
         // if you want a label + unit, use this one...
         public textFieldWLabel(setValFunction SF, dirtyFunction DF, JPanel panel, String labelText, Integer labelX,
                         Integer labelY,
@@ -74,25 +85,27 @@ public class textFieldWLabel {
                 tf.setText(text);
                 panel.add(tf);
 
-                // set up listener
+                // set up listener (use safe parsing to avoid NumberFormatException and null model values)
                 tf.getDocument().addDocumentListener(new DocumentListener() {
                         public void changedUpdate(DocumentEvent e) {
                                 DF.set();
-                                System.out.println("inside the lambda " + tf.getText());
-                                SF.setVal(Double.parseDouble(tf.getText()));
-                                System.out.println("change");
+                                String text = tf.getText();
+                                double val = safeParse(text);
+                                SF.setVal(val);
+                                System.out.println("change -> value=" + val);
                         }
 
                         public void removeUpdate(DocumentEvent e) {
                                 DF.set();
                                 String text = tf.getText();
-                                if (text.isEmpty()) {
-                                        System.out.println("Text Box Empty. Please enter numeric value.");
+                                if (text == null || text.isEmpty()) {
+                                        // ensure model has a valid numeric value instead of null
+                                        SF.setVal(0.0);
+                                        System.out.println("Text Box Empty. Set to 0.0");
                                 } else {
-                                        SF.setVal(Double.parseDouble(text));
-                                        System.out.println("New Value: " + tf.getText());
-                                        System.out.println("remove");
-
+                                        double val = safeParse(text);
+                                        SF.setVal(val);
+                                        System.out.println("New Value: " + val + " (remove)");
                                 }
                         }
 
@@ -100,11 +113,13 @@ public class textFieldWLabel {
                                 DF.set();
                                 String text = tf.getText();
                                 if (text.matches("-?\\d*\\.?\\d*")) {
-                                        SF.setVal(Double.parseDouble(text));
-                                        System.out.println("New Value: " + tf.getText());
-                                        System.out.println("insert");
+                                        double val = safeParse(text);
+                                        SF.setVal(val);
+                                        System.out.println("New Value: " + val + " (insert)");
                                 } else {
-                                        System.out.println("Invalid Figure in Text Box");
+                                        // invalid input -> set to 0.0 to avoid leaving model null
+                                        SF.setVal(0.0);
+                                        System.out.println("Invalid Figure in Text Box. Set to 0.0");
                                 }
                         }
                 });
