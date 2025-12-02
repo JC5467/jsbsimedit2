@@ -200,8 +200,8 @@ public class AerodynamicsTab extends simpleTab {
                             try {
                                 double v = Double.parseDouble(constField.getText());
                                 @SuppressWarnings("unchecked")
-                                JAXBElement<Double> doubleElem =
-                                        (JAXBElement<Double>) product.getFuncGroup().get(constIndex);
+                                JAXBElement<Double> doubleElem = (JAXBElement<Double>) product.getFuncGroup()
+                                        .get(constIndex);
                                 doubleElem.setValue(v);
                                 DS.setDirty();
                             } catch (NumberFormatException ex) {
@@ -238,7 +238,8 @@ public class AerodynamicsTab extends simpleTab {
     }
 
     private void updateFunctionValue(Function f, JTextField txt) {
-        if (f.getValue() == null) return;
+        if (f.getValue() == null)
+            return;
 
         try {
             double v = Double.parseDouble(txt.getText());
@@ -336,9 +337,13 @@ public class AerodynamicsTab extends simpleTab {
         public abstract void changedUpdate(DocumentEvent e);
 
         @Override
-        public void insertUpdate(DocumentEvent e) { changedUpdate(e); }
+        public void insertUpdate(DocumentEvent e) {
+            changedUpdate(e);
+        }
 
         @Override
-        public void removeUpdate(DocumentEvent e) { changedUpdate(e); }
+        public void removeUpdate(DocumentEvent e) {
+            changedUpdate(e);
+        }
     }
 }

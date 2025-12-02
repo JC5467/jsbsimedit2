@@ -212,6 +212,7 @@ Models        </description>
             <retractable>1</retractable>
         </contact>
     </ground_reactions>
+    <external_reactions/>
     <propulsion>
         <engine file="F100-PW-229">
             <feed>0</feed>

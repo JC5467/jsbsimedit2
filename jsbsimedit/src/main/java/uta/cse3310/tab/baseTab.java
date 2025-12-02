@@ -5,7 +5,6 @@ import uta.cse3310.dataStore;
 import javax.swing.*;
 import java.awt.*;
 
-
 public class baseTab {
     // attributes common to all tabs
     public JPanel panel;
@@ -15,7 +14,7 @@ public class baseTab {
     public Integer version;
 
     public void loadData() {
-        
+
     }
 
     public baseTab(dataStore ds, String LABEL) {

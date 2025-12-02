@@ -3,7 +3,10 @@ package uta.cse3310.commander.controller;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
@@ -19,16 +22,25 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JTabbedPane;
 
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
@@ -85,16 +97,16 @@ public final class FlightControlController {
 
         // Map names to icon files
         Object[][] items = {
-            {FlightControlModel.NodeType.SOURCE, "source.bmp"},
-            {FlightControlModel.NodeType.DESTINATION, "destination.bmp"},
-            {FlightControlModel.NodeType.SUMMER, "summer.bmp"},
-            {FlightControlModel.NodeType.PID, "pid.bmp"},
-            {FlightControlModel.NodeType.GAIN, "gain.bmp"},
-            {FlightControlModel.NodeType.FILTER, "filter.bmp"},
-            {FlightControlModel.NodeType.DEAD_BAND, "deadband.bmp"},
-            {FlightControlModel.NodeType.SWITCH, "switch.bmp"},
-            {FlightControlModel.NodeType.KINEMAT, "kinemat.bmp"},
-            {FlightControlModel.NodeType.FCSFUNCTION, "func.bmp"}
+                { FlightControlModel.NodeType.SOURCE, "source.bmp" },
+                { FlightControlModel.NodeType.DESTINATION, "destination.bmp" },
+                { FlightControlModel.NodeType.SUMMER, "summer.bmp" },
+                { FlightControlModel.NodeType.PID, "pid.bmp" },
+                { FlightControlModel.NodeType.GAIN, "gain.bmp" },
+                { FlightControlModel.NodeType.FILTER, "filter.bmp" },
+                { FlightControlModel.NodeType.DEAD_BAND, "deadband.bmp" },
+                { FlightControlModel.NodeType.SWITCH, "switch.bmp" },
+                { FlightControlModel.NodeType.KINEMAT, "kinemat.bmp" },
+                { FlightControlModel.NodeType.FCSFUNCTION, "func.bmp" }
         };
 
         for (Object[] pair : items) {
@@ -113,7 +125,8 @@ public final class FlightControlController {
             // Store in map so dropped nodes can access it
             ICONS.put(type, icon);
 
-            // If icon is still null at this point, we will gracefully fall back to text-only
+            // If icon is still null at this point, we will gracefully fall back to
+            // text-only
             JLabel tag;
             if (icon != null) {
                 tag = new JLabel(labelName, icon, JLabel.CENTER);
@@ -125,25 +138,23 @@ public final class FlightControlController {
             tag.setOpaque(true);
             tag.setBackground(new Color(250, 250, 250));
             tag.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-                new EmptyBorder(4, 6, 4, 6)
-            ));
+                    BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+                    new EmptyBorder(4, 6, 4, 6)));
             tag.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
             // TransferHandler for drag-and-drop
             tag.setTransferHandler(
-                new TransferHandler("text") {
-                    @Override
-                    protected Transferable createTransferable(JComponent c) {
-                        return new StringSelection(type.label);
-                    }
+                    new TransferHandler("text") {
+                        @Override
+                        protected Transferable createTransferable(JComponent c) {
+                            return new StringSelection(type.label);
+                        }
 
-                    @Override
-                    public int getSourceActions(JComponent c) {
-                        return COPY;
-                    }
-                }
-            );
+                        @Override
+                        public int getSourceActions(JComponent c) {
+                            return COPY;
+                        }
+                    });
 
             tag.addMouseListener(new MouseAdapter() {
                 @Override
@@ -176,9 +187,9 @@ public final class FlightControlController {
             private boolean isInResizeZone(FlightControlModel.Node n, Point p) {
                 Rectangle b = n.bounds;
                 return p.x >= b.x + b.width - RESIZE_MARGIN &&
-                       p.x <= b.x + b.width &&
-                       p.y >= b.y + b.height - RESIZE_MARGIN &&
-                       p.y <= b.y + b.height;
+                        p.x <= b.x + b.width &&
+                        p.y >= b.y + b.height - RESIZE_MARGIN &&
+                        p.y <= b.y + b.height;
             }
 
             @Override
@@ -190,8 +201,10 @@ public final class FlightControlController {
                         if (node.type == FlightControlModel.NodeType.SUMMER) {
                             createDestinationForSummer(node, model, view);
                             return;
-                        }
-                        openNodePopup(node);
+                        } else if (node.type == FlightControlModel.NodeType.GAIN) {
+                            openGainPopup(node);
+                        } else
+                            openNodePopup(node);
                     }
                 }
             }
@@ -252,11 +265,10 @@ public final class FlightControlController {
                         // Node type validation first
                         if (!isValidConnection(src.type, dst.type)) {
                             JOptionPane.showMessageDialog(
-                                null,
-                                "Invalid connection: " + src.type.label + " -> " + dst.type.label,
-                                "Connection Error",
-                                JOptionPane.ERROR_MESSAGE
-                            );
+                                    null,
+                                    "Invalid connection: " + src.type.label + " -> " + dst.type.label,
+                                    "Connection Error",
+                                    JOptionPane.ERROR_MESSAGE);
                             connectFrom = null;
                             view.clearConnectionPreview();
                             return;
@@ -266,11 +278,10 @@ public final class FlightControlController {
                         for (FlightControlModel.Edge d : model.edges) {
                             if (d.to == dst && d.toInputIndex == inputIndex) {
                                 JOptionPane.showMessageDialog(
-                                    null,
-                                    "That input port is already connected.",
-                                    "Connection Error",
-                                    JOptionPane.ERROR_MESSAGE
-                                );
+                                        null,
+                                        "That input port is already connected.",
+                                        "Connection Error",
+                                        JOptionPane.ERROR_MESSAGE);
                                 connectFrom = null;
                                 view.clearConnectionPreview();
                                 return;
@@ -292,7 +303,8 @@ public final class FlightControlController {
 
             @Override
             public void mouseMoved(MouseEvent e) {
-                // Allows the cursor to update when hovering over a node's output port or the node itself
+                // Allows the cursor to update when hovering over a node's output port or the
+                // node itself
                 Point p = e.getPoint();
                 FlightControlModel.Node n = view.nodeAt(p);
                 if (n != null && isInResizeZone(n, p)) {
@@ -337,7 +349,7 @@ public final class FlightControlController {
                     draggingNode.bounds.y = p.y - dragOffset.y;
 
                     for (FlightControlModel.Edge edge : model.edges) {
-                        if(edge.from == draggingNode || edge.to == draggingNode) {
+                        if (edge.from == draggingNode || edge.to == draggingNode) {
                             edge.updatePoints();
                         }
                     }
@@ -351,7 +363,8 @@ public final class FlightControlController {
         view.addMouseMotionListener(ma);
     }
 
-    private static void createDestinationForSummer(FlightControlModel.Node summerNode, FlightControlModel model, FlightControlView view) {
+    private static void createDestinationForSummer(FlightControlModel.Node summerNode, FlightControlModel model,
+            FlightControlView view) {
         int destX = summerNode.bounds.x + summerNode.bounds.width + 40;
         int destY = summerNode.bounds.y;
         FlightControlModel.Node dest = model.addNode(FlightControlModel.NodeType.DESTINATION, destX, destY);
@@ -389,7 +402,8 @@ public final class FlightControlController {
 
         @Override
         public boolean importData(TransferSupport s) {
-            if (!canImport(s)) return false;
+            if (!canImport(s))
+                return false;
 
             try {
                 Transferable t = s.getTransferable();
@@ -421,11 +435,11 @@ public final class FlightControlController {
 
     private static void openNodePopup(FlightControlModel.Node node) {
         String[][] data = {
-            {"Block ID", String.valueOf(node.id)},
-            {"Block Type", node.type.label}
+                { "Block ID", String.valueOf(node.id) },
+                { "Block Type", node.type.label }
         };
 
-        String[] cols = {"Field", "Value"};
+        String[] cols = { "Field", "Value" };
 
         JTable table = new JTable(data, cols);
         JScrollPane sp = new JScrollPane(table);
@@ -438,29 +452,239 @@ public final class FlightControlController {
         d.setVisible(true);
     }
 
+   // Row creation helper
+     private static JPanel makeRow(String label, JComponent input) {
+        JPanel row = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        row.add(new JLabel(label), c);
+
+        c.gridx = 1;
+        c.weightx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        row.add(input, c);
+
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        return row;
+    }
+
+    private static void openGainPopup(FlightControlModel.Node node) {
+        
+        JDialog d = new JDialog();
+        d.setTitle("Gain Component");
+        d.setSize(400, 500);
+        d.setLocationRelativeTo(null);
+        d.setModal(true);
+        d.setLayout(new BorderLayout());
+
+        JTabbedPane topTabs = new JTabbedPane();
+
+        // Add the three tabs at the top
+        topTabs.addTab("Basic", buildBasicTab(node));
+        topTabs.addTab("AeroSurface", buildAeroSurfaceTab(node));
+        topTabs.addTab("Scheduled", buildScheduledTab(node));
+
+        // Add the tabbed panel to the dialog
+        d.add(topTabs);
+
+        // // Ok/Cancel buttons
+        JPanel buttonPanel = new JPanel();
+        JButton okBtn = new JButton("OK");
+        JButton cancelBtn = new JButton("Cancel");
+
+        cancelBtn.addActionListener(e -> d.dispose());
+
+        buttonPanel.add(okBtn);
+        buttonPanel.add(cancelBtn);
+
+        d.add(buttonPanel, BorderLayout.SOUTH);
+
+        d.setVisible(true);
+    }
+
+    private static JPanel buildBasicTab(FlightControlModel.Node node) {
+         // Main panel
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+
+
+        JTextField nameField = new JTextField("g load norm");
+        panel.add(makeRow("Name:", nameField));
+        panel.add(Box.createVerticalStrut(8));
+
+        // Type
+        JComboBox<String> typeBox = new JComboBox<>(new String[]{"pure_gain"});
+        panel.add(makeRow("Type:", typeBox));
+        panel.add(Box.createVerticalStrut(8));
+
+        // Order
+        JTextField orderField = new JTextField("110");
+        panel.add(makeRow("Order:", orderField));
+        panel.add(Box.createVerticalStrut(10));
+
+        // Cliper
+        panel.add(Box.createVerticalStrut(10));
+        JPanel clipperPanel = new JPanel();
+        clipperPanel.setBorder(BorderFactory.createTitledBorder("cliper"));
+        clipperPanel.setLayout(new BoxLayout(clipperPanel, BoxLayout.Y_AXIS));
+
+        JCheckBox clippable = new JCheckBox("clippable");
+        JTextField maxField = new JTextField();
+        JTextField minField = new JTextField();
+
+        maxField.setEnabled(false);
+        minField.setEnabled(false);
+
+        clippable.addActionListener(e -> {
+            boolean enabled = clippable.isSelected();
+            maxField.setEnabled(enabled);
+            minField.setEnabled(enabled);
+        });
+
+        clipperPanel.add(clippable);
+        clipperPanel.add(makeRow("Max:", maxField));
+        clipperPanel.add(makeRow("Min:", minField));
+
+        panel.add(clipperPanel);
+
+        // Gain
+        panel.add(Box.createVerticalStrut(10));
+        JTextField gainField = new JTextField("0.125");
+        panel.add(makeRow("Gain:", gainField));
+
+        // Inputs
+        panel.add(Box.createVerticalStrut(10));
+        JPanel inputPanel = new JPanel();
+        inputPanel.setBorder(BorderFactory.createTitledBorder("inputs"));
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+
+        JLabel inputLabel = new JLabel("input1");
+        JRadioButton positive = new JRadioButton("positive");
+        JRadioButton negative = new JRadioButton("negative", true);
+
+        ButtonGroup group = new ButtonGroup();
+        group.add(positive);
+        group.add(negative);
+
+        negative.setSelected(true);
+
+        JPanel inputRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        inputRow.add(positive);
+        inputRow.add(negative);
+
+        inputPanel.add(inputLabel);
+        inputPanel.add(inputRow);
+
+        panel.add(inputPanel);
+
+        return panel;
+    }
+
+    private static JPanel buildAeroSurfaceTab(FlightControlModel.Node node) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(80, 20, 10, 10));
+
+
+        JTextField maxField = new JTextField(0);
+        panel.add(makeRow("Max:", maxField));
+        panel.add(Box.createVerticalStrut(8));
+
+        // Type
+        JTextField minField = new JTextField(0);
+        panel.add(makeRow("Min:", minField));
+        panel.add(Box.createVerticalStrut(8));
+
+        return panel;
+    }
+
+    private static JPanel buildScheduledTab(FlightControlModel.Node node) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+
+        // Top row
+        JPanel topRow = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        topRow.add(new JLabel("independentVar:"), c);
+
+        c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+
+        JComboBox<String> independentVarBox = new JComboBox<>(
+            // Test values for now. Will change in future
+            new String[] { "", "alpha", "beta", "mach", "altitude" }
+        );
+
+        topRow.add(independentVarBox, c);
+
+        topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        panel.add(topRow);
+        panel.add(Box.createVerticalStrut(10));
+
+        // Table Panel
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.setBorder(BorderFactory.createEtchedBorder());
+
+        String[] columnNames = { "independentVar", "Value" };
+
+        Object[][] data = new Object[100][2];
+        for (int i = 0; i < 100; i++) {
+            data[i][0] = (i + 1);   // left column = row number
+            data[i][1] = "";        // right column editable
+        }
+
+        JTable table = new JTable(data, columnNames);
+
+        // nicer table formatting
+        table.setRowHeight(22);
+        table.setFillsViewportHeight(true);
+
+        // scroll pane
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(350, 300));
+
+        tablePanel.add(scroll, BorderLayout.CENTER);
+
+        panel.add(tablePanel);
+
+        return panel;
+    }
+
     // Connection validation logic
     public static boolean isValidConnection(FlightControlModel.NodeType src, FlightControlModel.NodeType dst) {
         // Prevent connecting a block to itself
-        if (src == dst) return false;
+        if (src == dst)
+            return false;
 
         // Destination cannot output to anything
-        if (src == FlightControlModel.NodeType.DESTINATION) return false;
+        if (src == FlightControlModel.NodeType.DESTINATION)
+            return false;
 
         // Source should not receive inputs
-        if (dst == FlightControlModel.NodeType.SOURCE) return false;
+        if (dst == FlightControlModel.NodeType.SOURCE)
+            return false;
 
         // Example: Prevent Filter connecting directly to Destination
         if (src == FlightControlModel.NodeType.FILTER && dst == FlightControlModel.NodeType.DESTINATION) {
             return false;
         }
-            
+
         // Default: allow connection
         return true;
     }
 
-
-
-    public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model, uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
+    public static void attachToPanel(javax.swing.JPanel host, uta.cse3310.commander.model.FlightControlModel model,
+            uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView view) {
         javax.swing.JScrollPane scrollPane = new javax.swing.JScrollPane(view);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(20);

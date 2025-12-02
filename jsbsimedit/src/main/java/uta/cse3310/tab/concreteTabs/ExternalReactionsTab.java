@@ -14,7 +14,7 @@ import generated.Frame;
 import generated.LengthUnit;
 
 //ExternalReactionsTab - Handles externally applied forces on the aircraft
- 
+
 public class ExternalReactionsTab extends simpleTab {
 
     private JTable table;
@@ -23,7 +23,7 @@ public class ExternalReactionsTab extends simpleTab {
     public ExternalReactionsTab(tabFrame tf, dataStore ds, String label) {
         super(ds, label);
         TF = tf;
-        
+
         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
     }
 
@@ -34,19 +34,20 @@ public class ExternalReactionsTab extends simpleTab {
 
         // Get external_reactions section from DS.cfg
         ExternalReactions externalReactions = DS.cfg.getExternalReactions();
-        
-        // if xml doesn't have external_reactions, start with an empty one so this tab still works
+
+        // if xml doesn't have external_reactions, start with an empty one so this tab
+        // still works
         if (externalReactions == null) {
             externalReactions = new ExternalReactions();
             DS.cfg.setExternalReactions(externalReactions);
         }
 
-        //  UI setup
+        // UI setup
         panel.setLayout(new BorderLayout());
 
         // Create table
-        String[] columns = {"Force Name", "Frame", "Unit", "Loc X", "Loc Y", "Loc Z", 
-                          "Dir X", "Dir Y", "Dir Z"};
+        String[] columns = { "Force Name", "Frame", "Unit", "Loc X", "Loc Y", "Loc Z",
+                "Dir X", "Dir Y", "Dir Z" };
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -73,7 +74,7 @@ public class ExternalReactionsTab extends simpleTab {
 
         // Button actions
         addButton.addActionListener(e -> {
-            tableModel.addRow(new Object[]{"new_force", "BODY", "IN", "0", "0", "0", "0", "0", "0"});
+            tableModel.addRow(new Object[] { "new_force", "BODY", "IN", "0", "0", "0", "0", "0", "0" });
         });
 
         deleteButton.addActionListener(e -> {
@@ -87,17 +88,17 @@ public class ExternalReactionsTab extends simpleTab {
 
         // Get the mixed list and filter for Force objects
         List<Object> mixedList = externalReactions.getDocumentationOrPropertyOrFunction();
-        
+
         if (mixedList != null) {
             for (Object item : mixedList) {
                 // Check if this item is a Force
                 if (item instanceof Force) {
                     Force force = (Force) item;
-                    
+
                     // Get name and frame
                     String name = force.getName();
                     String frameStr = force.getFrame() != null ? force.getFrame().value() : "BODY";
-                    
+
                     // Get location
                     Location location = force.getLocation();
                     String unit = "";
@@ -108,7 +109,7 @@ public class ExternalReactionsTab extends simpleTab {
                         locY = String.valueOf(location.getY());
                         locZ = String.valueOf(location.getZ());
                     }
-                    
+
                     // Get direction
                     Location direction = force.getDirection();
                     String dirX = "0", dirY = "0", dirZ = "0";
@@ -118,8 +119,8 @@ public class ExternalReactionsTab extends simpleTab {
                         dirZ = String.valueOf(direction.getZ());
                     }
 
-                    // Add to table 
-                    tableModel.addRow(new Object[]{name, frameStr, unit, locX, locY, locZ, dirX, dirY, dirZ});
+                    // Add to table
+                    tableModel.addRow(new Object[] { name, frameStr, unit, locX, locY, locZ, dirX, dirY, dirZ });
                 }
             }
         }
@@ -139,7 +140,7 @@ public class ExternalReactionsTab extends simpleTab {
 
         try {
             ExternalReactions externalReactions = DS.cfg.getExternalReactions();
-            
+
             if (externalReactions == null) {
                 externalReactions = new ExternalReactions();
                 DS.cfg.setExternalReactions(externalReactions);
@@ -147,16 +148,16 @@ public class ExternalReactionsTab extends simpleTab {
 
             // Get the mixed list
             List<Object> mixedList = externalReactions.getDocumentationOrPropertyOrFunction();
-            
+
             // Remove all Force objects from the list
             mixedList.removeIf(item -> item instanceof Force);
 
             // Add new forces from table
             for (int i = 0; i < tableModel.getRowCount(); i++) {
                 Force force = new Force();
-                
+
                 force.setName(tableModel.getValueAt(i, 0).toString());
-                
+
                 // Convert string to Frame enum
                 String frameStr = tableModel.getValueAt(i, 1).toString();
                 Frame frameEnum;
@@ -177,7 +178,7 @@ public class ExternalReactionsTab extends simpleTab {
                 location.setZ(Double.parseDouble(tableModel.getValueAt(i, 5).toString()));
                 force.setLocation(location);
 
-                // Direction 
+                // Direction
                 Location direction = new Location();
                 direction.setX(Double.parseDouble(tableModel.getValueAt(i, 6).toString()));
                 direction.setY(Double.parseDouble(tableModel.getValueAt(i, 7).toString()));
@@ -187,9 +188,9 @@ public class ExternalReactionsTab extends simpleTab {
                 mixedList.add(force);
             }
 
-            // Mark dirty 
+            // Mark dirty
             DS.setDirty();
-            
+
             JOptionPane.showMessageDialog(panel, "Saved " + tableModel.getRowCount() + " forces to dataStore");
 
         } catch (Exception e) {

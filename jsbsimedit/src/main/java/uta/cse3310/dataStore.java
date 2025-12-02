@@ -72,15 +72,15 @@ public class dataStore {
 
         // read it in, convert to java
         try {
-            // This is the line that creates the file object, which is fine, 
+            // This is the line that creates the file object, which is fine,
             // but the unmarshal call below is what throws the underlying exception.
-            File file = new File(fileName); 
-            
+            File file = new File(fileName);
+
             JAXBContext jc = JAXBContext.newInstance("generated");
             Unmarshaller um = jc.createUnmarshaller();
-            
+
             // This is the file access operation, which can cause FileNotFoundException
-            tempCfg = (FdmConfig) um.unmarshal(file); 
+            tempCfg = (FdmConfig) um.unmarshal(file);
 
             // --- SUCCESS PATH ---
             // If unmarshalling succeeds, update the main state variables
@@ -92,33 +92,35 @@ public class dataStore {
             if (tf != null) {
                 tf.dataLoaded();
             }
-            
-       } catch (UnmarshalException e) {
-            // CATCH 2: Catches the specific XML structure/parsing error (e.g., malformed XML)
+
+        } catch (UnmarshalException e) {
+            // CATCH 2: Catches the specific XML structure/parsing error (e.g., malformed
+            // XML)
             errorMessage = "XML Parsing Error: The file " + f.getName() + " is malformed or invalid.";
             System.err.println("JAXB PARSE ERROR: " + errorMessage);
-            
+
             // Print the linked SAX exception message for more detail
             if (e.getLinkedException() != null) {
-                 System.err.println("Linked Exception Detail: " + e.getLinkedException().getMessage());
+                System.err.println("Linked Exception Detail: " + e.getLinkedException().getMessage());
             }
 
         } catch (JAXBException e) {
             // CATCH 3: Catches other JAXB issues (e.g., context setup errors)
             errorMessage = "A general JAXB error occurred during loading: " + e.getMessage();
             System.err.println("JAXB ERROR: " + errorMessage);
-            
+
         } catch (Exception e) {
             // CATCH 4: Catches any other runtime exceptions that weren't expected
-            errorMessage = "An unexpected error occurred during file processing: " + e.getClass().getSimpleName() + ": " + e.getMessage();
+            errorMessage = "An unexpected error occurred during file processing: " + e.getClass().getSimpleName() + ": "
+                    + e.getMessage();
             System.err.println("UNEXPECTED ERROR: " + errorMessage);
-            
+
         } finally {
             // --- Post-Error Handling ---
             if (errorMessage != null) {
                 // If any error occurred, notify the UI (safely checking for null tf)
                 if (tf != null) {
-                    tf.showError(errorMessage); 
+                    tf.showError(errorMessage);
                 }
             }
         }
