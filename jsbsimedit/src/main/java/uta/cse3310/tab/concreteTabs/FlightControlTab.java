@@ -60,6 +60,11 @@ public class FlightControlTab extends simpleTab {
         subTabs.addTab("Landing Gear", landingGear.buildPanel());
         // subTabs.addTab("Canopy", canopy.buildPanel());
 
+        subTabs.addChangeListener(e -> {
+            panel.revalidate();
+            panel.repaint();
+        });
+
         panel.add(subTabs, BorderLayout.CENTER);
     }
 
