@@ -2,8 +2,10 @@ package uta.cse3310.tab.concreteTabs;
 
 import javax.swing.*;
 import java.awt.*;
+
+import uta.cse3310.tab.simpleTab;
 import uta.cse3310.dataStore;
-import uta.cse3310.tab.baseTab;
+import uta.cse3310.tabFrame;
 
 import generated.BuoyantForces;
 import generated.GasCell;
@@ -13,78 +15,94 @@ import generated.Location;
 import generated.Pressure;
 import generated.Valve;
 
-public class BuoyantForcesTab extends baseTab {
+public class BuoyantForcesTab extends simpleTab {
 
-    private final DefaultListModel<String> gasCellModel = new DefaultListModel<>();
-    private final DefaultListModel<String> ballonetModel = new DefaultListModel<>();
+    private DefaultListModel<String> gasCellModel;
+    private DefaultListModel<String> ballonetModel;
 
-    private final JList<String> gasCellList = new JList<>(gasCellModel);
-    private final JList<String> ballonetList = new JList<>(ballonetModel);
-    private final JTextArea detailsArea = new JTextArea();
+    private JList<String> gasCellList;
+    private JList<String> ballonetList;
+    private JTextArea detailsArea;
 
-    public BuoyantForcesTab(dataStore DS, String label) {
-        super(DS, label);
+    public BuoyantForcesTab(tabFrame tf, dataStore ds, String label) {
+        super(ds, label);
+        TF = tf;
+        panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
+    }
 
-        panel = new JPanel();
-        panel.setLayout(null);
+    public void loadData() {
+        panel.removeAll();
+        panel.setLayout(new BorderLayout());
+
+        BuoyantForces bf = DS.cfg.getBuoyantForces();
+        if (bf == null) {
+            panel.add(new JLabel("No <buoyant_forces> section found in this aircraft file.", SwingConstants.CENTER), BorderLayout.CENTER);
+            panel.revalidate();
+            panel.repaint();
+            return;
+        }
+
+        JPanel main = new JPanel(null);
+
+        gasCellModel = new DefaultListModel<>();
+        ballonetModel = new DefaultListModel<>();
+        gasCellList = new JList<>(gasCellModel);
+        ballonetList = new JList<>(ballonetModel);
+        detailsArea = new JTextArea();
+        detailsArea.setEditable(false);
 
         JLabel title = new JLabel("Buoyant Forces");
         title.setBounds(10, 10, 300, 20);
-        panel.add(title);
+        main.add(title);
 
-        // GAS CELLS
         JLabel gasLabel = new JLabel("Gas Cells:");
         gasLabel.setBounds(10, 40, 300, 20);
-        panel.add(gasLabel);
+        main.add(gasLabel);
 
         JScrollPane gasScroll = new JScrollPane(gasCellList);
         gasScroll.setBounds(10, 65, 250, 190);
-        panel.add(gasScroll);
+        main.add(gasScroll);
 
         JButton addGas = new JButton("Add Gas Cell");
         addGas.setBounds(10, 260, 120, 25);
-        panel.add(addGas);
+        main.add(addGas);
 
         JButton delGas = new JButton("Delete Gas Cell");
         delGas.setBounds(140, 260, 120, 25);
-        panel.add(delGas);
+        main.add(delGas);
 
         JButton editGas = new JButton("Edit Gas Cell");
         editGas.setBounds(70, 290, 120, 25);
-        panel.add(editGas);
+        main.add(editGas);
 
-        // BALLONETS
         JLabel balLabel = new JLabel("Ballonets (selected gas cell):");
         balLabel.setBounds(300, 40, 300, 20);
-        panel.add(balLabel);
+        main.add(balLabel);
 
         JScrollPane balScroll = new JScrollPane(ballonetList);
         balScroll.setBounds(300, 65, 250, 190);
-        panel.add(balScroll);
+        main.add(balScroll);
 
         JButton addBal = new JButton("Add Ballonet");
         addBal.setBounds(300, 260, 120, 25);
-        panel.add(addBal);
+        main.add(addBal);
 
         JButton delBal = new JButton("Delete Ballonet");
         delBal.setBounds(430, 260, 120, 25);
-        panel.add(delBal);
+        main.add(delBal);
 
         JButton editBal = new JButton("Edit Ballonet");
         editBal.setBounds(360, 290, 120, 25);
-        panel.add(editBal);
+        main.add(editBal);
 
-        // DETAILS PANEL
         JLabel detLabel = new JLabel("Details / Properties / Buoyancy:");
         detLabel.setBounds(10, 330, 350, 20);
-        panel.add(detLabel);
+        main.add(detLabel);
 
-        detailsArea.setEditable(false);
         JScrollPane detScroll = new JScrollPane(detailsArea);
         detScroll.setBounds(10, 355, 540, 180);
-        panel.add(detScroll);
+        main.add(detScroll);
 
-        // Listeners
         gasCellList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 loadBallonets();
@@ -104,56 +122,51 @@ public class BuoyantForcesTab extends baseTab {
         addBal.addActionListener(e -> addBallonet());
         delBal.addActionListener(e -> deleteBallonet());
         editBal.addActionListener(e -> editBallonet());
-    }
 
-    @Override
-    public void loadData() {
+        panel.add(main, BorderLayout.CENTER);
+
         gasCellModel.clear();
         ballonetModel.clear();
         detailsArea.setText("");
 
-        BuoyantForces bf = DS.cfg.getBuoyantForces();
-        if (bf == null || bf.getGasCell() == null || bf.getGasCell().isEmpty()) {
-            gasCellModel.addElement("No Buoyant Forces defined in this XML file.");
-            detailsArea.setText("This aircraft configuration does not include any buoyant forces.");
-            return;
+        if (bf.getGasCell().isEmpty()) {
+            gasCellModel.addElement("No gas cells in XML");
+        } else {
+            int i = 1;
+            for (GasCell cell : bf.getGasCell()) {
+                gasCellModel.addElement("Gas Cell " + i + " (type=" + cell.getType() + ")");
+                i++;
+            }
+            gasCellList.setSelectedIndex(0);
         }
 
-        int i = 1;
-        for (GasCell cell : bf.getGasCell()) {
-            gasCellModel.addElement("Gas Cell " + i + " (type=" + cell.getType() + ")");
-            i++;
-        }
-        gasCellList.setSelectedIndex(0);
+        panel.revalidate();
+        panel.repaint();
     }
 
     private GasCell getSelectedGas() {
-        BuoyantForces bf = DS.cfg.getBuoyantForces();
-        if (bf == null || bf.getGasCell() == null || bf.getGasCell().isEmpty()) {
-            return null; // avoids NullPointerException
-        }
+        if (gasCellList == null) return null;
         int i = gasCellList.getSelectedIndex();
-        if (i < 0 || i >= bf.getGasCell().size())
-            return null;
+        if (i < 0) return null;
+        BuoyantForces bf = DS.cfg.getBuoyantForces();
+        if (bf == null || bf.getGasCell().size() <= i) return null;
         return bf.getGasCell().get(i);
     }
 
     private Ballonet getSelectedBal() {
         GasCell g = getSelectedGas();
-        if (g == null)
-            return null;
+        if (g == null || ballonetList == null) return null;
         int i = ballonetList.getSelectedIndex();
-        if (i < 0 || i >= g.getBallonet().size())
-            return null;
+        if (i < 0 || i >= g.getBallonet().size()) return null;
         return g.getBallonet().get(i);
     }
 
     private void loadBallonets() {
+        if (ballonetModel == null) return;
         ballonetModel.clear();
 
         GasCell g = getSelectedGas();
-        if (g == null)
-            return;
+        if (g == null) return;
 
         int i = 1;
         for (Ballonet b : g.getBallonet()) {
@@ -162,12 +175,9 @@ public class BuoyantForcesTab extends baseTab {
         }
     }
 
-    // Showing details according to the contents in the XML file
-
     private void showGasCellDetails() {
         GasCell g = getSelectedGas();
-        if (g == null)
-            return;
+        if (g == null || detailsArea == null) return;
         detailsArea.setText(makeDetails("Gas Cell", g));
     }
 
@@ -177,6 +187,7 @@ public class BuoyantForcesTab extends baseTab {
             showGasCellDetails();
             return;
         }
+        if (detailsArea == null) return;
         detailsArea.setText(makeDetails("Ballonet", b));
     }
 
@@ -189,23 +200,20 @@ public class BuoyantForcesTab extends baseTab {
 
         if (b.getLocation() != null) {
             sb.append("Location: (")
-                    .append(b.getLocation().getX()).append(", ")
-                    .append(b.getLocation().getY()).append(", ")
-                    .append(b.getLocation().getZ()).append(") ")
-                    .append(b.getLocation().getUnit()).append("\n");
+              .append(b.getLocation().getX()).append(", ")
+              .append(b.getLocation().getY()).append(", ")
+              .append(b.getLocation().getZ()).append(") ")
+              .append(b.getLocation().getUnit()).append("\n");
         }
 
         if (b.getXRadius() != null)
-            sb.append("x_radius: ").append(b.getXRadius().getValue()).append(" ").append(b.getXRadius().getUnit())
-                    .append("\n");
+            sb.append("x_radius: ").append(b.getXRadius().getValue()).append(" ").append(b.getXRadius().getUnit()).append("\n");
 
         if (b.getYRadius() != null)
-            sb.append("y_radius: ").append(b.getYRadius().getValue()).append(" ").append(b.getYRadius().getUnit())
-                    .append("\n");
+            sb.append("y_radius: ").append(b.getYRadius().getValue()).append(" ").append(b.getYRadius().getUnit()).append("\n");
 
         if (b.getZRadius() != null)
-            sb.append("z_radius: ").append(b.getZRadius().getValue()).append(" ").append(b.getZRadius().getUnit())
-                    .append("\n");
+            sb.append("z_radius: ").append(b.getZRadius().getValue()).append(" ").append(b.getZRadius().getUnit()).append("\n");
 
         double xr = (b.getXRadius() != null) ? b.getXRadius().getValue() : 0;
         double yr = (b.getYRadius() != null) ? b.getYRadius().getValue() : 0;
@@ -223,9 +231,10 @@ public class BuoyantForcesTab extends baseTab {
         return sb.toString();
     }
 
-    // GasCell class call
-
     private void addGasCell() {
+        BuoyantForces bf = DS.cfg.getBuoyantForces();
+        if (bf == null) return;
+
         GasCell g = new GasCell();
 
         Location loc = new Location();
@@ -247,22 +256,24 @@ public class BuoyantForcesTab extends baseTab {
 
         g.setHeat(new Balloon.Heat());
 
-        DS.cfg.getBuoyantForces().getGasCell().add(g);
+        bf.getGasCell().add(g);
+        DS.setDirty();
         loadData();
     }
 
     private void deleteGasCell() {
         GasCell g = getSelectedGas();
-        if (g == null)
-            return;
-        DS.cfg.getBuoyantForces().getGasCell().remove(g);
+        BuoyantForces bf = DS.cfg.getBuoyantForces();
+        if (g == null || bf == null) return;
+
+        bf.getGasCell().remove(g);
+        DS.setDirty();
         loadData();
     }
 
     private void editGasCell() {
         GasCell g = getSelectedGas();
-        if (g == null)
-            return;
+        if (g == null) return;
 
         JTextField tf = new JTextField(Double.toString(g.getFullness()));
 
@@ -270,19 +281,16 @@ public class BuoyantForcesTab extends baseTab {
         p.add(new JLabel("Fullness:"));
         p.add(tf);
 
-        if (JOptionPane.showConfirmDialog(panel, p, "Edit Gas Cell",
-                JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+        if (JOptionPane.showConfirmDialog(panel, p, "Edit Gas Cell", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             g.setFullness(Double.parseDouble(tf.getText()));
+            DS.setDirty();
         }
         showGasCellDetails();
     }
 
-    // Ballonet Operations calling Ballonet class
-
     private void addBallonet() {
         GasCell g = getSelectedGas();
-        if (g == null)
-            return;
+        if (g == null) return;
 
         Ballonet b = new Ballonet();
 
@@ -306,6 +314,7 @@ public class BuoyantForcesTab extends baseTab {
         b.setHeat(new Balloon.Heat());
 
         g.getBallonet().add(b);
+        DS.setDirty();
 
         loadBallonets();
     }
@@ -313,17 +322,16 @@ public class BuoyantForcesTab extends baseTab {
     private void deleteBallonet() {
         Ballonet b = getSelectedBal();
         GasCell g = getSelectedGas();
-        if (g == null || b == null)
-            return;
+        if (g == null || b == null) return;
 
         g.getBallonet().remove(b);
+        DS.setDirty();
         loadBallonets();
     }
 
     private void editBallonet() {
         Ballonet b = getSelectedBal();
-        if (b == null)
-            return;
+        if (b == null) return;
 
         JTextField tf = new JTextField(Double.toString(b.getFullness()));
 
@@ -331,14 +339,10 @@ public class BuoyantForcesTab extends baseTab {
         p.add(new JLabel("Fullness:"));
         p.add(tf);
 
-        if (JOptionPane.showConfirmDialog(panel, p, "Edit Ballonet",
-                JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+        if (JOptionPane.showConfirmDialog(panel, p, "Edit Ballonet", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
             b.setFullness(Double.parseDouble(tf.getText()));
+            DS.setDirty();
         }
         showBallonetDetails();
     }
-
-    // @Override
-    // public void saveData() {
-    // }
 }

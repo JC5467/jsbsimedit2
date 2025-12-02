@@ -3,7 +3,10 @@ package uta.cse3310.commander.controller;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
@@ -37,9 +40,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Dimension;
+import javax.swing.JTabbedPane;
 
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
@@ -451,8 +452,8 @@ public final class FlightControlController {
         d.setVisible(true);
     }
 
-    // Row creation helper
-    private static JPanel makeRow(String label, JComponent input) {
+   // Row creation helper
+     private static JPanel makeRow(String label, JComponent input) {
         JPanel row = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -471,7 +472,7 @@ public final class FlightControlController {
     }
 
     private static void openGainPopup(FlightControlModel.Node node) {
-
+        
         JDialog d = new JDialog();
         d.setTitle("Gain Component");
         d.setSize(400, 500);
@@ -479,17 +480,44 @@ public final class FlightControlController {
         d.setModal(true);
         d.setLayout(new BorderLayout());
 
-        // Main panel
+        JTabbedPane topTabs = new JTabbedPane();
+
+        // Add the three tabs at the top
+        topTabs.addTab("Basic", buildBasicTab(node));
+        topTabs.addTab("AeroSurface", buildAeroSurfaceTab(node));
+       // topTabs.addTab("Scheduled", buildScheduledTab());
+
+        // Add the tabbed panel to the dialog
+        d.add(topTabs);
+
+        // // Ok/Cancel buttons
+        JPanel buttonPanel = new JPanel();
+        JButton okBtn = new JButton("OK");
+        JButton cancelBtn = new JButton("Cancel");
+
+        cancelBtn.addActionListener(e -> d.dispose());
+
+        buttonPanel.add(okBtn);
+        buttonPanel.add(cancelBtn);
+
+        d.add(buttonPanel, BorderLayout.SOUTH);
+
+        d.setVisible(true);
+    }
+
+    private static JPanel buildBasicTab(FlightControlModel.Node node) {
+         // Main panel
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+
 
         JTextField nameField = new JTextField("g load norm");
         panel.add(makeRow("Name:", nameField));
         panel.add(Box.createVerticalStrut(8));
 
         // Type
-        JComboBox<String> typeBox = new JComboBox<>(new String[] { "pure_gain" });
+        JComboBox<String> typeBox = new JComboBox<>(new String[]{"pure_gain"});
         panel.add(makeRow("Type:", typeBox));
         panel.add(Box.createVerticalStrut(8));
 
@@ -553,21 +581,25 @@ public final class FlightControlController {
 
         panel.add(inputPanel);
 
-        d.add(panel, BorderLayout.CENTER);
+        return panel;
+    }
 
-        // Ok/Cancel buttons
-        JPanel buttonPanel = new JPanel();
-        JButton okBtn = new JButton("OK");
-        JButton cancelBtn = new JButton("Cancel");
+    private static JPanel buildAeroSurfaceTab(FlightControlModel.Node node) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(80, 20, 10, 10));
 
-        cancelBtn.addActionListener(e -> d.dispose());
 
-        buttonPanel.add(okBtn);
-        buttonPanel.add(cancelBtn);
+        JTextField maxField = new JTextField(0);
+        panel.add(makeRow("Max:", maxField));
+        panel.add(Box.createVerticalStrut(8));
 
-        d.add(buttonPanel, BorderLayout.SOUTH);
+        // Type
+        JTextField minField = new JTextField(0);
+        panel.add(makeRow("Min:", minField));
+        panel.add(Box.createVerticalStrut(8));
 
-        d.setVisible(true);
+        return panel;
     }
 
     // Connection validation logic

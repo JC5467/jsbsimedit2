@@ -106,6 +106,20 @@ public class FlightControlView extends JComponent {
                 g2.drawString(title, tx, ty);
             }
 
+            // Draw node name under the node
+            if (n.displayName != null && !n.displayName.isEmpty()) {
+                g2.setFont(getFont().deriveFont(Font.PLAIN, 11f));
+                FontMetrics fm = g2.getFontMetrics();
+                String label = n.displayName;
+
+                int textWidth = fm.stringWidth(label);
+                int tx = n.bounds.x + (n.bounds.width - textWidth) / 2;
+                int ty = n.bounds.y + n.bounds.height + fm.getAscent() + 2;
+
+                g2.setColor(Color.BLACK);
+                g2.drawString(label, tx, ty);
+            }
+
             if (showPorts) {
                 // Draw ALL input ports for this node, based on NodeType.inPorts
                 int inCount = n.type.inPorts;
@@ -241,12 +255,6 @@ public class FlightControlView extends JComponent {
         }
         return null;
     }
-
-    // // (old method)
-    // public FlightControlModel.Node nodeWithInputAt(Point p) {
-    // InputHit hit = inputPortAt(p);
-    // return (hit == null) ? null : hit.node;
-    // }
 
     private void drawArrowHead(Graphics2D g2, Point to) {
         double x, y;
