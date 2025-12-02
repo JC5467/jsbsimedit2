@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
 
 import generated.AreaUnit;
 import generated.LengthUnit;
@@ -83,7 +84,9 @@ public class textFieldWLabel {
                 tf = new JTextField();
                 tf.setBounds(textX, textY, textW, textH);
                 tf.setText(text);
+                ((AbstractDocument) tf.getDocument()).setDocumentFilter(new NumericDocumentFilter());
                 panel.add(tf);
+   
 
                 // set up listener (use safe parsing to avoid NumberFormatException and null model values)
                 tf.getDocument().addDocumentListener(new DocumentListener() {
