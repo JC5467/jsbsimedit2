@@ -200,6 +200,19 @@ public class GeneralInformationTab extends simpleTab {
         descArea.setLineWrap(true);
         descArea.setWrapStyleWord(true);
         JScrollPane descScroll = new JScrollPane(descArea);
+        descArea.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void update() {
+               fh.setDescription(descArea.getText());
+               DS.setDirty();
+            }
+
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { update(); }
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { update(); }
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { update(); }
+        });
         gbc.gridx = 0;
         gbc.weightx = 0;
         content.add(new JLabel("Description:"), gbc);
