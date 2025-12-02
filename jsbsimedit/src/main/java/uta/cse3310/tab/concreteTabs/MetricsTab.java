@@ -2,8 +2,6 @@ package uta.cse3310.tab.concreteTabs;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import uta.cse3310.tab.simpleTab;
 import uta.cse3310.dataStore;
@@ -14,7 +12,6 @@ import uta.cse3310.tab.widgets.textFieldWUnit;
 import generated.Metrics;
 import generated.Area;
 import generated.Length;
-import jakarta.xml.bind.annotation.XmlType;
 import generated.LengthUnit;
 import generated.AreaUnit;
 
@@ -25,7 +22,6 @@ public class MetricsTab extends simpleTab {
                 TF = tf;
                 panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
         }
-
         public void loadData() {
                 panel.removeAll();
                 String V, L, U;
@@ -34,7 +30,6 @@ public class MetricsTab extends simpleTab {
                         panel.add(new JLabel("No aircraft file read.", SwingConstants.CENTER), BorderLayout.CENTER);
                         return;
                 }
-
                 // Ensure metrics section exists and has required sub-elements
                 Metrics m = DS.cfg.getMetrics();
                 if (m == null) {
@@ -103,7 +98,6 @@ public class MetricsTab extends simpleTab {
                         chord.setUnit(LengthUnit.FT);
                         m.setChord(chord);
                 }
-
                 // Ensure at least three location entries exist
                 while (m.getLocation().size() < 3) {
                         Metrics.Location loc = new Metrics.Location();
@@ -118,19 +112,6 @@ public class MetricsTab extends simpleTab {
                         else if (idx == 2) loc.setName(generated.ReferencePoint.VRP);
                         m.getLocation().add(loc);
                 }
-                //not finished will fix formating later
-                //required
-                        //wingarea
-                        //wingspan
-                        //chord
-
-                //optional
-                        //htailarea
-                        //htailarm
-                        //vtailarea
-                        //vtailarm
-                        //locations
-
                 // text and fields for Wingarea
                 V = String.valueOf(m.getWingarea().getValue());
                 U = String.valueOf(m.getWingarea().getUnit());
@@ -138,7 +119,6 @@ public class MetricsTab extends simpleTab {
                 textFieldWLabel L1 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingarea().setValue(Double),
                                 DS::setDirty, panel, L, 10, 40, 200, 20, V, 100, 40, 100, 20, U, 220, 40, 80, 20,
                                 unit -> DS.cfg.getMetrics().getWingarea().setUnit((AreaUnit) unit));
-
                 // text and fields for wingspan
                 V = String.valueOf(m.getWingspan().getValue());
                 U = String.valueOf(m.getWingspan().getUnit());
@@ -146,7 +126,6 @@ public class MetricsTab extends simpleTab {
                 textFieldWLabel L2 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getWingspan().setValue(Double),
                                 DS::setDirty, panel, L, 10, 80, 200, 20, V, 100, 80, 100, 20, U, 220, 80, 80, 20,
                                 unit -> DS.cfg.getMetrics().getWingspan().setUnit((LengthUnit) unit));
-
                 // text and fields for chord
                 V = String.valueOf(m.getChord().getValue());
                 U = String.valueOf(m.getChord().getUnit());
@@ -154,7 +133,6 @@ public class MetricsTab extends simpleTab {
                 textFieldWLabel L3 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getChord().setValue(Double),
                                 DS::setDirty, panel, L, 10, 120, 200, 20, V, 100, 120, 100, 20, U, 220, 120, 80, 20,
                                 unit -> DS.cfg.getMetrics().getChord().setUnit((LengthUnit) unit));
-
                 // text and fields for htailarea
                 if(DS.cfg.getMetrics().getHtailarea() == null){
                         Area htailarea = new Area();
@@ -173,7 +151,6 @@ public class MetricsTab extends simpleTab {
                                 (Double) -> DS.cfg.getMetrics().getHtailarea().setValue(Double), DS::setDirty, panel, L,
                                 340, 40, 200, 20, V, 430, 40, 100, 20, U, 550, 40, 80, 20,
                                 unit -> DS.cfg.getMetrics().getHtailarea().setUnit((AreaUnit) unit));
-
                 // text and fields for htailarm
                 if(DS.cfg.getMetrics().getHtailarm() == null){
                         Length htailarm = new Length();
@@ -191,7 +168,6 @@ public class MetricsTab extends simpleTab {
                 textFieldWLabel L5 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getHtailarm().setValue(Double),
                                 DS::setDirty, panel, L, 340, 80, 200, 20, V, 430, 80, 100, 20, U, 550, 80, 80, 20,
                                 unit -> DS.cfg.getMetrics().getHtailarm().setUnit((LengthUnit) unit));
-
                 // text and fields for vtailarea
                 if(DS.cfg.getMetrics().getVtailarea() == null){
                         Area vtailarea = new Area();
@@ -210,7 +186,6 @@ public class MetricsTab extends simpleTab {
                                 (Double) -> DS.cfg.getMetrics().getVtailarea().setValue(Double), DS::setDirty, panel, L,
                                 340, 120, 200, 20, V, 430, 120, 100, 20, U, 550, 120, 80, 20,
                                 unit -> DS.cfg.getMetrics().getVtailarea().setUnit((AreaUnit) unit));
-
                 // text and fields for vtailarm
                 if(DS.cfg.getMetrics().getVtailarm() == null){
                         Length vtailarm = new Length();
@@ -228,7 +203,6 @@ public class MetricsTab extends simpleTab {
                 textFieldWLabel L7 = new textFieldWLabel((Double) -> DS.cfg.getMetrics().getVtailarm().setValue(Double),
                                 DS::setDirty, panel, L, 340, 160, 200, 20, V, 430, 160, 100, 20, U, 550, 160, 80, 20,
                                 unit -> DS.cfg.getMetrics().getVtailarm().setUnit((LengthUnit) unit));
-
                 // x y and z values for aero ref point
                 Metrics.Location Aero = DS.cfg.getMetrics().getLocation().get(0);
                 U = String.valueOf(Aero.getUnit());
@@ -241,7 +215,6 @@ public class MetricsTab extends simpleTab {
                                 210, 240, 120, 20, String.valueOf(Aero.getY()), 260, 240, 100, 20);
                 textFieldWLabel areoZ = new textFieldWLabel((Double) -> Aero.setZ(Double), DS::setDirty, panel, "Z = ",
                                 390, 240, 120, 20, String.valueOf(Aero.getZ()), 440, 240, 100, 20);
-
                 // x y and z values for eypoint
                 Metrics.Location Eye = DS.cfg.getMetrics().getLocation().get(1);
                 U = String.valueOf(Eye.getUnit());
@@ -253,7 +226,6 @@ public class MetricsTab extends simpleTab {
                                 210, 320, 120, 20, String.valueOf(Eye.getY()), 260, 320, 100, 20);
                 textFieldWLabel eyeZ = new textFieldWLabel((Double) -> Eye.setZ(Double), DS::setDirty, panel, "Z = ",
                                 390, 320, 120, 20, String.valueOf(Eye.getZ()), 440, 320, 100, 20);
-
                 // x y and z values for visual ref point
                 Metrics.Location Vis = DS.cfg.getMetrics().getLocation().get(2);
                 U = String.valueOf(Vis.getUnit());
@@ -265,7 +237,6 @@ public class MetricsTab extends simpleTab {
                                 210, 400, 120, 20, String.valueOf(Vis.getY()), 260, 400, 100, 20);
                 textFieldWLabel visZ = new textFieldWLabel((Double) -> Vis.setZ(Double), DS::setDirty, panel, "Z = ",
                                 390, 400, 120, 20, String.valueOf(Vis.getZ()), 440, 400, 100, 20);
-
                 panel.add(new JLabel("", SwingConstants.CENTER), BorderLayout.CENTER);
         }
 
