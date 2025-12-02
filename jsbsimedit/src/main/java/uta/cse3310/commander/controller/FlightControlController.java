@@ -484,7 +484,7 @@ public final class FlightControlController {
 
         // Add the three tabs at the top
         topTabs.addTab("Basic", buildBasicTab(node));
-       // topTabs.addTab("AeroSurface", buildAeroSurfaceTab());
+        topTabs.addTab("AeroSurface", buildAeroSurfaceTab(node));
        // topTabs.addTab("Scheduled", buildScheduledTab());
 
         // Add the tabbed panel to the dialog
@@ -580,6 +580,24 @@ public final class FlightControlController {
         inputPanel.add(inputRow);
 
         panel.add(inputPanel);
+
+        return panel;
+    }
+
+    private static JPanel buildAeroSurfaceTab(FlightControlModel.Node node) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(80, 20, 10, 10));
+
+
+        JTextField maxField = new JTextField(0);
+        panel.add(makeRow("Max:", maxField));
+        panel.add(Box.createVerticalStrut(8));
+
+        // Type
+        JTextField minField = new JTextField(0);
+        panel.add(makeRow("Min:", minField));
+        panel.add(Box.createVerticalStrut(8));
 
         return panel;
     }
