@@ -485,7 +485,7 @@ public final class FlightControlController {
         // Add the three tabs at the top
         topTabs.addTab("Basic", buildBasicTab(node));
         topTabs.addTab("AeroSurface", buildAeroSurfaceTab(node));
-       // topTabs.addTab("Scheduled", buildScheduledTab());
+        topTabs.addTab("Scheduled", buildScheduledTab(node));
 
         // Add the tabbed panel to the dialog
         d.add(topTabs);
@@ -598,6 +598,64 @@ public final class FlightControlController {
         JTextField minField = new JTextField(0);
         panel.add(makeRow("Min:", minField));
         panel.add(Box.createVerticalStrut(8));
+
+        return panel;
+    }
+
+    private static JPanel buildScheduledTab(FlightControlModel.Node node) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+
+        // Top row
+        JPanel topRow = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
+        c.anchor = GridBagConstraints.WEST;
+        topRow.add(new JLabel("independentVar:"), c);
+
+        c.gridx = 1;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.weightx = 1;
+
+        JComboBox<String> independentVarBox = new JComboBox<>(
+            // Test values for now. Will change in future
+            new String[] { "", "alpha", "beta", "mach", "altitude" }
+        );
+
+        topRow.add(independentVarBox, c);
+
+        topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        panel.add(topRow);
+        panel.add(Box.createVerticalStrut(10));
+
+        // Table Panel
+        JPanel tablePanel = new JPanel(new BorderLayout());
+        tablePanel.setBorder(BorderFactory.createEtchedBorder());
+
+        String[] columnNames = { "independentVar", "Value" };
+
+        Object[][] data = new Object[100][2];
+        for (int i = 0; i < 100; i++) {
+            data[i][0] = (i + 1);   // left column = row number
+            data[i][1] = "";        // right column editable
+        }
+
+        JTable table = new JTable(data, columnNames);
+
+        // nicer table formatting
+        table.setRowHeight(22);
+        table.setFillsViewportHeight(true);
+
+        // scroll pane
+        JScrollPane scroll = new JScrollPane(table);
+        scroll.setPreferredSize(new Dimension(350, 300));
+
+        tablePanel.add(scroll, BorderLayout.CENTER);
+
+        panel.add(tablePanel);
 
         return panel;
     }
