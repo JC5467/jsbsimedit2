@@ -12,7 +12,7 @@ import uta.cse3310.commander.controller.JSBSimCommanderApp;
 import uta.cse3310.tab.baseTab;
 import uta.cse3310.tab.concreteTabs.AerodynamicsTab;
 import uta.cse3310.tab.concreteTabs.ExternalReactionsTab;
-import uta.cse3310.tab.concreteTabs.FileHeaderTab;
+import uta.cse3310.tab.concreteTabs.GeneralInformationTab;
 import uta.cse3310.tab.concreteTabs.FlightControlTab;
 import uta.cse3310.tab.concreteTabs.GroundReactionsTab;
 import uta.cse3310.tab.concreteTabs.MassBalanceTab;
@@ -68,7 +68,7 @@ public class tabFrame {
         // Use Vector instead of array
         frameTabs = new Vector<>();
 
-        frameTabs.add(new FileHeaderTab(this, DS, "General Information Tab"));
+        frameTabs.add(new GeneralInformationTab(this, DS, "General Information Tab"));
         tabbedPane.addTab("General Information", null, frameTabs.lastElement().panel,
                 "This is the general information tab.");
         tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
