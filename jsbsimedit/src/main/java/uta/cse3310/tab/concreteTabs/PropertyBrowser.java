@@ -130,7 +130,31 @@ public class PropertyBrowser extends JDialog {
             {"atmosphere/e-turb-fps", "aero turbulence force for the east axis", "FT/SEC", "RW", "aero turbulence force in the local frame"},
             {"atmosphere/e-turb-mps", "aero turbulence force for the east axis", "M/SEC", "RW", "aero turbulence force in the local frame"},
             {"atmosphere/d-turb-fps", "aero turbulence force for the down axis", "FT/SEC", "RW", "aero turbulence force in the local frame"},
-            {"atmosphere/d-turb-mps", "aero turbulence force for the down axis", "M/SEC", "RW", "aero turbulence force in the local frame"}
+            {"atmosphere/d-turb-mps", "aero turbulence force for the down axis", "M/SEC", "RW", "aero turbulence force in the local frame"},
+
+            // aero properties
+            {"aero/d-squared-norm", "square coefficient of lift", "norm", "RO", "aerodynamic lift force divided by (qbar * WingArea)"},
+            {"aero/qbar-area", "qbar multiplied by WingArea", "LBS", "RO", "qbar multiplied by WingArea"},
+            {"aero/qbar-area-newton", "qbar * WingArea", "N", "RO", "qbar multiplied by WingArea"},
+            {"aero/alpha-max-deg", "accessible max alpha angle", "DEG", "R/W", ""},
+            {"aero/alpha-min-deg", "accessible min alpha angle", "DEG", "R/W", ""},
+            {"aero/bi2vel", "WingSpan divided by double velocity", "SEC", "RO", "velocities/p-rad_sec * aero/bi2vel = p-norm"},
+            {"aero/ci2vel", "chord divided by double velocity", "SEC", "RO", "velocities/q-rad_sec * aero/ci2vel = q-norm"},
+            {"aero/alpha-wing-rad", "alpha angle for the wing", "RAD", "RO", "aero/alpha-rad + metrics/iw-deg * deg2rad"},
+            {"systems/stall-warn-norm", "stall warn signal", "norm", "RO", "10*(alpha/alphadmax - 0.85)"},
+            {"aero/stall-hyst-norm", "stall hysteresis flag", "norm", "RO", "if (alpha > alphahystmax) stall_hyst = 1; else stall_hyst = 0"},
+            {"aero/alpha-rad", "alpha angle", "RAD", "RO", ""},
+            {"aero/alpha-deg", "alpha angle", "DEG", "RO", ""},
+            {"aero/beta-rad", "beta angle", "RAD", "RO", ""},
+            {"aero/beta-deg", "beta angle", "DEG", "RO", ""},
+            {"aero/mag-beta-rad", "beta angle", "RAD", "RO", "absolute magnitude of beta angle"},
+            {"aero/mag-beta-deg", "beta angle", "PSF", "RO", "absolute magnitude of beta angle"},
+            {"aero/qbar-psf", "Q bar", "Pa", "RO", ""},
+            {"aero/qbar-pa", "Q bar", "RAD/SEC", "RO", ""},
+            {"aero/alphadot-rad_sec", "alpha dot", "DEG/SEC", "RO", "d(alpha) / dt"},
+            {"aero/alphadot-deg_sec", "alpha dot", "", "RO", "d(alpha) / dt"},
+            {"aero/betadot-rad_sec", "beta dot", "RAD/SEC", "RO", "d(beta) / dt"},
+            {"aero/betadot-deg_sec", "beta dot", "DEG/SEC", "RO", "d(beta) / dt"}
         };
     }
 
