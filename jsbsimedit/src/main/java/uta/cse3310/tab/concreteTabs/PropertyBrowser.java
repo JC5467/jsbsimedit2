@@ -195,6 +195,20 @@ public class PropertyBrowser extends JDialog {
             {"moments/m-total-n_m", "total moment along the Y axis", "N*M", "RO", "total moment in the body frame at ARP"},
             {"moments/n-total-lbsft", "total moment along the Z axis", "LBS*FT", "RO", "total moment in the body frame at ARP"},
             {"moments/n-total-n_m", "total moment along the Z axis", "N*M", "RO", "total moment in the body frame at ARP"},
+
+            //accerelations properties
+            {"accelerations/a-pilot-x-ft_sec2", "pilot acceleration along the X axis", "FT/SEC^2", "RO", "acceleration in the body frame"},
+            {"accelerations/a-pilot-x-m_sec2", "pilot acceleration along the X axis", "M/SEC^2", "RO", "acceleration in the body frame"},
+            {"accelerations/a-pilot-y-ft_sec2", "pilot acceleration along the Y axis", "FT/SEC^2", "RO", "acceleration in the body frame"},
+            {"accelerations/a-pilot-y-m_sec2", "pilot acceleration along the Y axis", "M/SEC^2", "RO", "acceleration in the body frame"},
+            {"accelerations/a-pilot-z-ft_sec2", "pilot acceleration along the Z axis", "FT/SEC^2", "RO", "acceleration in the body frame"},
+            {"accelerations/a-pilot-z-m_sec2", "pilot acceleration along the Z axis", "M/SEC^2", "RO", "acceleration in the body frame"},
+            {"accelerations/n-pilot-x-norm", "pilot load along the X axis", "G", "RO", "load in the body frame"},
+            {"accelerations/n-pilot-y-norm", "pilot load along the Y axis", "G", "RO", "load in the body frame"},
+            {"accelerations/n-pilot-z-norm", "pilot load along the Z axis", "G", "RO", "load in the body frame"},
+            {"accelerations/pdot-deg_sec", "angular acceleration along X axis", "DEG/SEC^2", "RO", "angular acceleration in the body frame"},
+            {"accelerations/pdot-rad_sec", "angular acceleration along X axis", "RAD/SEC^2", "RO", "angular acceleration in the body frame"},
+            {"accelerations/qdot-deg_sec", "angular acceleration along Y axis", "DEG/SEC^2", "RO", "angular acceleration in the body frame"}
         };
     }
 
