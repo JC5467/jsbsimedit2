@@ -75,8 +75,9 @@ public class tabFrame {
         JMenu fileMenu = new JMenu("File");
         JMenuItem openItem = new JMenuItem("Open XML");
 
-        openItem.addActionListoner(e-> {
+        openItem.addActionListener(e-> {
             JFileChooser chooser = new JFileChooser();
+            int result = chooser.showOpenDialog(frame);
             if(result == JFileChooser.APPROVE_OPTION){
 
                 DS.openFile(chooser.getSelectedFile());
