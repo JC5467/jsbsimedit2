@@ -32,6 +32,9 @@ public class AirCraftModel implements ActionListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(300, 150);
 		// Location will be set by caller to preserve position
+		//icon
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("assets/JSBSimEdit128x128.png"));
+		frame.setIconImage(icon.getImage());
 		// Buttons
 		Save_XML = new JButton("Save");
 		SaveAs_XML = new JButton("Save As...");

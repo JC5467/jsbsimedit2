@@ -13,6 +13,7 @@ public class JSBSimCommanderApp implements ActionListener {
 	JFrame frame;
 	dataStore DS;
 
+
 	public JSBSimCommanderApp(dataStore ds) {
 		DS = ds;
 		// Frame
@@ -27,6 +28,9 @@ public class JSBSimCommanderApp implements ActionListener {
 		// Buttons
 		Open_XML = new JButton("Open");
 		Exit = new JButton("Exit");
+		//icon 
+		ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("assets/JSBSimEdit128x128.png"));
+		frame.setIconImage(icon.getImage());
 		// Toolbar
 		JToolBar toolbar = new JToolBar();
 		toolbar.add(Open_XML);
