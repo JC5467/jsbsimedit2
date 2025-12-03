@@ -180,7 +180,21 @@ public class PropertyBrowser extends JDialog {
             {"forces/fbz-total-n", "total force along the Z axis", "N", "RO", "total force in the body frame"},
             {"forces/nbx-total-norm", "total load along the X axis", "G", "RO", "total load in the body frame"},
             {"forces/nby-total-norm", "total load along the Y axis", "G", "RO", "total load in the body frame"},
-            {"forces/nbz-total-norm", "total load along the Z axis", "G", "RO", "total load in the body frame, it is -1 normally"}
+            {"forces/nbz-total-norm", "total load along the Z axis", "G", "RO", "total load in the body frame, it is -1 normally"},
+            
+            // moments properties
+            {"moments/l-aero-lbsft", "aerodynamic moment along the X axis", "LBS*FT", "RO", "aerodynamic moment in the body frame at ARP"},
+            {"moments/l-aero-n_m", "aerodynamic moment along the X axis", "N*M", "RO", "aerodynamic moment in the body frame at ARP"},
+            {"moments/m-aero-lbsft", "aerodynamic moment along the Y axis", "LBS*FT", "RO", "aerodynamic moment in the body frame at ARP"},
+            {"moments/m-aero-n_m", "aerodynamic moment along the Y axis", "N*M", "RO", "aerodynamic moment in the body frame at ARP"},
+            {"moments/n-aero-lbsft", "aerodynamic moment along the Z axis", "LBS*FT", "RO", "aerodynamic moment in the body frame at ARP"},
+            {"moments/n-aero-n_m", "aerodynamic moment along the Z axis", "N*M", "RO", "aerodynamic moment in the body frame at ARP"},
+            {"moments/l-total-lbsft", "total moment along the X axis", "LBS*FT", "RO", "total moment in the body frame at ARP"},
+            {"moments/l-total-n_m", "total moment along the X axis", "N*M", "RO", "total moment in the body frame at ARP"},
+            {"moments/m-total-lbsft", "total moment along the Y axis", "LBS*FT", "RO", "total moment in the body frame at ARP"},
+            {"moments/m-total-n_m", "total moment along the Y axis", "N*M", "RO", "total moment in the body frame at ARP"},
+            {"moments/n-total-lbsft", "total moment along the Z axis", "LBS*FT", "RO", "total moment in the body frame at ARP"},
+            {"moments/n-total-n_m", "total moment along the Z axis", "N*M", "RO", "total moment in the body frame at ARP"},
         };
     }
 
