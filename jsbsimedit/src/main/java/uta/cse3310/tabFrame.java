@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane; // NEW IMPORT for error dialogs
@@ -57,12 +58,14 @@ public class tabFrame {
         dataStore DS = new dataStore(this);
         new JSBSimCommanderApp(DS);
 
-        JFrame frame = new JFrame("JTabbedPane Example");
+        JFrame frame = new JFrame("Aircraft Manager");
         this.mainFrame = frame; // Store reference to the JFrame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1280, 800);
         frame.setLocationRelativeTo(null);
-
+        //icon
+        ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("assets/JSBSimEdit128x128.png"));
+		frame.setIconImage(icon.getImage());
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Use Vector instead of array
