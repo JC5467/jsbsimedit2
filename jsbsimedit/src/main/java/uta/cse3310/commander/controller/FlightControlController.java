@@ -203,6 +203,8 @@ public final class FlightControlController {
                             return;
                         } else if (node.type == FlightControlModel.NodeType.GAIN) {
                             openGainPopup(node);
+                        } else if(node.type == FlightControlModel.NodeType.FILTER) {
+                            openFilterPopup(node);
                         } else
                             openNodePopup(node);
                     }
@@ -486,6 +488,36 @@ public final class FlightControlController {
         topTabs.addTab("Basic", buildBasicTab(node));
         topTabs.addTab("AeroSurface", buildAeroSurfaceTab(node));
         topTabs.addTab("Scheduled", buildScheduledTab(node));
+
+        // Add the tabbed panel to the dialog
+        d.add(topTabs);
+
+        // // Ok/Cancel buttons
+        JPanel buttonPanel = new JPanel();
+        JButton okBtn = new JButton("OK");
+        JButton cancelBtn = new JButton("Cancel");
+
+        cancelBtn.addActionListener(e -> d.dispose());
+
+        buttonPanel.add(okBtn);
+        buttonPanel.add(cancelBtn);
+
+        d.add(buttonPanel, BorderLayout.SOUTH);
+
+        d.setVisible(true);
+    }
+
+    private static void openFilterPopup(FlightControlModel.Node node) {
+        JDialog d = new JDialog();
+        d.setTitle("Filter Component");
+        d.setSize(400, 500);
+        d.setLocationRelativeTo(null);
+        d.setModal(true);
+        d.setLayout(new BorderLayout());
+
+        JTabbedPane topTabs = new JTabbedPane();
+
+        topTabs.addTab("Basic", buildBasicTab(node));
 
         // Add the tabbed panel to the dialog
         d.add(topTabs);
