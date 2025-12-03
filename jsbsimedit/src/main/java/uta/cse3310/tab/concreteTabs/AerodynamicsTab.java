@@ -179,8 +179,9 @@ public class AerodynamicsTab extends simpleTab {
                     propField.getDocument().addDocumentListener(new SimpleDocListener() {
                         @Override
                         public void changedUpdate(DocumentEvent e) {
-                            prop.setValue(propField.getText());
-                            DS.setDirty();
+                            //prop.setValue(propField.getText());
+                            //DS.setDirty();
+                            updatePropertyValue(prop, propField.getText());
                         }
                     });
 
@@ -235,6 +236,13 @@ public class AerodynamicsTab extends simpleTab {
         }
 
         return p;
+    }
+    /*
+     * Helper method to update a Property value and mark data store as dirty.
+     */
+    void updatePropertyValue(generated.Property prop, String newValue) {
+        prop.setValue(newValue);
+        DS.setDirty();
     }
 
     private void updateFunctionValue(Function f, JTextField txt) {
