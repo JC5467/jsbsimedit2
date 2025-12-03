@@ -236,7 +236,7 @@ public class OutputTab extends simpleTab {
         main.add(makePropsPanel());
         main.add(Box.createVerticalStrut(10));
         main.add(makeChecksPanel());
-        main.add(Box.createVerticalStrut(10));
+        
         main.add(makeOutputButtonsPanel());
 
         panel.add(main, BorderLayout.NORTH);
