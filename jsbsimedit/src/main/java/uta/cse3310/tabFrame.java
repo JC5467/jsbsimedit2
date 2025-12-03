@@ -8,7 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JOptionPane; // NEW IMPORT for error dialogs
-
+import javax.swing.*;
 import uta.cse3310.commander.controller.JSBSimCommanderApp;
 import uta.cse3310.tab.baseTab;
 import uta.cse3310.tab.concreteTabs.AerodynamicsTab;
@@ -27,6 +27,7 @@ public class tabFrame {
 
     // We need a reference to the main JFrame to anchor the dialog box
     private JFrame mainFrame;
+    private final dataStore DS;
 
     public void dataLoaded() {
         for (baseTab t : frameTabs) {
@@ -54,6 +55,8 @@ public class tabFrame {
     }
 
     public tabFrame() {
+        //Create  dataStore and pass this frame into it
+        this.DS = new dataStore(this);
 
         dataStore DS = new dataStore(this);
         new JSBSimCommanderApp(DS);
@@ -66,6 +69,24 @@ public class tabFrame {
         //icon
         ImageIcon icon = new ImageIcon(getClass().getClassLoader().getResource("assets/JSBSimEdit128x128.png"));
 		frame.setIconImage(icon.getImage());
+
+        //New Menu bar with file
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem openItem = new JMenuItem("Open XML");
+
+        openItem.addActionListoner(e-> {
+            JFileChooser chooser = new JFileChooser();
+            if(result == JFileChooser.APPROVE_OPTION){
+
+                DS.openFile(chooser.getSelectedFile());
+            }
+        });
+        fileMenu.add(openItem);
+        menuBar.add(fileMenu);
+        frame.setJMenuBar(menuBar);
+        //End of  new menu bar for loading XML
+
         JTabbedPane tabbedPane = new JTabbedPane();
 
         // Use Vector instead of array

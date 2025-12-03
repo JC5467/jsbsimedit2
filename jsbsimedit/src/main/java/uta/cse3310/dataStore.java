@@ -68,7 +68,7 @@ public class dataStore {
         String attemptedFileName = f.getPath();
         FdmConfig tempCfg = null;
         String errorMessage = null;
-
+        valid = false;
         // read it in, convert to java
         try {
             // This is the line that creates the file object for the attempted path.
