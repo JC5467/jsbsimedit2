@@ -41,7 +41,8 @@ public class MassBalanceTab extends simpleTab {
         
         // Main split: top panel for inertia/weight/CG, bottom for point masses
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        splitPane.setDividerLocation(350);
+        splitPane.setResizeWeight(0.5);
+        splitPane.setDividerLocation(500);
         
         // Top panel: Inertia, Empty Weight, and CG
         JPanel topPanel = new JPanel();
