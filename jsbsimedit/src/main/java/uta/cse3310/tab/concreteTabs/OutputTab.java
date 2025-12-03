@@ -393,7 +393,7 @@ public class OutputTab extends simpleTab {
         
         return p;
     }
-
+/*
     // create output add and delete buttons panel
     private JPanel makeOutputButtonsPanel() {
         JPanel p = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
@@ -409,7 +409,7 @@ public class OutputTab extends simpleTab {
         
         return p;
     }
-
+*/
     //add new output configuration
     private void addOutput() {
         // create new output with defaults
