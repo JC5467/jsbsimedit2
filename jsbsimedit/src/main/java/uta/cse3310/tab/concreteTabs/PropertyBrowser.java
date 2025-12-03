@@ -154,7 +154,33 @@ public class PropertyBrowser extends JDialog {
             {"aero/alphadot-rad_sec", "alpha dot", "DEG/SEC", "RO", "d(alpha) / dt"},
             {"aero/alphadot-deg_sec", "alpha dot", "", "RO", "d(alpha) / dt"},
             {"aero/betadot-rad_sec", "beta dot", "RAD/SEC", "RO", "d(beta) / dt"},
-            {"aero/betadot-deg_sec", "beta dot", "DEG/SEC", "RO", "d(beta) / dt"}
+            {"aero/betadot-deg_sec", "beta dot", "DEG/SEC", "RO", "d(beta) / dt"},
+
+            // forces properties
+            {"forces/fbx-aero-lbs", "aerodynamic force along the X axis", "LBS", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fbx-aero-newton", "aerodynamic force along the X axis", "N", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fby-aero-lbs", "aerodynamic force along the Y axis", "LBS", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fby-aero-newton", "aerodynamic force along the Y axis", "N", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fbz-aero-lbs", "aerodynamic force along the Z axis", "LBS", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fbz-aero-newton", "aerodynamic force along the Z axis", "N", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fwx-aero-lbs", "aerodynamic force along the X axis", "LBS", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fwx-aero-newton", "aerodynamic force along the X axis", "N", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fwy-aero-lbs", "aerodynamic force along the Y axis", "LBS", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fwy-aero-newton", "aerodynamic force along the Y axis", "N", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fwz-aero-lbs", "aerodynamic force along the Z axis", "LBS", "RO", "aerodynamic force only in the body frame"},
+            {"forces/fwz-aero-newton", "aerodynamic force along the Z axis", "N", "RO", "aerodynamic force only in the body frame"},
+            {"forces/lod-norm", "aerodynamic force load ratio", "norm", "RO", "aerodynamic lift divided by aerodynamic drag force"},
+            {"forces/nlf-norm", "longitude force load", "norm", "RO", "aerodynamic lift divided by aerodynamic drag force"},
+            {"forces/mag-nlf-total-norm", "absolute magnitude of all force load", "norm", "RO", "longitude force divided by gravity, it is 1 normally"},
+            {"forces/fbx-total-lbs", "total force along the X axis", "LBS", "RO", "total force in the body frame"},
+            {"forces/fbx-total-n", "total force along the X axis", "N", "RO", "total force in the body frame"},
+            {"forces/fby-total-lbs", "total force along the Y axis", "LBS", "RO", "total force in the body frame"},
+            {"forces/fby-total-n", "total force along the Y axis", "N", "RO", "total force in the body frame"},
+            {"forces/fbz-total-lbs", "total force along the Z axis", "LBS", "RO", "total force in the body frame"},
+            {"forces/fbz-total-n", "total force along the Z axis", "N", "RO", "total force in the body frame"},
+            {"forces/nbx-total-norm", "total load along the X axis", "G", "RO", "total load in the body frame"},
+            {"forces/nby-total-norm", "total load along the Y axis", "G", "RO", "total load in the body frame"},
+            {"forces/nbz-total-norm", "total load along the Z axis", "G", "RO", "total load in the body frame, it is -1 normally"}
         };
     }
 
