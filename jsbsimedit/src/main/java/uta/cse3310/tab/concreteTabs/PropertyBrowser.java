@@ -43,18 +43,19 @@ public class PropertyBrowser extends JDialog {
     private void initPropertyData() {
         // more properties will be added
         propData = new Object[][] {
+            
             // simulation properties
-            {"sim-time-sec", "time", "", "", ""},
-            {"output_delay", "go on output after optimize", "", "", ""},
-            {"output_date_rate", "dat file output rate", "", "", ""},
+            {"sim-time-sec", "time", "SEC", "RO", ""},
+            {"output_delay", "go on output after optimize", "NORM", "RO", "default value is zero"},
+            {"output_date_rate", "dat file output rate", "NORM", "RO", "output a record every X times. default value is 5."},
             
             // signal properties
-            {"signal/aeroelastic", "aeroelasticity", "", "", ""},
-            {"signal/custom1", "custom signal 1", "", "", ""},
-            {"signal/custom2", "custom signal 2", "", "", ""},
-            {"signal/custom3", "custom signal 3", "", "", ""},
-            {"signal/custom4", "custom signal 4", "", "", ""},
-            {"signal/custom5", "custom signal 5", "", "", ""},
+            {"signal/aeroelastic", "aeroelasticity", "NORM", "R/W", "aeroelastic enable signal(0-false, 1-true)"},
+            {"signal/custom1", "custom signal 1", "NORM", "R/W", "custom enable signal(0-false, 1-true)"},
+            {"signal/custom2", "custom signal 2", "NORM", "R/W", "custom enable signal(0-false, 1-true)"},
+            {"signal/custom3", "custom signal 3", "NORM", "R/W", "custom enable signal(0-false, 1-true)"},
+            {"signal/custom4", "custom signal 4", "NORM", "R/W", "custom enable signal(0-false, 1-true)"},
+            {"signal/custom5", "custom signal 5", "NORM", "R/W", "custom enable signal(0-false, 1-true)"},
             
             //metrics properties
             {"metrics/Sw-sqft", "wing area", "", "", ""},
