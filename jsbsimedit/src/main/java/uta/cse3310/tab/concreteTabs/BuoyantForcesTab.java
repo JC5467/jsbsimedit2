@@ -193,7 +193,7 @@ public class BuoyantForcesTab extends simpleTab {
         detailsArea.setText(makeDetails("Ballonet", b));
     }
 
-    private String makeDetails(String label, Balloon b) {
+    String makeDetails(String label, Balloon b) {
         StringBuilder sb = new StringBuilder();
 
         sb.append(label).append("\n-----------------\n");
@@ -236,7 +236,7 @@ public class BuoyantForcesTab extends simpleTab {
         return sb.toString();
     }
 
-    private void addGasCell() {
+    void addGasCell() {
         BuoyantForces bf = DS.cfg.getBuoyantForces();
         if (bf == null) return;
 
@@ -266,7 +266,7 @@ public class BuoyantForcesTab extends simpleTab {
         loadData();
     }
 
-    private void deleteGasCell() {
+    void deleteGasCell() {
         GasCell g = getSelectedGas();
         BuoyantForces bf = DS.cfg.getBuoyantForces();
         if (g == null || bf == null) return;
