@@ -64,16 +64,15 @@ public class dataStore {
         // right now, there is a defect in that the fileBrowser only
         // processes one event. so you can only open one file, you cannot open another
         // one. i am leaving that defect to someone else.
-        fileName = f.getPath();
-
+        // Do not update `fileName` or `cfg` until unmarshalling succeeds.
+        String attemptedFileName = f.getPath();
         FdmConfig tempCfg = null;
         String errorMessage = null;
 
         // read it in, convert to java
         try {
-            // This is the line that creates the file object, which is fine,
-            // but the unmarshal call below is what throws the underlying exception.
-            File file = new File(fileName);
+            // This is the line that creates the file object for the attempted path.
+            File file = new File(attemptedFileName);
 
             JAXBContext jc = JAXBContext.newInstance("generated");
             Unmarshaller um = jc.createUnmarshaller();
@@ -84,6 +83,8 @@ public class dataStore {
             // --- SUCCESS PATH ---
             // If unmarshalling succeeds, update the main state variables
             cfg = tempCfg;
+            // only update fileName after successful unmarshal
+            fileName = attemptedFileName;
             version = version + 1;
             valid = true;
             dirty = false;
@@ -96,23 +97,16 @@ public class dataStore {
             // CATCH 2: Catches the specific XML structure/parsing error (e.g., malformed
             // XML)
             errorMessage = "XML Parsing Error: The file " + f.getName() + " is malformed or invalid.";
-            System.err.println("JAXB PARSE ERROR: " + errorMessage);
-
-            // Print the linked SAX exception message for more detail
-            if (e.getLinkedException() != null) {
-                System.err.println("Linked Exception Detail: " + e.getLinkedException().getMessage());
-            }
+            // Intentionally do not print to stderr here; UI will be notified via tf.showError
 
         } catch (JAXBException e) {
             // CATCH 3: Catches other JAXB issues (e.g., context setup errors)
             errorMessage = "A general JAXB error occurred during loading: " + e.getMessage();
-            System.err.println("JAXB ERROR: " + errorMessage);
 
         } catch (Exception e) {
             // CATCH 4: Catches any other runtime exceptions that weren't expected
             errorMessage = "An unexpected error occurred during file processing: " + e.getClass().getSimpleName() + ": "
                     + e.getMessage();
-            System.err.println("UNEXPECTED ERROR: " + errorMessage);
 
         } finally {
             // --- Post-Error Handling ---
