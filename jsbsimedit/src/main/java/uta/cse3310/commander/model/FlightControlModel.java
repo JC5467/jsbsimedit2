@@ -49,6 +49,7 @@ public class FlightControlModel {
         public ImageIcon icon;
 
         public String displayName;
+        public Object backingBlock;
 
         // How many distinct input ports this node currently uses.
         public int inputPortCount = 0;

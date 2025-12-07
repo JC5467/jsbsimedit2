@@ -16,6 +16,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,11 +38,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTabbedPane;
 
 import uta.cse3310.commander.model.FlightControlModel;
 import uta.cse3310.tab.concreteTabs.flightcontrol.FlightControlView;
@@ -67,7 +69,7 @@ public final class FlightControlController {
         host.add(scrollPane, BorderLayout.CENTER);
     }
 
-    // --- NEW: Helper method for reliable image loading ---
+    // Helper method for reliable image loading
     private static ImageIcon loadReliableImageIcon(URL url, String iconFile) {
         if (url == null) {
             // This happens if the file isn't found on the classpath
@@ -125,8 +127,7 @@ public final class FlightControlController {
             // Store in map so dropped nodes can access it
             ICONS.put(type, icon);
 
-            // If icon is still null at this point, we will gracefully fall back to
-            // text-only
+            // If icon is still null at this point, we will gracefully fall back to text-only
             JLabel tag;
             if (icon != null) {
                 tag = new JLabel(labelName, icon, JLabel.CENTER);
@@ -202,11 +203,12 @@ public final class FlightControlController {
                             createDestinationForSummer(node, model, view);
                             return;
                         } else if (node.type == FlightControlModel.NodeType.GAIN) {
-                            openGainPopup(node);
-                        } else if(node.type == FlightControlModel.NodeType.FILTER) {
+                            openGainPopup(node, view);
+                        } else if (node.type == FlightControlModel.NodeType.FILTER) {
                             openFilterPopup(node);
-                        } else
+                        } else {
                             openNodePopup(node);
+                        }
                     }
                 }
             }
@@ -387,7 +389,7 @@ public final class FlightControlController {
         return new Point(cx, cy);
     }
 
-    // ---------------- DnD: drop nodes onto canvas ----------------
+    // --- DnD: drop nodes onto canvas ---
     private static class CanvasDropHandler extends TransferHandler {
         private final FlightControlModel model;
         private final FlightControlView view;
@@ -424,7 +426,7 @@ public final class FlightControlController {
                 }
 
                 Point dropPoint = s.getDropLocation().getDropPoint();
-                FlightControlModel.Node newNode = model.addNode(type, dropPoint.x, dropPoint.y);
+                model.addNode(type, dropPoint.x, dropPoint.y);
 
                 view.repaint();
                 return true;
@@ -454,8 +456,175 @@ public final class FlightControlController {
         d.setVisible(true);
     }
 
-   // Row creation helper
-     private static JPanel makeRow(String label, JComponent input) {
+    // --- Helpers for Gain popup <-> JAXB block binding ---
+    private static String readNameFromBackingBlock(FlightControlModel.Node node) {
+        if (node == null || node.backingBlock == null) return "";
+        try {
+            Method getName = node.backingBlock.getClass().getMethod("getName");
+            Object v = getName.invoke(node.backingBlock);
+            return v != null ? v.toString() : "";
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    // Read the gain value from the backing JAXB block in a robust way
+    private static String readGainFromBackingBlock(FlightControlModel.Node node) {
+        if (node == null || node.backingBlock == null) return "";
+        Object block = node.backingBlock;
+        try {
+            Method m = block.getClass().getMethod("getGain");
+            Object v = m.invoke(block);
+            if (v == null) return "";
+
+            // Direct numeric types
+            if (v instanceof BigDecimal) {
+                return ((BigDecimal) v).toPlainString();
+            }
+            if (v instanceof Number) {
+                return v.toString();
+            }
+
+            // Some JAXB types wrap the numeric value inside getValue()
+            try {
+                Method getVal = v.getClass().getMethod("getValue");
+                Object inner = getVal.invoke(v);
+                if (inner instanceof BigDecimal) {
+                    return ((BigDecimal) inner).toPlainString();
+                }
+                if (inner != null) {
+                    return inner.toString();
+                }
+            } catch (NoSuchMethodException ignore) {
+                // no getValue(); fall through
+            }
+
+            // Last resort
+            return v.toString();
+        } catch (Exception ex) {
+            return "";
+        }
+    }
+
+// Write the name back to the JAXB backing block
+private static void writeNameToBackingBlock(FlightControlModel.Node node, String text) {
+    if (node == null || node.backingBlock == null) return;
+    text = (text != null) ? text.trim() : "";
+    if (text.isEmpty()) return;
+
+    try {
+        Method setName = node.backingBlock.getClass().getMethod("setName", String.class);
+        setName.invoke(node.backingBlock, text);
+        node.displayName = text;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+// Write the gain back to the backing JAXB block
+private static void updateGainOnBackingBlock(FlightControlModel.Node node, String gainText) {
+    if (node == null || node.backingBlock == null) return;
+
+    gainText = (gainText != null) ? gainText.trim() : "";
+    if (gainText.isEmpty()) return;
+
+    Object block = node.backingBlock;
+    Class<?> cls = block.getClass();
+
+    BigDecimal value;
+    try {
+        value = new BigDecimal(gainText);
+    } catch (NumberFormatException nfe) {
+        JOptionPane.showMessageDialog(
+                null,
+                "Gain must be a valid number: \"" + gainText + "\"",
+                "Invalid Gain",
+                JOptionPane.ERROR_MESSAGE
+        );
+        return;
+    }
+    double asDouble = value.doubleValue();
+    boolean updated = false;
+
+    try {
+        // 1) Try setGain(...) on the block itself with whatever parameter type it uses
+        for (Method m : cls.getMethods()) {
+            if (!m.getName().equals("setGain") || m.getParameterCount() != 1) continue;
+            Class<?> pt = m.getParameterTypes()[0];
+
+            try {
+                if (pt == BigDecimal.class) {
+                    m.invoke(block, value);
+                    updated = true;
+                    break;
+                } else if (pt == double.class || pt == Double.class) {
+                    m.invoke(block, asDouble);
+                    updated = true;
+                    break;
+                } else if (Number.class.isAssignableFrom(pt)) {
+                    // e.g. some custom numeric wrapper type with String ctor
+                    m.invoke(block, pt.getConstructor(String.class).newInstance(gainText));
+                    updated = true;
+                    break;
+                } else if (pt == String.class) {
+                    m.invoke(block, gainText);
+                    updated = true;
+                    break;
+                }
+            } catch (Exception ignore) {
+                // try next overload
+            }
+        }
+
+        // 2) If there is no usable setGain, try mutating an inner "gain" object via setValue(...)
+        if (!updated) {
+            try {
+                Method getGain = cls.getMethod("getGain");
+                Object gainObj = getGain.invoke(block);
+                if (gainObj != null) {
+                    Class<?> gCls = gainObj.getClass();
+                    for (Method gm : gCls.getMethods()) {
+                        if (!gm.getName().equals("setValue") || gm.getParameterCount() != 1) continue;
+                        Class<?> pt = gm.getParameterTypes()[0];
+
+                        try {
+                            if (pt == BigDecimal.class) {
+                                gm.invoke(gainObj, value);
+                                updated = true;
+                                break;
+                            } else if (pt == double.class || pt == Double.class) {
+                                gm.invoke(gainObj, asDouble);
+                                updated = true;
+                                break;
+                            } else if (Number.class.isAssignableFrom(pt)) {
+                                gm.invoke(gainObj, pt.getConstructor(String.class).newInstance(gainText));
+                                updated = true;
+                                break;
+                            } else if (pt == String.class) {
+                                gm.invoke(gainObj, gainText);
+                                updated = true;
+                                break;
+                            }
+                        } catch (Exception ignore2) {
+                            // try next overload on inner object
+                        }
+                    }
+                }
+            } catch (NoSuchMethodException ignored) {
+                // no getGain(); nothing more we can do
+            }
+        }
+
+        if (!updated) {
+            System.err.println("No usable gain setter on " + cls.getName());
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+}
+
+    // Row creation helper
+    private static JPanel makeRow(String label, JComponent input) {
         JPanel row = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
 
@@ -473,8 +642,7 @@ public final class FlightControlController {
         return row;
     }
 
-    private static void openGainPopup(FlightControlModel.Node node) {
-        
+    private static void openGainPopup(FlightControlModel.Node node, FlightControlView view) {
         JDialog d = new JDialog();
         d.setTitle("Gain Component");
         d.setSize(400, 500);
@@ -484,24 +652,40 @@ public final class FlightControlController {
 
         JTabbedPane topTabs = new JTabbedPane();
 
-        // Add the three tabs at the top
-        topTabs.addTab("Basic", buildBasicTab(node));
+        // Basic tab builds the UI and stores the important fields as client properties
+        JPanel basicTab = buildBasicTab(node);
+        topTabs.addTab("Basic", basicTab);
         topTabs.addTab("AeroSurface", buildAeroSurfaceTab(node));
         topTabs.addTab("Scheduled", buildScheduledTab(node));
 
-        // Add the tabbed panel to the dialog
-        d.add(topTabs);
+        d.add(topTabs, BorderLayout.CENTER);
 
-        // // Ok/Cancel buttons
+        // Ok/Cancel buttons
         JPanel buttonPanel = new JPanel();
         JButton okBtn = new JButton("OK");
         JButton cancelBtn = new JButton("Cancel");
+
+        okBtn.addActionListener(e -> {
+            JPanel basicPanel = (JPanel) topTabs.getComponentAt(0);
+
+            JTextField nameField = (JTextField) basicPanel.getClientProperty("nameField");
+            JTextField gainField = (JTextField) basicPanel.getClientProperty("gainField");
+
+            if (nameField != null) {
+                writeNameToBackingBlock(node, nameField.getText());
+            }
+            if (gainField != null) {
+                updateGainOnBackingBlock(node, gainField.getText());
+            }
+
+            view.repaint();
+            d.dispose();
+        });
 
         cancelBtn.addActionListener(e -> d.dispose());
 
         buttonPanel.add(okBtn);
         buttonPanel.add(cancelBtn);
-
         d.add(buttonPanel, BorderLayout.SOUTH);
 
         d.setVisible(true);
@@ -517,16 +701,18 @@ public final class FlightControlController {
 
         JTabbedPane topTabs = new JTabbedPane();
 
-        topTabs.addTab("Basic", buildBasicTab(node));
+        JPanel basicTab = buildBasicTab(node);
+        topTabs.addTab("Basic", basicTab);
 
         // Add the tabbed panel to the dialog
-        d.add(topTabs);
+        d.add(topTabs, BorderLayout.CENTER);
 
-        // // Ok/Cancel buttons
+        // Ok/Cancel buttons
         JPanel buttonPanel = new JPanel();
         JButton okBtn = new JButton("OK");
         JButton cancelBtn = new JButton("Cancel");
 
+        okBtn.addActionListener(e -> d.dispose());
         cancelBtn.addActionListener(e -> d.dispose());
 
         buttonPanel.add(okBtn);
@@ -537,28 +723,33 @@ public final class FlightControlController {
         d.setVisible(true);
     }
 
-    private static JPanel buildBasicTab(FlightControlModel.Node node) {
-         // Main panel
+        private static JPanel buildBasicTab(FlightControlModel.Node node) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
 
+        // Name 
+        String nameText = (node.displayName != null && !node.displayName.isBlank())
+                ? node.displayName
+                : readNameFromBackingBlock(node);
+        if (nameText == null) nameText = "";
 
-        JTextField nameField = new JTextField("g load norm");
+        JTextField nameField = new JTextField(nameText);
         panel.add(makeRow("Name:", nameField));
         panel.add(Box.createVerticalStrut(8));
+        panel.putClientProperty("nameField", nameField);
 
-        // Type
-        JComboBox<String> typeBox = new JComboBox<>(new String[]{"pure_gain"});
+        // Type 
+        JComboBox<String> typeBox = new JComboBox<>(new String[] { "pure_gain" });
         panel.add(makeRow("Type:", typeBox));
         panel.add(Box.createVerticalStrut(8));
 
-        // Order
+        // Order 
         JTextField orderField = new JTextField("110");
         panel.add(makeRow("Order:", orderField));
         panel.add(Box.createVerticalStrut(10));
 
-        // Cliper
+        // Clipper 
         panel.add(Box.createVerticalStrut(10));
         JPanel clipperPanel = new JPanel();
         clipperPanel.setBorder(BorderFactory.createTitledBorder("cliper"));
@@ -583,12 +774,17 @@ public final class FlightControlController {
 
         panel.add(clipperPanel);
 
-        // Gain
+        // ---- Gain ----
         panel.add(Box.createVerticalStrut(10));
-        JTextField gainField = new JTextField("0.125");
+        String gainText = readGainFromBackingBlock(node);
+        if (gainText == null || gainText.isBlank()) {
+            gainText = "0.0";
+        }
+        JTextField gainField = new JTextField(gainText);
         panel.add(makeRow("Gain:", gainField));
+        panel.putClientProperty("gainField", gainField);
 
-        // Inputs
+        // ---- Inputs UI (unchanged) ----
         panel.add(Box.createVerticalStrut(10));
         JPanel inputPanel = new JPanel();
         inputPanel.setBorder(BorderFactory.createTitledBorder("inputs"));
@@ -601,8 +797,6 @@ public final class FlightControlController {
         ButtonGroup group = new ButtonGroup();
         group.add(positive);
         group.add(negative);
-
-        negative.setSelected(true);
 
         JPanel inputRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         inputRow.add(positive);
@@ -621,12 +815,10 @@ public final class FlightControlController {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(80, 20, 10, 10));
 
-
-        JTextField maxField = new JTextField(0);
+        JTextField maxField = new JTextField("0.0");
         panel.add(makeRow("Max:", maxField));
         panel.add(Box.createVerticalStrut(8));
 
-        // Type
         JTextField minField = new JTextField(0);
         panel.add(makeRow("Min:", minField));
         panel.add(Box.createVerticalStrut(8));
@@ -653,9 +845,8 @@ public final class FlightControlController {
         c.weightx = 1;
 
         JComboBox<String> independentVarBox = new JComboBox<>(
-            // Test values for now. Will change in future
-            new String[] { "", "alpha", "beta", "mach", "altitude" }
-        );
+                // Test values for now. Will change in future
+                new String[] { "", "alpha", "beta", "mach", "altitude" });
 
         topRow.add(independentVarBox, c);
 
@@ -671,8 +862,8 @@ public final class FlightControlController {
 
         Object[][] data = new Object[100][2];
         for (int i = 0; i < 100; i++) {
-            data[i][0] = (i + 1);   // left column = row number
-            data[i][1] = "";        // right column editable
+            data[i][0] = (i + 1); // left column = row number
+            data[i][1] = ""; // right column editable
         }
 
         JTable table = new JTable(data, columnNames);

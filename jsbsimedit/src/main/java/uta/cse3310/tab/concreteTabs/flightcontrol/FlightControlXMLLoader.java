@@ -65,7 +65,10 @@ public class FlightControlXMLLoader {
                     FlightControlModel.NodeType nodeType = mapClassNameToNodeType(typeName);
 
                     FlightControlModel.Node node =
-                            model.addNode(nodeType, blockX, baseY + idx * gapY);
+                        model.addNode(nodeType, blockX, baseY + idx * gapY);
+
+                    // NEW: remember which JAXB block this node represents
+                    node.backingBlock = block;
 
                     String blockName = reflectiveGetName(block);
                     if (blockName == null || blockName.isBlank()) {
