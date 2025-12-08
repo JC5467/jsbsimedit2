@@ -121,8 +121,9 @@ public class FlightControlView extends JComponent {
             }
 
             if (showPorts) {
-                // Draw ALL input ports for this node, based on NodeType.inPorts
-                int inCount = n.type.inPorts;
+                // Draw ALL input ports based on the node's current dynamic inputPortCount.
+                // Fall back to the type's default if inputPortCount hasn't been bumped yet.
+                int inCount = Math.max(n.inputPortCount, n.type.inPorts);
                 for (int i = 0; i < inCount; i++) {
                     Rectangle inR = n.inputPortRect(i, PORT_SIZE);
                     g2.setColor(new Color(90, 180, 255)); // blue inputs
@@ -246,7 +247,7 @@ public class FlightControlView extends JComponent {
         // Iterate front-to-back so we hit the visually top-most node first
         for (int ni = model.nodes.size() - 1; ni >= 0; --ni) {
             FlightControlModel.Node n = model.nodes.get(ni);
-            int inCount = n.type.inPorts;
+            int inCount = Math.max(n.inputPortCount, n.type.inPorts);
             for (int pi = 0; pi < inCount; ++pi) {
                 if (n.inputPortRect(pi, PORT_SIZE).contains(p)) {
                     return new InputHit(n, pi);

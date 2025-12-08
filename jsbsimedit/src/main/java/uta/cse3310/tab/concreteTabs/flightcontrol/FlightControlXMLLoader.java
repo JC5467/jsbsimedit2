@@ -28,6 +28,12 @@ public class FlightControlXMLLoader {
 
         if (cfg == null || channelName == null) return;
 
+        // Remember backing XML context on the model so new nodes can be persisted
+        model.backingConfig  = cfg;
+        model.backingChannel = null;
+        model.channelBlocks  = null;
+        model.channelName    = channelName;
+
         List<JAXBElement<FcsModel>> list = cfg.getSystemOrAutopilotOrFlightControl();
         if (list == null) return;
 
@@ -49,6 +55,12 @@ public class FlightControlXMLLoader {
 
                 // We found the channel we're looking for
                 List<Object> blocks = ch.getAccelerometerOrActuatorOrAerosurfaceScale();
+
+                // Remember channel + block list on the model so new nodes can be attached
+                model.backingChannel = ch;
+                model.channelBlocks  = blocks;
+                model.channelName    = ch.getName();
+
                 if (blocks == null || blocks.isEmpty()) return;
 
                 int blockX = 260;

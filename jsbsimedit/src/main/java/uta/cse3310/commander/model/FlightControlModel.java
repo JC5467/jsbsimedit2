@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import generated.Channel;
+import generated.FdmConfig;
+
 public class FlightControlModel {
 
     // ---- Node types shown in the palette ----
@@ -59,12 +62,16 @@ public class FlightControlModel {
             this.type = type;
             this.bounds = new Rectangle(x, y, 80, 80);
             this.displayName = type.label;
+            this.inputPortCount = type.inPorts;
         }
 
         // Input port at a specific index (0-based).
         // Ports are evenly distributed along the left edge.
         public Point inputPort(int index) {
-            int n = Math.max(1, inputPortCount);
+            // Always use at least the default number of ports for this type
+            int basePorts = (type != null) ? type.inPorts : 0;
+            int n = Math.max(1, Math.max(inputPortCount, basePorts));
+
             if (index < 0) index = 0;
             if (index >= n) index = n - 1;
 
@@ -95,11 +102,11 @@ public class FlightControlModel {
     }
 
     public static final class Edge {
-        public final Node from; // uses output port
+        public       Node from; // uses output port
         public final Node to;   // uses one of the input ports
 
         // Which input index of 'to' this edge is attached to (0-based)
-        public final int toInputIndex;
+        public int toInputIndex;
 
         public Point fromPoint;
         public Point toPoint;
@@ -123,6 +130,12 @@ public class FlightControlModel {
             toPoint = to.inputPort(idx);
         }
     }
+
+    // Optional backing XML context for the current channel
+    public FdmConfig backingConfig;       // root <fdm_config>, may be null
+    public Channel   backingChannel;      // current <channel>, may be null
+    public List<Object> channelBlocks;    // live list of blocks in this channel
+    public String    channelName;         // convenience cache of channel name
 
     // ---- The graph model ----
     private int nextId = 1;
