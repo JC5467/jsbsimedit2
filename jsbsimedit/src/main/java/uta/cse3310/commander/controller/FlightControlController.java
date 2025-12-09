@@ -2118,6 +2118,11 @@ public final class FlightControlController {
         for (FlightControlModel.Node n : model.nodes) {
             if (n == targetNode) continue;
 
+            // Don't connect DESTINATIONs directly to SOURCE blocks
+            if (targetNode.type == FlightControlModel.NodeType.DESTINATION &&
+                n.type == FlightControlModel.NodeType.SOURCE) {
+                continue;
+            }
             String out = computeCanonicalOutputProperty(n);
             if (out == null || out.isBlank()) continue;
 
@@ -2305,12 +2310,12 @@ public final class FlightControlController {
         // Start from a clean slate
         model.edges.clear();
 
+        // FIRST PASS: normal blocks with <input> lists
         for (FlightControlModel.Node target : model.nodes) {
             if (target.backingBlock == null) {
                 continue;
             }
 
-            // Get canonical input property strings from the JAXB block
             java.util.List<String> inputs = readInputStringsFromBackingBlock(target);
             if (inputs == null || inputs.isEmpty()) {
                 continue;
@@ -2322,7 +2327,6 @@ public final class FlightControlController {
                     continue;
                 }
 
-                // Find a source node whose output property matches this input
                 FlightControlModel.Node src =
                         findSourceNodeByOutputProperty(target, model, xmlPath);
 
@@ -2334,16 +2338,65 @@ public final class FlightControlController {
                     continue;
                 }
 
-                // Create an edge from src to target on the next input port
                 model.addEdge(src, target, inputIndex++);
             }
 
-            // Update how many input ports the node exposes
             int basePorts = (target.type != null) ? target.type.inPorts : 1;
             target.inputPortCount = Math.max(basePorts, inputIndex);
         }
 
-        // Make sure the new edges have their geometry set
+        // SECOND PASS: auto-wire DESTINATION nodes
+        for (FlightControlModel.Node dest : model.nodes) {
+            if (dest.type != FlightControlModel.NodeType.DESTINATION) {
+                continue;
+            }
+
+            // Skip if this destination already has an incoming edge (e.g. user-drawn)
+            boolean hasIncoming = false;
+            for (FlightControlModel.Edge e : model.edges) {
+                if (e.to == dest) {
+                    hasIncoming = true;
+                    break;
+                }
+            }
+            if (hasIncoming) continue;
+
+            String label = (dest.displayName != null && !dest.displayName.isBlank())
+                    ? dest.displayName
+                    : readNameFromBackingBlock(dest);
+
+            if (label == null || label.isBlank()) {
+                continue;
+            }
+
+            // If the label already looks like "fcs/..." keep it; otherwise
+            // turn "Elevator Command" into "fcs/elevator-command"
+            String xmlPath;
+            if (label.contains("/")) {
+                xmlPath = label.trim();
+            } else {
+                xmlPath = nameToPropertyToken(label);
+                if (xmlPath == null || xmlPath.isBlank()) {
+                    continue;
+                }
+            }
+
+            FlightControlModel.Node src =
+                    findSourceNodeByOutputProperty(dest, model, xmlPath);
+
+            if (src == null) {
+                System.err.println(
+                        "rebuildEdgesFromBackingBlocks: could not find source for DESTINATION \"" +
+                        xmlPath + "\" (node id " + dest.id + ")");
+                continue;
+            }
+
+            // One input port (index 0) feeding the destination
+            model.addEdge(src, dest, 0);
+            dest.inputPortCount = Math.max(dest.inputPortCount, 1);
+        }
+
+        // Recompute geometry for all edges (including the new DESTINATION ones)
         for (FlightControlModel.Edge e : model.edges) {
             e.updatePoints();
         }

@@ -316,18 +316,28 @@ public class FlightControlXMLLoader {
         int colWidth = 170; // horizontal spacing between columns
         int rowGap   = 110; // vertical spacing between nodes
 
+        int colIndex = 0;
+
         for (Integer l : layers) {
             List<FlightControlModel.Node> column = byLayer.get(l);
             // sort by id so layout is stable.
             column.sort((a, b) -> Integer.compare(a.id, b.id));
 
             int x = baseX + l * colWidth;
+
+            boolean shiftThisColumn = (colIndex % 2 == 1);
             for (int i = 0; i < column.size(); i++) {
                 FlightControlModel.Node n = column.get(i);
                 int y = baseY + i * rowGap;
+
+                if (shiftThisColumn) {
+                    y += 5;
+                }
+
                 n.bounds.x = x;
                 n.bounds.y = y;
             }
+            colIndex++;
         }
 
         // Recompute edge attachment points

@@ -147,7 +147,8 @@ public class FlightControlView extends JComponent {
         g2.setColor(new Color(0, 0, 0));
         g2.setStroke(EDGE_STROKE);
         for (FlightControlModel.Edge e : model.edges) {
-            drawOrth(g2, e.fromPoint, e.toPoint);
+            int slot = e.toInputIndex;
+            drawOrth(g2, e.fromPoint, e.toPoint, slot);
             drawArrowHead(g2, e.toPoint);
         }
     }
@@ -156,14 +157,19 @@ public class FlightControlView extends JComponent {
         if (previewFrom != null && previewTo != null) {
             g2.setColor(new Color(255, 180, 0));
             g2.setStroke(PREVIEW_STROKE);
-            drawOrth(g2, previewFrom.outputPort(), previewTo);
+            drawOrth(g2, previewFrom.outputPort(), previewTo, 0);
             drawArrowHead(g2, previewTo);
         }
     }
 
     // Orthogonal polyline using midpoint rule
-    private void drawOrth(Graphics2D g2, Point a, Point b) {
-        double xmid = a.x + (b.x - a.x) / 2;
+    private void drawOrth(Graphics2D g2, Point a, Point b, int slot) {
+
+        // How far apart to space edges visually
+        final double SPREAD = 5.0;
+        double offset = (slot - 1) * SPREAD;
+
+        double xmid = a.x + (b.x - a.x) / 2.0 + offset;
         double ymid = a.y + (b.y - a.y) / 2;
         int buffer = 20;
         double x1, x2, y1;
