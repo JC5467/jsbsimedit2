@@ -5,6 +5,14 @@
 # jsbsimedit2
 Project for CSE3310 Fall 2025
 
+
+## My Contributions
+- Member of a semester-long software engineering team (CSE 3310)
+- Contributed to testing, documentation, and design discussions
+- Collaborated using GitHub branches, issues, and pull requests
+
+
+
 ## build instructions
 
 ```
@@ -15,6 +23,7 @@ Project for CSE3310 Fall 2025
 % mvn package
 % mvn exec:java -Dexec.mainClass=uta.cse3310.App
 ```
+
 
 
 
